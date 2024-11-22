@@ -1,18 +1,10 @@
+import { languageTag } from '$lib/locales';
 import usePublisher from '$lib/omerlo/publisher';
 import type { ApiData, ApiResponse } from '$types/core';
 
 type FetchOptions<T> = {
   parser?: (data: ApiData) => T;
   params?: Record<string, string | number | boolean>;
-}
-
-let languageTag: Function;
-
-export function setLanguageTag(fn: Function) {
-  if (typeof fn !== 'function') {
-    throw new Error('The provided value must be a function');
-  }
-  languageTag = fn;
 }
 
 export async function omerloFetch<T>(f: typeof fetch, url: string, opts: FetchOptions<T>): Promise<ApiResponse<T>> {
