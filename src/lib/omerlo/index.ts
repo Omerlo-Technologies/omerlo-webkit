@@ -1,5 +1,4 @@
 import usePublisher from '$lib/omerlo/publisher';
-import { languageTag } from '$lib/paraglide/runtime';
 import type { ApiData, ApiResponse } from '$types/core';
 
 type FetchOptions<T> = {
@@ -7,9 +6,17 @@ type FetchOptions<T> = {
   params?: Record<string, string | number | boolean>;
 }
 
+let languageTag: Function;
+
+export function setLanguageTag(fn: Function) {
+  if (typeof fn !== 'function') {
+    throw new Error('The provided value must be a function');
+  }
+  languageTag = fn;
+}
+
 export async function omerloFetch<T>(f: typeof fetch, url: string, opts: FetchOptions<T>): Promise<ApiResponse<T>> {
   const locale = languageTag();
-  console.log(locale);
   const parsedUrl = new URL(url)
   parsedUrl.searchParams.append("locale", locale);
 
