@@ -10,8 +10,8 @@ export interface ContentSummary {
   template: ContentTemplate,
   locale: string,
   visibility: 'free' | 'metered' | 'restricted' | 'authenticated',
-  canonicalDomain: string,
-  canonicalUrl: string,
+  canonicalDomain: string | null,
+  canonicalUrl: string | null,
   categories: Category[],
   publishedAt: Date,
   showPublishedAt: boolean,
@@ -34,8 +34,7 @@ export interface Content extends ContentSummary {
 * Contents Block
 **/
 
-export type ContentBlock =
-  ContentBlockQuestion
+export type ContentBlock = ContentBlockQuestion
   | ContentBlockRichtext
   | ContentBlockData
   | ContentBlockHtml
@@ -118,7 +117,7 @@ export interface ProfileContact {
 }
 
 export interface EventSummary extends ProfileSummary {
-  subscriptionUrl: string,
+  subscriptionUrl: string | null,
   logoImageUrl: string | null,
   coverImageUrl: string | null,
   isAllDay: boolean,
@@ -134,10 +133,10 @@ export interface EventSummary extends ProfileSummary {
 
 export interface Event extends EventSummary {
   address: ProfileAddress | null,
-  content: ProfileContact | null,
+  contact: ProfileContact | null,
 }
 
-export interface PersonSummary extends ProfileSummary & {
+export interface PersonSummary extends ProfileSummary {
   firstName: string,
   lastName: string,
   otherName: string | null,
@@ -153,7 +152,7 @@ export interface PersonSummary extends ProfileSummary & {
 
 export interface Person extends ProfileSummary, PersonSummary {
   address: ProfileAddress | null,
-  content: ProfileContact | null,
+  contact: ProfileContact | null,
 }
 
 export interface ProjectSummary extends ProfileSummary {
@@ -169,7 +168,7 @@ export interface ProjectSummary extends ProfileSummary {
 
 export interface Project extends ProfileSummary, ProjectSummary {
   address: ProfileAddress | null,
-  content: ProfileContact | null,
+  contact: ProfileContact | null,
 }
 
 export interface OrganizationSummary extends ProfileSummary {
@@ -185,7 +184,7 @@ export interface OrganizationSummary extends ProfileSummary {
 
 export interface Organization extends ProfileSummary, OrganizationSummary {
   address: ProfileAddress | null,
-  content: ProfileContact | null,
+  contact: ProfileContact | null,
 }
 
 
@@ -211,7 +210,7 @@ export interface ProfileTypeSummary {
   kind: 'person' | 'organization' | 'event' | 'project',
   name: string,
   locale: string,
-  updatedAt: string,
+  updatedAt: Date,
 }
 
 /**

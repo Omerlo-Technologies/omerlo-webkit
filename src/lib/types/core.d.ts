@@ -12,15 +12,15 @@ export interface Category {
   id: string,
   name: string,
   locale: string,
-  svg_icon: string
+  svg_icon?: string
 }
 
 export type Gravity = 'north' | 'northeast' | 'east' | 'southeast' | 'south' | 'southwest' | 'west' | 'northwest' | 'center'
 
 export interface Image {
-  caption_html: string,
-  caption_text: string,
-  credit: string,
+  captionHtml?: string,
+  captionText?: string,
+  credit?: string,
   gravity: Gravity,
   url: string,
 }
@@ -31,13 +31,14 @@ export interface Slideshow {
 
 export interface Video {
   video_id: string,
-  credit: string,
-  captionHtml: string,
-  captionText: string,
+  credit?: string,
+  captionHtml?: string,
+  captionText?: string,
   monetized: boolean,
   provider: 'vimeo' | 'youtube' | 'jw',
   embedUrl: string,
-  thumbnailUrl: string
+  thumbnailUrl: string,
+  isTrackingEnabled: boolean
 }
 
 export type Visual = Image | Slideshow | Video

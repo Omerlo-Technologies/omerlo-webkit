@@ -1,5 +1,5 @@
-import { languageTag } from '$lib/locales';
 import usePublisher from '$lib/omerlo/publisher';
+import { languageTag } from './locale-management';
 import type { ApiData, ApiResponse } from '$types/core';
 
 type FetchOptions<T> = {
