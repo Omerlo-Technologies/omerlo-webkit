@@ -1,7 +1,6 @@
 export interface ApiResponse<T> {
-  entries: T,
+  data: T,
   meta: ApiResponseMeta,
-  assocs: []
 }
 
 export interface ApiResponseMeta {
@@ -12,28 +11,31 @@ export interface Category {
   id: string,
   name: string,
   locale: string,
-  svg_icon?: string
+  svg_icon: string | null
 }
 
 export type Gravity = 'north' | 'northeast' | 'east' | 'southeast' | 'south' | 'southwest' | 'west' | 'northwest' | 'center'
 
 export interface Image {
-  captionHtml?: string,
-  captionText?: string,
-  credit?: string,
+  type: 'image',
+  captionHtml: string | null,
+  captionText: string | null,
+  credit: string | null,
   gravity: Gravity,
   url: string,
 }
 
 export interface Slideshow {
+  type: 'slideshow',
   images: Image[],
 }
 
 export interface Video {
-  video_id: string,
-  credit?: string,
-  captionHtml?: string,
-  captionText?: string,
+  type: 'video',
+  videoId: string,
+  credit: string | null,
+  captionHtml: string | null,
+  captionText: string | null,
   monetized: boolean,
   provider: 'vimeo' | 'youtube' | 'jw',
   embedUrl: string,

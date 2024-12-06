@@ -7,7 +7,7 @@ import type { ApiData, Category, Image, Video, Visual } from "./core"
 export interface ContentSummary {
   id: string,
   authors: (Person | Organization)[],
-  template: ContentTemplate,
+  templateId: string,
   locale: string,
   visibility: 'free' | 'metered' | 'restricted' | 'authenticated',
   canonicalDomain: string | null,
@@ -23,7 +23,7 @@ export interface ContentSummary {
   leadHtml: string | null,
   leadText: string | null,
   seo: Seo,
-  visual: Visual
+  visual: Visual | null
 }
 
 export interface Content extends ContentSummary {

@@ -14,11 +14,12 @@ export function buildCategory(attrs: Partial<Category> = {}): Category {
 
 export function buildImage(attrs: Partial<Image> = {}): Image {
   const image: Image = {
+    type: 'image',
     captionHtml: '<p>Some caption</p>',
     captionText: 'Some caption',
     credit: 'Omerlo',
-    gravity: 'north',
-    url: 'url',
+    gravity: 'center',
+    url: 'https://placehold.co/600x400',
   };
 
   return {...image, ...attrs};
@@ -26,6 +27,7 @@ export function buildImage(attrs: Partial<Image> = {}): Image {
 
 export function buildSlideshow(attrs: Partial<Slideshow> = {}): Slideshow {
   const image: Slideshow = {
+    type: 'slideshow',
     images: buildList(4, buildImage)
   };
 
@@ -34,6 +36,7 @@ export function buildSlideshow(attrs: Partial<Slideshow> = {}): Slideshow {
 
 export function buildVideo(attrs: Partial<Video> = {}): Video {
   const image: Video = {
+    type: 'video',
     provider: 'youtube',
     credit: "Omerlo",
     captionHtml: "<p>A nice music</p>",

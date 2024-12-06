@@ -15,6 +15,9 @@
     "outDir": "dist",
   },
   "include": [
-    "src/**/*.ts",
+    "./**/*.svelte",
+    "./**/*.ts",
+    "./**/*.js",
+    ".svelte-kit/ambient.d.ts",
   ]
 }
