@@ -1,19 +1,33 @@
-import { MEDIA_URL } from "../publisher";
+import { MEDIA_URL } from "./index";
 import type { Content, ContentSummary, ContentTemplate } from '$types/composer';
 import type { ApiData, Category } from '$types/core';
-import { parseVisual } from '../core/visual';
 import { seoParser } from './seo';
-import { getAssocs } from "../assocs";
-import { omerloFetch } from "..";
+import { getAssocs, type ApiAssocs } from "../assocs";
+import { omerloFetch, parseMany } from "..";
+import type { ListParams } from "../fetcher-params";
+import { parseVisual } from "./visual";
 
 export function contentFetcher(f: typeof fetch) {
   return (id: string) => {
     const opts = { parser: contentParser }
+    // return {url: `${MEDIA_URL}/contents/${id}`, opts}
     return omerloFetch(f, `${MEDIA_URL}/contents/${id}`, opts);
   }
 }
 
-export function contentSummaryParser(data: ApiData, assocs: ApiData = {}): ContentSummary {
+export interface ContentsParams extends ListParams {
+
+}
+
+export function contentsFetcher(f: typeof fetch) {
+  return (params?: Partial<ContentsParams>) => {
+    const url = params?.after || params?.before || `${MEDIA_URL}/contents`;
+    const opts = {params, parser: parseMany(contentSummaryParser)};
+    return omerloFetch(f, url, opts);
+  };
+}
+
+export function contentSummaryParser(data: ApiData, assocs: ApiAssocs): ContentSummary {
   return {
     id: data.id,
     // authors: getAssocs(assocs, 'profiles', data.author_ids),
@@ -38,7 +52,7 @@ export function contentSummaryParser(data: ApiData, assocs: ApiData = {}): Conte
   };
 }
 
-export function contentParser(data: ApiData, assocs: ApiData = {}): Content {
+export function contentParser(data: ApiData, assocs: ApiAssocs) : Content {
   return {
     ...contentSummaryParser(data, assocs),
     // TODO
@@ -46,7 +60,7 @@ export function contentParser(data: ApiData, assocs: ApiData = {}): Content {
   };
 }
 
-export function parseTemplate(data: ApiData, _assocs: ApiData = {}): ContentTemplate {
+export function parseTemplate(data: ApiData, _assocs: ApiAssocs): ContentTemplate {
   return {
     id: data.id,
     key: data.key,

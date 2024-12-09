@@ -1,6 +1,8 @@
-import { MEDIA_URL } from "../publisher";
+import { MEDIA_URL } from "./index";
 import type { ApiData, Category } from "$types/core";
 import { omerloFetch, parseMany } from '../';
+import type { ApiAssocs } from "../assocs";
+import type { ListParams } from "../fetcher-params";
 
 export function categoryFetcher(f: typeof fetch) {
   return (id: string) => {
@@ -9,7 +11,7 @@ export function categoryFetcher(f: typeof fetch) {
   }
 }
 
-type CategoriesParams = {
+export interface CategoriesParams extends ListParams {
   limit: number,
 }
 
@@ -17,14 +19,14 @@ export function categoriesFetcher(f: typeof fetch) {
   return (params?: CategoriesParams) => {
     const opts = {params: params, parser: parseMany(categoryParser)};
     return omerloFetch(f, `${MEDIA_URL}/categories`, opts );
-  }
+  };
 }
 
-export function categoryParser(data: ApiData, _assocs: ApiData = {}): Category {
+export function categoryParser(data: ApiData, _assocs: ApiAssocs): Category {
   return {
     id: data.id,
     name: data.localized.name,
     locale: data.localized.locale,
-    svg_icon: data.svg_icon
+    svgIcon: data.svg_icon
   }
 }

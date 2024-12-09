@@ -1,16 +1,17 @@
-import * as publisher from './publisher';
+import * as Api from './api';
 import { languageTag } from './locale-management';
 import type { ApiData, ApiResponse } from '$types/core';
-import { parseAssocs } from './assocs';
+import { parseAssocs, type ApiAssocs } from './assocs';
+import type { ApiParams } from './fetcher-params';
 
 type FetchOptions<T> = {
-  parser?: (data: ApiData) => T;
-  params?: Record<string, string | number | boolean>;
+  parser?: (data: ApiData, assocs: ApiAssocs) => T;
+  params?: Partial<ApiParams>
 }
 
 export async function omerloFetch<T>(f: typeof fetch, url: string, opts: FetchOptions<T>): Promise<ApiResponse<T>> {
   const locale = languageTag();
-  const parsedUrl = new URL(url)
+  const parsedUrl = new URL(url);
   parsedUrl.searchParams.append("locale", locale);
 
   if (opts.params) {
@@ -25,12 +26,13 @@ export async function omerloFetch<T>(f: typeof fetch, url: string, opts: FetchOp
   return req.json().then(parseApiResponse(parser));
 }
 
-export function parseMany<T>(parser: (data: ApiData, assocs: ApiData) => T): (entries: ApiData[]) => T[] {
-  return (data: ApiData[]) => (data.map(parser))
+export function parseMany<T>(parser: (data: ApiData, assocs: ApiAssocs) => T): (response: ApiData[], assocs: ApiAssocs) => T[] {
+  return (response: ApiData[], assocs: ApiAssocs) => {
+    return response.map((data) => parser(data, assocs));
+  };
 }
 
-// TODO refactor, we don't need to return anything from here
-function parseApiResponse<T>(parser: (data: ApiData, assocs: ApiData) => T): (response: ApiData) => ApiResponse<T> {
+function parseApiResponse<T>(parser: (data: ApiData, assocs: ApiAssocs) => T): (response: ApiData) => ApiResponse<T> {
   return (response) => {
     parseAssocs(response.assocs);
 
@@ -41,5 +43,5 @@ function parseApiResponse<T>(parser: (data: ApiData, assocs: ApiData) => T): (re
   };
 }
 
-export const usePublisher = publisher.fetchers;
+export const useOmerlo = Api.fetchers;
 

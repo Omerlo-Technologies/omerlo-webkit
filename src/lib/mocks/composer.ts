@@ -7,7 +7,7 @@ export function buildContentSummary(attrs: Partial<Composer.ContentSummary> = {}
   const content: Composer.ContentSummary =  {
     id: faker.string.uuid(),
     authors: [],
-    template: buildContentTemplate(),
+    templateId: faker.string.uuid(),
     locale: 'en',
     visibility: 'free',
     canonicalDomain: 'omerlo.com',

@@ -11,7 +11,7 @@ export interface Category {
   id: string,
   name: string,
   locale: string,
-  svg_icon: string | null
+  svgIcon: string | null
 }
 
 export type Gravity = 'north' | 'northeast' | 'east' | 'southeast' | 'south' | 'southwest' | 'west' | 'northwest' | 'center'
