@@ -1,3 +1,3 @@
 export function languageTag() {
-  return 'en'
+	return 'en';
 }
