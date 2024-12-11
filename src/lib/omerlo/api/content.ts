@@ -1,4 +1,4 @@
-import { MEDIA_URL } from "./index";
+import { MEDIA_PATH } from "./index";
 import type { Content, ContentSummary, ContentTemplate } from '$types/composer';
 import type { ApiData, Category } from '$types/core';
 import { seoParser } from './seo';
@@ -10,8 +10,7 @@ import { parseVisual } from "./visual";
 export function contentFetcher(f: typeof fetch) {
   return (id: string) => {
     const opts = { parser: contentParser }
-    // return {url: `${MEDIA_URL}/contents/${id}`, opts}
-    return omerloFetch(f, `${MEDIA_URL}/contents/${id}`, opts);
+    return omerloFetch(f, `${MEDIA_PATH}/contents/${id}`, opts);
   }
 }
 
@@ -21,7 +20,7 @@ export interface ContentsParams extends ListParams {
 
 export function contentsFetcher(f: typeof fetch) {
   return (params?: Partial<ContentsParams>) => {
-    const url = params?.after || params?.before || `${MEDIA_URL}/contents`;
+    const url = params?.after || params?.before || `${MEDIA_PATH}/contents`;
     const opts = {params, parser: parseMany(contentSummaryParser)};
     return omerloFetch(f, url, opts);
   };

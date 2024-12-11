@@ -3,6 +3,7 @@ import { languageTag } from './locale-management';
 import type { ApiData, ApiResponse } from '$types/core';
 import { parseAssocs, type ApiAssocs } from './assocs';
 import type { ApiParams } from './fetcher-params';
+import { env } from '$env/dynamic/public';
 
 type FetchOptions<T> = {
   parser?: (data: ApiData, assocs: ApiAssocs) => T;
@@ -11,7 +12,7 @@ type FetchOptions<T> = {
 
 export async function omerloFetch<T>(f: typeof fetch, url: string, opts: FetchOptions<T>): Promise<ApiResponse<T>> {
   const locale = languageTag();
-  const parsedUrl = new URL(url);
+  const parsedUrl = new URL(`${env.PUBLIC_BASE_URL}` + url);
   parsedUrl.searchParams.append("locale", locale);
 
   if (opts.params) {
@@ -37,6 +38,7 @@ function parseApiResponse<T>(parser: (data: ApiData, assocs: ApiAssocs) => T): (
     parseAssocs(response.assocs);
 
     return {
+      parser: parser,
       meta: response.meta,
       data: parser(response.data, response.assocs)
     };

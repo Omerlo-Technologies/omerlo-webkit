@@ -1,4 +1,5 @@
 export interface ApiResponse<T> {
+  parser: (data: ApiData, assocs: ApiAssocs) => T,
   data: T,
   meta: ApiResponseMeta,
 }
