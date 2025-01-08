@@ -1,19 +1,24 @@
 import { env } from '$env/dynamic/public';
 import type { ApiResponse } from '$types/core';
-import { omerloFetch, parseMany } from '..';
+import { omerloFetch } from '..';
 import { registerAssocParser } from '../assocs';
+import { announcementsFetcher } from './announcement';
+import { blockFetcher } from './block';
 import { categoryParser, categoriesFetcher } from './category';
 import { contentFetcher, contentsFetcher, contentSummaryParser } from './content';
 
-const OMERLO_PATH = `/api/public/publisher/v2`;
+export const OMERLO_PATH = `/api/public/publisher/v2`;
 export const MEDIA_PATH = `${OMERLO_PATH}/medias/${env.PUBLIC_MEDIA_ID}`;
 
 export const fetchers = (f: typeof fetch) => {
 	return {
 		listCategories: categoriesFetcher(f),
 		getCategory: categoriesFetcher(f),
-		getContent: contentFetcher(f),
 		listContents: contentsFetcher(f),
+		getContent: contentFetcher(f),
+    listAnnouncements: announcementsFetcher(f),
+    getAnnouncement: announcementsFetcher(f),
+    getBlock: blockFetcher(f),
 		loadMore: async <T>(data: ApiResponse<T>) => loadMore<T>(f)(data)
 	};
 };
