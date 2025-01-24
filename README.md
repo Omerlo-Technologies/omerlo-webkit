@@ -1,58 +1,74 @@
-# create-svelte
+# Omerlo WebKit
 
-Everything you need to build a Svelte library, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+This webkit is a wapper arround Omerlo's API to create quickly a website using Omerlo.
 
-Read more about creating a library [in the docs](https://svelte.dev/docs/kit/packaging).
+## Examples
 
-## Creating a project
+You can easily fetch data from Omerlo in your `+page.ts` (and `+page.server.ts` too). Every call using the `useReader`
+helper guarantee hydration to works properly.
 
-If you're seeing this, you've probably already done this step. Congrats!
+```ts
+// +page.ts
+import type { PageLoad } from './$types';
+import { useReader } from '$lib/omerlo';
 
-```bash
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
+export const load: PageLoad = async ({ fetch }) => {
+  const oauthProviders = await useReader(fetch).listOauthProviders();
+  return { oauthProviders };
+};
 ```
 
-## Developing
+Or if
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+```ts
+<script lang="ts">
+  import { useReader } from "$omerlo";
 
-```bash
-npm run dev
+  async function checkAccessToken() {
+    const resp = await useReader(fetch).listOauthProviders()
+    console.log(resp);
+  }
+</script>
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+<button onclick={checkAccessToken}> Check access token</button>
 ```
 
-Everything inside `src/lib` is part of your library, everything inside `src/routes` can be used as a showcase or preview app.
+## Installation
 
-## Building
-
-To build your library:
-
-```bash
-npm run package
+```sh
+PRIVATE_OMERLO_HOST='cms.omerlo.com'
+PRIVATE_OMERLO_PROTOCOL='https'
+PRIVATE_OMERLO_CLIENT_ID='<CLIENT_ID>'
+PRIVATE_OMERLO_CLIENT_SECRET='<CLIENT_SECRET>'
 ```
 
-To create a production version of your showcase app:
+```ts
+// in your hooks.server.ts
 
-```bash
-npm run build
+import { readerProxyHook } from 'omerlo/server'
+
+export const handle = readerProxyHook;
 ```
 
-You can preview the production build with `npm run preview`.
+## Cookbook
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+To automatically add the `locale` to all request made to the CMS, you can create a server hook to append this
+parameter.
 
-## Publishing
+```ts
+// in your hooks.server.ts
+import type { Handle } from "@sveltejs/kit";
 
-Go into the `package.json` and give your package the desired name through the `"name"` option. Also consider adding a `"license"` field and point it to a `LICENSE` file which you can create from a template (one popular option is the [MIT license](https://opensource.org/license/mit/)).
+import { readerProxyHook } from 'omerlo/server';
+import { sequence } from "@sveltejs/kit/hooks";
 
-To publish your library to [npm](https://www.npmjs.com):
+const handleLocale: Handle = async ({ event, resolve }) => {
+    const userLocale = 'en'; // you can fetch this value from cookie or w.e
+    event.url.searchParams.append('locale', userLocale);
+    return resolve(event);
+}
 
-```bash
-npm publish
+export const handle = sequence(handleLocale, readerProxyHook);
 ```
+
+> This will append the locale 'en' to any request made BY the server.
