@@ -11,13 +11,15 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
 	},
-  "dependencies": {
-    "omerlo-webkit": "file:../"
-  },
+	"dependencies": {
+		"jsonwebtoken": "^9.0.2",
+		"omerlo-webkit": "file:../"
+	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^4.0.0",
 		"@sveltejs/kit": "^2.16.0",
 		"@sveltejs/vite-plugin-svelte": "^5.0.0",
+		"@types/jsonwebtoken": "^9.0.9",
 		"svelte": "^5.0.0",
 		"svelte-check": "^4.0.0",
 		"typescript": "^5.0.0",
