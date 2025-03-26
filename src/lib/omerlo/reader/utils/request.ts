@@ -22,6 +22,7 @@ export async function request<T>(
 type DirtyFetchOptions = {
   queryParams?: ApiData;
   method?: string;
+  body?: string;
 };
 
 export async function dirtyRequest(
@@ -41,7 +42,7 @@ export async function dirtyRequest(
     path = `${path}?${queryParams}`;
   }
 
-  const resp = await f(path.toString(), { method: opts.method });
+  const resp = await f(path.toString(), { method: opts.method, body: opts.body });
 
   if (BROWSER && resp.headers.get('x-logout') == 'true') {
     const webkitComponent = document.getElementById('omerlo-webkit');

@@ -83,6 +83,5 @@ export const handleUserToken: Handle = async ({ event, resolve }) => {
     }
   }
 
-
   return resolve(event);
 }
