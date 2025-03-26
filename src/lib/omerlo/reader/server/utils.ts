@@ -99,6 +99,7 @@ async function refreshApplicationToken() {
 async function newApplicationToken() {
   const token = await getAnonymousToken('application');
 
+  applicationToken.init = true;
   applicationToken.accessToken = token.accessToken;
   applicationToken.refreshToken = token.refreshToken;
   const date = new Date();
