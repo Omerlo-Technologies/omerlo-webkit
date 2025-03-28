@@ -23,6 +23,7 @@ const handleApiProxy: Handle = async ({ event, ...tail }) => {
     body: event.request.body,
     method: event.request.method,
     headers: event.request.headers,
+    duplex: 'half'
   })
   .then(async (resp) => {
     const headers = new Headers();
@@ -36,14 +37,14 @@ const handleApiProxy: Handle = async ({ event, ...tail }) => {
     const responseOpts = {
       headers: headers,
       status: resp.status,
-      statusText: resp.statusText
+      statusText: resp.statusText,
     };
 
     return new Response(resp.body, responseOpts)
   })
   .catch((err) => {
-      console.log("Could not proxy API request: ", err);
-      error(500, 'Something went wrong');
+    console.log("Could not proxy API request: ", err);
+    error(500, 'Something went wrong');
   });
 };
 
@@ -82,7 +83,6 @@ export const handleUserToken: Handle = async ({ event, resolve }) => {
       clearAuthorizationCookies(event.cookies);
     }
   }
-
 
   return resolve(event);
 }

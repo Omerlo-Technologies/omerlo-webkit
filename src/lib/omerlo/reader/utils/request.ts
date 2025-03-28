@@ -6,6 +6,7 @@ type FetchOptions<T> = {
   parser?: (data: ApiData, assocs: ApiAssocs) => T;
   queryParams?: ApiData;
   method?: string;
+  body?: ApiData;
 };
 
 export async function request<T>(
@@ -22,6 +23,7 @@ export async function request<T>(
 type DirtyFetchOptions = {
   queryParams?: ApiData;
   method?: string;
+  body?: ApiData;
 };
 
 export async function dirtyRequest(
@@ -41,7 +43,8 @@ export async function dirtyRequest(
     path = `${path}?${queryParams}`;
   }
 
-  const resp = await f(path.toString(), { method: opts.method });
+  const headers = { 'Content-Type': 'application/json' }
+  const resp = await f(path.toString(), { method: opts.method, body: JSON.stringify(opts.body), headers });
 
   if (BROWSER && resp.headers.get('x-logout') == 'true') {
     const webkitComponent = document.getElementById('omerlo-webkit');
@@ -51,10 +54,5 @@ export async function dirtyRequest(
     }
   }
 
-  if (resp.ok) {
-    return resp;
-  } else {
-    const payload = await resp.json();
-    throw new ApiError(resp.status, payload.error, resp.statusText);
-  }
+  return resp;
 }

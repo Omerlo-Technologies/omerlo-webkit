@@ -7,14 +7,17 @@ export async function parseApiResponse<T>(
   parser: (data: ApiData, assocs: ApiAssocs) => T
 ): Promise<ApiResponse<T>> {
   const payload = await response.json();
+  let data = null, meta = null;
 
-  parseAssocs(payload.assocs);
+  if (response.ok) {
+    parseAssocs(payload.assocs);
+    meta = payload.meta;
+    data = parser(payload.data, payload.assocs);
+  }
 
-  return {
-    parser: parser,
-    meta: payload.meta,
-    data: parser(payload.data, payload.assocs)
-  };
+  const errors = payload.errors || []
+
+  return { ok: response.ok, status: response.status, parser, meta, data, errors };
 }
 
 export function parseMany<T>(
@@ -26,9 +29,12 @@ export function parseMany<T>(
 }
 
 export interface ApiResponse<T> {
+  ok: boolean,
+  errors: ApiData[],
+  status: number,
   parser: (data: ApiData, assocs: ApiAssocs) => T;
-  data: T;
-  meta: ApiResponseMeta;
+  data: T | null;
+  meta: ApiResponseMeta | null;
 }
 
 export interface ApiResponseMeta {
