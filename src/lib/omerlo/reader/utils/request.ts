@@ -1,4 +1,4 @@
-import { ApiError, parseApiResponse } from '$reader/utils/api';
+import { parseApiResponse } from '$reader/utils/api';
 import type { ApiAssocs, ApiData, ApiResponse } from '$reader/utils/api';
 import { BROWSER } from 'esm-env';
 
