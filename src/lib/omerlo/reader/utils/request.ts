@@ -29,13 +29,13 @@ type DirtyFetchOptions = {
 export async function dirtyRequest(
   f: typeof fetch,
   path: string,
-  opts: DirtyFetchOptions
+  opts?: DirtyFetchOptions
 ): Promise<Response> {
   const queryParams = new URLSearchParams()
 
   path = `/api/media/v1${path}`;
 
-  if (opts.queryParams) {
+  if (opts?.queryParams) {
     Object.entries(opts.queryParams).forEach(([key, value]) => {
       queryParams.append(key, String(value));
     });
