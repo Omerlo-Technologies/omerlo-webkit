@@ -1,5 +1,6 @@
 import { request } from '$reader/utils/request';
 import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from '$reader/utils/api';
+import { parseLocalesMetadata, type LocalesMetadata } from '../utils/response';
 
 export const notificationFetchers = (f: typeof fetch) => {
   return {
@@ -19,22 +20,20 @@ export function listTopics(f: typeof fetch) {
 export function parseTopicSummary(data: ApiData, _assocs: ApiAssocs): TopicSummary {
   return {
     id: data.id,
-    localized: {
-      locale: data.localized.locale,
-      name: data.localized.name,
+    name: data.localized.name,
+    meta: {
+      locales: parseLocalesMetadata(data.meta)
     },
-    available_locales: data.available_locales,
     updatedAt: data.updated_at
   };
 }
 
 export interface TopicSummary {
   id: string,
-  localized: {
-    locale: string,
-    name: string,
+  name: string,
+  meta: {
+    locales: LocalesMetadata
   },
-  available_locales: string[],
   updatedAt: Date
 }
 
