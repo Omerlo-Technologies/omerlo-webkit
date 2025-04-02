@@ -10,8 +10,9 @@ const handleApiProxy: Handle = async ({ event, ...tail }) => {
   event.url.host = env.PRIVATE_OMERLO_HOST;
   event.url.protocol = env.PRIVATE_OMERLO_PROTOCOL
   event.request.headers.delete('cookie');
+  event.request.headers.set('x-omerlo-media-id', env.PRIVATE_OMERLO_MEDIA_ID);
 
-  let accessToken = event.params.accessToken;
+  let accessToken = event.locals.accessToken;
 
   if (!accessToken) {
     accessToken = await getApplicationToken();
@@ -28,9 +29,9 @@ const handleApiProxy: Handle = async ({ event, ...tail }) => {
   .then(async (resp) => {
     const headers = new Headers();
 
-    if (resp.status === 401 && event.params.accessToken) {
+    if (resp.status === 401 && event.locals.accessToken) {
       clearAuthorizationUsingHeader(headers);
-      event.params.accessToken = undefined;
+      event.locals.accessToken = undefined;
       resp = await handleApiProxy({ event, ...tail })
     }
 
@@ -65,7 +66,7 @@ export const handleUserToken: Handle = async ({ event, resolve }) => {
   };
 
   if (accessToken) {
-    event.params.accessToken = accessToken;
+    event.locals.accessToken = accessToken;
     return resolve(event, opts);
   }
 
@@ -76,7 +77,7 @@ export const handleUserToken: Handle = async ({ event, resolve }) => {
   try {
     const token = await refresh(refreshToken);
     setAuthorizationCookies(event.cookies, token);
-    event.params.accessToken = token.accessToken;
+    event.locals.accessToken = token.accessToken;
   } catch (err) {
     if (err instanceof ApiError && err.status == 401) {
       event.setHeaders({'x-logout': 'true'});
