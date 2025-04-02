@@ -45,12 +45,12 @@ To automatically load the user session, you have to load the user's session as f
 
 ```ts
 // +layout.server.ts
-import type { PageLoad } from './$types';
+import type { LayoutServerLoad } from './$types';
 
 import { loadUserSession } from 'omerlo-webkit/reader/server';
 import { type UserSession } from 'omerlo-webkit/reader';
 
-export const load: PageLoad = async ({ fetch, cookies }) => {
+export const load: LayoutServerLoad = async ({ fetch, cookies }) => {
   const userSession: UserSession = await loadUserSession(fetch, cookies);
 
   return { userSession };
