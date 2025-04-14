@@ -1,5 +1,5 @@
 {
-  "name": "omerlo-webkit",
+  "name": "@omerlo/omerlo-webkit",
   "version": "0.0.1",
   "scripts": {
     "dev": "vite dev",
@@ -63,5 +63,17 @@
     "typescript-eslint": "^8.0.0",
     "vite": "^5.0.11"
   },
-  "dependencies": { }
+  "description": "This webkit is a wapper arround Omerlo's API to create quickly a website using Omerlo.",
+  "main": "eslint.config.js",
+  "directories": { },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Omerlo-Technologies/omerlo-webkit.git"
+  },
+  "author": "Omerlo Technologies",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Omerlo-Technologies/omerlo-webkit/issues"
+  },
+  "homepage": "https://github.com/Omerlo-Technologies/omerlo-webkit#readme"
 }
