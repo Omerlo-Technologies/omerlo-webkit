@@ -12,7 +12,7 @@ over all window's tab, no need to refresh other tabs.
 Install the package `omerlo-webkit`
 
 ```sh
-npm i omerlo-webkit
+npm i @omerlo/omerlo-webkit
 ```
 
 ### Create the .env
