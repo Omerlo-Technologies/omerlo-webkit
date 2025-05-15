@@ -44,7 +44,7 @@ export async function dirtyRequest(
   }
 
   const headers = { 'Content-Type': 'application/json' }
-  const resp = await f(path.toString(), { method: opts?.method, body: JSON.stringify(opts?.body), headers });
+  const resp = await f(path.toString(), { method: opts?.method ?? 'get', body: JSON.stringify(opts?.body), headers });
 
   if (BROWSER && resp.headers.get('x-logout') == 'true') {
     const webkitComponent = document.getElementById('omerlo-webkit');
