@@ -17,15 +17,15 @@ const handleApiProxy: Handle = async ({ event, ...tail }) => {
     accessToken = await getApplicationToken();
   }
 
+  const body = event.request.body;
+  const method = event.request.method;
+  const headers = new Headers();  
+  headers.set('Content-Type', event.request.headers.get('content-type') ?? 'application/json');
+  headers.set('x-omerlo-media-id', env.PRIVATE_OMERLO_MEDIA_ID ?? '');
+  headers.set('Authorization', `Bearer ${accessToken}`);
+
   return await fetch(event.url.toString(), {
-    body: event.request.body,
-    method: event.request.method,
-    // Note: NEVER user all headers from initial request, this may trigger incompatibities such as TLS.
-    headers: {
-      'Authorization': `Bearer ${accessToken}`,
-      'Content-Type': event.request.headers.get('content-type') ?? 'application/json',
-      'x-omerlo-media-id': env.PRIVATE_OMERLO_MEDIA_ID ?? '',
-    },
+    body, headers, method,
     duplex: 'half'
   })
   .then(async (resp) => {
