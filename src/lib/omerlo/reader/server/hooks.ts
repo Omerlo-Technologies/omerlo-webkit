@@ -20,6 +20,7 @@ const handleApiProxy: Handle = async ({ event, ...tail }) => {
   return await fetch(event.url.toString(), {
     body: event.request.body,
     method: event.request.method,
+    // Note: NEVER user all headers from initial request, this may trigger incompatibities such as TLS.
     headers: {
       'Authorization': `Bearer ${accessToken}`,
       'Content-Type': event.request.headers.get('content-type') ?? 'application/json',
