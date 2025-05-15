@@ -24,6 +24,7 @@ type DirtyFetchOptions = {
   queryParams?: ApiData;
   method?: string;
   body?: ApiData;
+  headers?: HeadersInit;
 };
 
 export async function dirtyRequest(
@@ -43,8 +44,12 @@ export async function dirtyRequest(
     path = `${path}?${queryParams}`;
   }
 
-  const headers = { 'Content-Type': 'application/json' }
-  const resp = await f(path.toString(), { method: opts?.method ?? 'get', body: JSON.stringify(opts?.body), headers });
+  
+  const method = opts?.method ?? 'get';
+  const body = JSON.stringify(opts?.body);
+  const headers = { ...(opts?.headers || {}), 'x-omerlo-media-id': env.PRIVATE_OMERLO_MEDIA_ID ?? '' };
+
+  const resp = await f(path.toString(), { method, body, headers });
 
   if (BROWSER && resp.headers.get('x-logout') == 'true') {
     const webkitComponent = document.getElementById('omerlo-webkit');
