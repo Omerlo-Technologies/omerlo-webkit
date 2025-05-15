@@ -26,8 +26,7 @@ export async function request<T>(
   if (!opts.headers) {
     opts.headers = new Headers();
   } 
-  if (!opts.headers.get('Content-Type')) opts.headers.set('Content-Type', 'application/json');
-
+  if (['post', 'put'].includes(method) && !opts.headers.get('Content-Type')) opts.headers.set('Content-Type', 'application/json');
 
   return dirtyRequest(f, path, { body, headers, method, queryParams }).then(async (resp) => {
     return parseApiResponse(resp, parser);
