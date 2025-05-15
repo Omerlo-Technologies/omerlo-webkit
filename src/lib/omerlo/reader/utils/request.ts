@@ -7,6 +7,7 @@ type FetchOptions<T> = {
   queryParams?: ApiData;
   method?: string;
   body?: ApiData;
+  headers?: Headers;
 };
 
 export async function request<T>(
@@ -15,7 +16,20 @@ export async function request<T>(
   opts: FetchOptions<T>
 ): Promise<ApiResponse<T>> {
   const parser = opts.parser || ((data) => data);
-  return dirtyRequest(f, path, opts).then(async (resp) => {
+
+  const body = JSON.stringify(opts.body);
+  const headers = opts.headers;
+  const method = opts.method ?? 'get';
+  const queryParams = opts.queryParams;
+
+  // Enforce JSON content type for posts
+  if (!opts.headers) {
+    opts.headers = new Headers();
+  } 
+  if (!opts.headers.get('Content-Type')) opts.headers.set('Content-Type', 'application/json');
+
+
+  return dirtyRequest(f, path, { body, headers, method, queryParams }).then(async (resp) => {
     return parseApiResponse(resp, parser);
   });
 }
@@ -24,13 +38,13 @@ type DirtyFetchOptions = {
   queryParams?: ApiData;
   method?: string;
   body?: ApiData;
-  headers?: HeadersInit;
+  headers?: Headers;
 };
 
 export async function dirtyRequest(
   f: typeof fetch,
   path: string,
-  opts?: DirtyFetchOptions
+  opts: DirtyFetchOptions
 ): Promise<Response> {
   const queryParams = new URLSearchParams()
 
@@ -44,12 +58,7 @@ export async function dirtyRequest(
     path = `${path}?${queryParams}`;
   }
 
-  
-  const method = opts?.method ?? 'get';
-  const body = JSON.stringify(opts?.body);
-  const headers = { ...(opts?.headers || {}), 'x-omerlo-media-id': env.PRIVATE_OMERLO_MEDIA_ID ?? '' };
-
-  const resp = await f(path.toString(), { method, body, headers });
+  const resp = await f(path.toString(), opts);
 
   if (BROWSER && resp.headers.get('x-logout') == 'true') {
     const webkitComponent = document.getElementById('omerlo-webkit');
