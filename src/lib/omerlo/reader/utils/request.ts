@@ -5,7 +5,7 @@ import { BROWSER } from 'esm-env';
 type FetchOptions<T> = {
   parser?: (data: ApiData, assocs: ApiAssocs) => T;
   queryParams?: ApiData;
-  method?: string;
+  method?: 'get' | 'post' | 'put' | 'delete';
   body?: ApiData;
   headers?: Headers;
 };
@@ -36,7 +36,7 @@ export async function request<T>(
 
 type DirtyFetchOptions = {
   queryParams?: ApiData;
-  method?: string;
+  method?: 'get' | 'post' | 'put' | 'delete';
   body?: ApiData;
   headers?: Headers;
 };
