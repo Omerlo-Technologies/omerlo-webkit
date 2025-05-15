@@ -46,7 +46,7 @@ export function subscribeToTopic(f: typeof fetch) {
   return (params: SubscribtionParams) => {
     const body = { push_token: params.pushToken };
     const opts = { method: 'post', body };
-    return request(f, '/topics/${params.topicId}/subscribe', opts);
+    return request(f, `/topics/${params.topicId}/subscribe`, opts);
   };
 }
 
@@ -54,6 +54,6 @@ export function unsubscribeFromTopic(f: typeof fetch) {
   return (params: SubscribtionParams) => {
     const body = { push_token: params.pushToken };
     const opts = { method: 'post', body };
-    return request(f, '/topics/${params.topicId}/unsubscribe', opts);
+    return request(f, `/topics/${params.topicId}/unsubscribe`, opts);
   };
 }
