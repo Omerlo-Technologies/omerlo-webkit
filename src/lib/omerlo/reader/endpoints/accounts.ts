@@ -20,7 +20,7 @@ export interface ValidateAccountParams {
 export function validateAccount(f: typeof fetch) {
   return (params: ValidateAccountParams) => {
     const queryParams = { email: params.email, callback_url: params.callbackUrl };
-    const opts = { queryParams, method: 'post' };
+    const opts = { queryParams, method: 'post' as const };
     request(f, '/account/validate', opts);
   };
 }

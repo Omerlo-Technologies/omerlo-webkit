@@ -14,7 +14,7 @@ export interface DeviceParams {
 export function registerDevice(f: typeof fetch) {
   return (params: DeviceParams) => {
     const body = { push_token: params.pushToken, name: params.name };
-    const opts = { body, method: 'post' };
+    const opts = { body, method: 'post' as const };
     return request(f, '/devices/register', opts);
   };
 }

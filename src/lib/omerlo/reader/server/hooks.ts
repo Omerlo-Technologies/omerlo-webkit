@@ -7,27 +7,26 @@ import { refresh } from "./token";
 // NOTE: inspired by https://sami.website/blog/sveltekit-api-reverse-proxy
 
 const handleApiProxy: Handle = async ({ event, ...tail }) => {
+  // NOTE: It's important to reset the port BEFORE settings the host because the host could contains the port
+  // Example: localhost:4000
+  event.url.port = '';
   event.url.host = env.PRIVATE_OMERLO_HOST;
   event.url.protocol = env.PRIVATE_OMERLO_PROTOCOL
-  event.url.port = ''; // This to prevent custom posts when working with localhost
 
-  let accessToken = event.locals.accessToken;
-
-  if (!accessToken) {
-    accessToken = await getApplicationToken();
-  }
+  const accessToken = event.locals.accessToken ?? await getApplicationToken();
 
   const body = event.request.body;
   const method = event.request.method;
-  const headers = new Headers();  
-  headers.set('Content-Type', event.request.headers.get('content-type') ?? 'application/json');
-  headers.set('x-omerlo-media-id', env.PRIVATE_OMERLO_MEDIA_ID ?? '');
-  headers.set('Authorization', `Bearer ${accessToken}`);
 
-  return await fetch(event.url.toString(), {
-    body, headers, method,
-    duplex: 'half'
-  })
+  const headers = new Headers({
+    'x-omerlo-media-id': env.PRIVATE_OMERLO_MEDIA_ID,
+    'Authorization': `Bearer ${accessToken}`
+  });
+
+  const contentType = event.request.headers.get('content-type')
+  if (contentType) headers.set('Content-Type', contentType)
+
+  return await fetch(event.url.toString(), { body, headers, method, duplex: 'half' })
   .then(async (resp) => {
     const headers = new Headers();
 
