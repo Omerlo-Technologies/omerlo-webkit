@@ -9,8 +9,7 @@ import { refresh } from "./token";
 const handleApiProxy: Handle = async ({ event, ...tail }) => {
   event.url.host = env.PRIVATE_OMERLO_HOST;
   event.url.protocol = env.PRIVATE_OMERLO_PROTOCOL
-  event.request.headers.delete('cookie');
-  event.request.headers.set('x-omerlo-media-id', env.PRIVATE_OMERLO_MEDIA_ID);
+  event.url.port = ''; // This to prevent custom posts when working with localhost
 
   let accessToken = event.locals.accessToken;
 
@@ -18,12 +17,15 @@ const handleApiProxy: Handle = async ({ event, ...tail }) => {
     accessToken = await getApplicationToken();
   }
 
-  event.request.headers.set('Authorization', `Bearer ${accessToken}`);
+  const body = event.request.body;
+  const method = event.request.method;
+  const headers = new Headers();  
+  headers.set('Content-Type', event.request.headers.get('content-type') ?? 'application/json');
+  headers.set('x-omerlo-media-id', env.PRIVATE_OMERLO_MEDIA_ID ?? '');
+  headers.set('Authorization', `Bearer ${accessToken}`);
 
   return await fetch(event.url.toString(), {
-    body: event.request.body,
-    method: event.request.method,
-    headers: event.request.headers,
+    body, headers, method,
     duplex: 'half'
   })
   .then(async (resp) => {

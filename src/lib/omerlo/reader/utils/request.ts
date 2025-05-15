@@ -5,8 +5,9 @@ import { BROWSER } from 'esm-env';
 type FetchOptions<T> = {
   parser?: (data: ApiData, assocs: ApiAssocs) => T;
   queryParams?: ApiData;
-  method?: string;
+  method?: 'get' | 'post' | 'put' | 'delete';
   body?: ApiData;
+  headers?: Headers;
 };
 
 export async function request<T>(
@@ -15,21 +16,34 @@ export async function request<T>(
   opts: FetchOptions<T>
 ): Promise<ApiResponse<T>> {
   const parser = opts.parser || ((data) => data);
-  return dirtyRequest(f, path, opts).then(async (resp) => {
+
+  const body = JSON.stringify(opts.body);
+  const headers = opts.headers;
+  const method = opts.method ?? 'get';
+  const queryParams = opts.queryParams;
+
+  // Enforce JSON content type for posts
+  if (!opts.headers) {
+    opts.headers = new Headers();
+  } 
+  if (['post', 'put'].includes(method) && !opts.headers.get('Content-Type')) opts.headers.set('Content-Type', 'application/json');
+
+  return dirtyRequest(f, path, { body, headers, method, queryParams }).then(async (resp) => {
     return parseApiResponse(resp, parser);
   });
 }
 
 type DirtyFetchOptions = {
   queryParams?: ApiData;
-  method?: string;
+  method?: 'get' | 'post' | 'put' | 'delete';
   body?: ApiData;
+  headers?: Headers;
 };
 
 export async function dirtyRequest(
   f: typeof fetch,
   path: string,
-  opts?: DirtyFetchOptions
+  opts: DirtyFetchOptions
 ): Promise<Response> {
   const queryParams = new URLSearchParams()
 
@@ -43,8 +57,7 @@ export async function dirtyRequest(
     path = `${path}?${queryParams}`;
   }
 
-  const headers = { 'Content-Type': 'application/json' }
-  const resp = await f(path.toString(), { method: opts.method, body: JSON.stringify(opts.body), headers });
+  const resp = await f(path.toString(), opts);
 
   if (BROWSER && resp.headers.get('x-logout') == 'true') {
     const webkitComponent = document.getElementById('omerlo-webkit');
