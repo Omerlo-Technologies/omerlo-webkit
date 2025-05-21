@@ -50,9 +50,10 @@ const VisualParser: Record<VisualType, (data: ApiData, _assocs: ApiAssocs) => Vi
   video: parseVideo
 };
 
-export function parseVisual(data: ApiData, _assocs: ApiAssocs): Visual | null {
-  const parser = VisualParser[data.type as VisualType];
-  return parser ? parser(data, _assocs) : null;
+export function parseVisual(data: ApiData, assocs: ApiAssocs): Visual | null {
+  const type = data?.type as VisualType;
+  if (!type) return null;
+  return VisualParser[type]?.(data, assocs) ?? null;
 }
 
 export function parseImage(data: ApiData, _assocs: ApiAssocs): Image {
@@ -65,11 +66,11 @@ export function parseImage(data: ApiData, _assocs: ApiAssocs): Image {
     gravity: data.gravity
   };
 }
-export function parseSlideshow(data: ApiData, _assocs: ApiAssocs): Slideshow {
+export function parseSlideshow(data: ApiData, assocs: ApiAssocs): Slideshow {
   return {
     type: 'slideshow',
     images: Array.isArray(data.images)
-      ? data.images.map((imageData: ApiData) => parseImage(imageData, _assocs))
+      ? data.images.map((imageData: ApiData) => parseImage(imageData, assocs))
       : []
   };
 }

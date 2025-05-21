@@ -20,7 +20,7 @@ export function listTopics(f: typeof fetch) {
 export function parseTopicSummary(data: ApiData, _assocs: ApiAssocs): TopicSummary {
   return {
     id: data.id,
-    name: data.localized.name,
+    name: data.name,
     meta: {
       locales: parseLocalesMetadata(data.meta)
     },
