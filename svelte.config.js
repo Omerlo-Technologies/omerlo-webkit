@@ -16,7 +16,7 @@ const config = {
       $omerlo: 'src/lib/omerlo',
       $reader: 'src/lib/omerlo/reader'
     }
-  },
+  }
 };
 
 export default config;

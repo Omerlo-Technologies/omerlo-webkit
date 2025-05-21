@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { OmerloWebkit } from 'omerlo-webkit'
+  import { OmerloWebkit } from 'omerlo-webkit';
   let { data, children } = $props();
 </script>
 

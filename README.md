@@ -24,17 +24,17 @@ Copy the `.env.dist` to `.env` then update its values to match your Omerlo's app
 Create (or update) the file `src/hooks.server.ts` and add required hooks as follow
 
 ```ts
-import type { Handle } from "@sveltejs/kit";
+import type { Handle } from '@sveltejs/kit';
 
 import { handleUserToken, handleReaderApi } from 'omerlo-webkit/reader/server';
-import { sequence } from "@sveltejs/kit/hooks";
+import { sequence } from '@sveltejs/kit/hooks';
 
 // You can add custom hooks too
 const handleLocale: Handle = async ({ event, resolve }) => {
-    const userLocale = 'en'; // you can fetch this value from cookie or w.e
-    event.url.searchParams.append('locale', userLocale);
-    return resolve(event);
-}
+  const userLocale = 'en'; // you can fetch this value from cookie or w.e
+  event.url.searchParams.append('locale', userLocale);
+  return resolve(event);
+};
 
 export const handle = sequence(handleLocale, handleUserToken, handleReaderApi);
 ```
@@ -92,7 +92,7 @@ You'll need to create a login endpoint to add some required params such as the `
 
 ```ts
 // +server.ts
-import { error, redirect, type RequestHandler } from "@sveltejs/kit";
+import { error, redirect, type RequestHandler } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import jwt from 'jsonwebtoken';
 
@@ -104,39 +104,41 @@ export const GET: RequestHandler = ({ url }) => {
   if (!oauthProviderId) error(400, 'Missing oauthProviderId query parameter');
 
   const currentPath = url.searchParams.get('currentPath') || '/';
-  const state = jwt.sign({ currentPath, oauthProviderId }, env.PRIVATE_JWT_SECRET, { expiresIn: '1h' })
+  const state = jwt.sign({ currentPath, oauthProviderId }, env.PRIVATE_JWT_SECRET, {
+    expiresIn: '1h'
+  });
 
   const redirectUrl = new URL(oauthUrl);
   redirectUrl.searchParams.set('state', state);
-  redirectUrl.searchParams.set('redirect_uri', url.origin +'/oauth/callback');
+  redirectUrl.searchParams.set('redirect_uri', url.origin + '/oauth/callback');
 
   redirect(302, redirectUrl);
-}
+};
 ```
 
 And then create a callback action.
 
 ```ts
-import { error, redirect, type RequestHandler } from "@sveltejs/kit";
+import { error, redirect, type RequestHandler } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import jwt from 'jsonwebtoken';
-import { exchangeAuthorizationCode, setAuthorizationCookies } from "omerlo-webkit/reader/server";
+import { exchangeAuthorizationCode, setAuthorizationCookies } from 'omerlo-webkit/reader/server';
 
 export const GET: RequestHandler = async ({ url, cookies }) => {
   const redirectUri = url.origin + url.pathname;
   const state = getRequiredQueryParams(url, 'state');
   const code = getRequiredQueryParams(url, 'code');
-  const {oauthProviderId, currentPath} = parseJwt(state);
+  const { oauthProviderId, currentPath } = parseJwt(state);
 
   try {
-    const token = await exchangeAuthorizationCode({code, redirectUri, oauthProviderId})
+    const token = await exchangeAuthorizationCode({ code, redirectUri, oauthProviderId });
     setAuthorizationCookies(cookies, token);
-  } catch(_err) {
-    error(401, "Could not authenticate from the provider");
+  } catch (_err) {
+    error(401, 'Could not authenticate from the provider');
   }
 
   redirect(303, currentPath);
-}
+};
 
 function getRequiredQueryParams(url: URL, paramsName: string): string {
   const value = url.searchParams.get(paramsName);
@@ -149,14 +151,14 @@ function getRequiredQueryParams(url: URL, paramsName: string): string {
 }
 
 interface State {
-  oauthProviderId: string,
-  currentPath: string
+  oauthProviderId: string;
+  currentPath: string;
 }
 
 function parseJwt(state: string): State {
   try {
     return jwt.verify(state, env.PRIVATE_JWT_SECRET) as State;
-  } catch(_err) {
+  } catch (_err) {
     error(400, 'Invalid state');
   }
 }
@@ -168,13 +170,13 @@ To logout your user you can create an endpoint that will drop cookies used for a
 
 ```ts
 // +server.ts
-import { json, type RequestHandler } from "@sveltejs/kit";
+import { json, type RequestHandler } from '@sveltejs/kit';
 import { clearAuthorizationCookies } from 'omerlo-webkit/reader/server';
 
 export const DELETE: RequestHandler = ({ cookies }) => {
   clearAuthorizationCookies(cookies);
   return json(201);
-}
+};
 ```
 
 When a user is logout for any reason (401 or manually logout), the `invalidate('omerlo:user_session)` is triggered,

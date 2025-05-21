@@ -65,7 +65,7 @@
   },
   "description": "This webkit is a wapper arround Omerlo's API to create quickly a website using Omerlo.",
   "main": "eslint.config.js",
-  "directories": { },
+  "directories": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Omerlo-Technologies/omerlo-webkit.git"

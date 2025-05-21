@@ -1,7 +1,7 @@
-import type { LocalesMetadata } from "$reader/utils/response";
-import type { Category } from "./categories";
-import type { ContentBlockTemplate, ContentTemplate } from "./content-templates";
-import type { Visual } from "./visuals";
+import type { LocalesMetadata } from '$reader/utils/response';
+import type { Category } from './categories';
+import type { ContentBlockTemplate, ContentTemplate } from './content-templates';
+import type { Visual } from './visuals';
 
 export interface ContentSummary {
   id: string;
@@ -9,14 +9,14 @@ export interface ContentSummary {
   metadata: Record<string, string>;
   canonicalDomain: string;
   canonicalUrl: string;
-  isArchived: boolean,
-  publishedAt?: Date,
+  isArchived: boolean;
+  publishedAt?: Date;
   visibility?: string;
   categories: Category[];
   show_published_at: boolean;
   updatedAt: Date;
   meta: {
-    locales: LocalesMetadata
+    locales: LocalesMetadata;
   };
   titleHtml: string;
   titleText: string;
@@ -24,8 +24,8 @@ export interface ContentSummary {
   leadText: string;
   subtitleHtml: string;
   subtitleText: string;
-  visual: Visual
-  seo: ContentSeo
+  visual: Visual;
+  seo: ContentSeo;
   // TODO authors
 }
 
@@ -35,7 +35,7 @@ export interface ContentSeo {
 }
 
 export interface Content extends ContentSummary {
-  blocks: ContentBlock[]
+  blocks: ContentBlock[];
 }
 
 export type ContentBlock = ContentBlockRichtext | ContentBlockData;
@@ -45,8 +45,8 @@ export type ContentBlockRichtext = {
   template: ContentBlockTemplate;
   visual?: Visual;
   kind: 'richtext';
-  contentHtml: string
-}
+  contentHtml: string;
+};
 
 export type ContentBlockData = {
   id: string;
@@ -55,6 +55,6 @@ export type ContentBlockData = {
   kind: 'data';
   contentType: string;
   data: unknown;
-}
+};
 
 // TODO others content's blocks

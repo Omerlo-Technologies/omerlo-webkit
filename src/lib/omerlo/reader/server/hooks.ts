@@ -1,8 +1,15 @@
-import { error, type Handle, type ResolveOptions } from "@sveltejs/kit";
+import { error, type Handle, type ResolveOptions } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
-import { ApiError } from "../utils/api";
-import { clearAuthorizationCookies, clearAuthorizationUsingHeader, getAccessTokenFromCookie, getApplicationToken, getRefreshTokenFromCookie, setAuthorizationCookies } from "./utils";
-import { refresh } from "./token";
+import { ApiError } from '../utils/api';
+import {
+  clearAuthorizationCookies,
+  clearAuthorizationUsingHeader,
+  getAccessTokenFromCookie,
+  getApplicationToken,
+  getRefreshTokenFromCookie,
+  setAuthorizationCookies
+} from './utils';
+import { refresh } from './token';
 
 // NOTE: inspired by https://sami.website/blog/sveltekit-api-reverse-proxy
 
@@ -11,43 +18,43 @@ const handleApiProxy: Handle = async ({ event, ...tail }) => {
   // Example: localhost:4000
   event.url.port = '';
   event.url.host = env.PRIVATE_OMERLO_HOST;
-  event.url.protocol = env.PRIVATE_OMERLO_PROTOCOL
+  event.url.protocol = env.PRIVATE_OMERLO_PROTOCOL;
 
-  const accessToken = event.locals.accessToken ?? await getApplicationToken();
+  const accessToken = event.locals.accessToken ?? (await getApplicationToken());
 
   const body = event.request.body;
   const method = event.request.method;
 
   const headers = new Headers({
     'x-omerlo-media-id': env.PRIVATE_OMERLO_MEDIA_ID,
-    'Authorization': `Bearer ${accessToken}`
+    Authorization: `Bearer ${accessToken}`
   });
 
-  const contentType = event.request.headers.get('content-type')
-  if (contentType) headers.set('Content-Type', contentType)
+  const contentType = event.request.headers.get('content-type');
+  if (contentType) headers.set('Content-Type', contentType);
 
   return await fetch(event.url.toString(), { body, headers, method, duplex: 'half' })
-  .then(async (resp) => {
-    const headers = new Headers();
+    .then(async (resp) => {
+      const headers = new Headers();
 
-    if (resp.status === 401 && event.locals.accessToken) {
-      clearAuthorizationUsingHeader(headers);
-      event.locals.accessToken = undefined;
-      resp = await handleApiProxy({ event, ...tail })
-    }
+      if (resp.status === 401 && event.locals.accessToken) {
+        clearAuthorizationUsingHeader(headers);
+        event.locals.accessToken = undefined;
+        resp = await handleApiProxy({ event, ...tail });
+      }
 
-    const responseOpts = {
-      headers: headers,
-      status: resp.status,
-      statusText: resp.statusText,
-    };
+      const responseOpts = {
+        headers: headers,
+        status: resp.status,
+        statusText: resp.statusText
+      };
 
-    return new Response(resp.body, responseOpts)
-  })
-  .catch((err) => {
-    console.log("Could not proxy API request: ", err);
-    error(500, 'Something went wrong');
-  });
+      return new Response(resp.body, responseOpts);
+    })
+    .catch((err) => {
+      console.log('Could not proxy API request: ', err);
+      error(500, 'Something went wrong');
+    });
 };
 
 export const proxyHook: Handle = async ({ event, resolve }) => {
@@ -58,19 +65,22 @@ export const proxyHook: Handle = async ({ event, resolve }) => {
   // TODO remove once every API will be done in Reader
   if (event.url.pathname.startsWith('/api/publisher')) {
     const mediaId = env.PRIVATE_OMERLO_MEDIA_ID;
-    event.url.pathname = event.url.pathname.replace('/api/publisher/', `/api/public/publisher/v2/medias/${mediaId}/`);
+    event.url.pathname = event.url.pathname.replace(
+      '/api/publisher/',
+      `/api/public/publisher/v2/medias/${mediaId}/`
+    );
     return handleApiProxy({ event, resolve });
   }
 
   return resolve(event);
-}
+};
 
 export const handleUserToken: Handle = async ({ event, resolve }) => {
   const accessToken = getAccessTokenFromCookie(event.cookies);
   const refreshToken = getRefreshTokenFromCookie(event.cookies);
 
   const opts: ResolveOptions = {
-    filterSerializedResponseHeaders: (name) => name == 'x-logout',
+    filterSerializedResponseHeaders: (name) => name == 'x-logout'
   };
 
   if (accessToken) {
@@ -88,10 +98,10 @@ export const handleUserToken: Handle = async ({ event, resolve }) => {
     event.locals.accessToken = token.accessToken;
   } catch (err) {
     if (err instanceof ApiError && err.status == 401) {
-      event.setHeaders({'x-logout': 'true'});
+      event.setHeaders({ 'x-logout': 'true' });
       clearAuthorizationCookies(event.cookies);
     }
   }
 
   return resolve(event);
-}
+};
