@@ -2,13 +2,13 @@ import { request } from '$reader/utils/request';
 
 export const deviceFetchers = (f: typeof fetch) => {
   return {
-    registerDevice: registerDevice(f),
+    registerDevice: registerDevice(f)
   };
 };
 
 export interface DeviceParams {
-  pushToken: string,
-  name: string,
+  pushToken: string;
+  name: string;
 }
 
 export function registerDevice(f: typeof fetch) {

@@ -2,4 +2,3 @@
 export { default as OmerloWebkit } from './components/OmerloWebkit.svelte';
 
 export * from '$omerlo/index';
-

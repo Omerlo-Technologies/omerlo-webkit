@@ -15,7 +15,7 @@ function parseRequestOpts<T>(params: Partial<FetchOptions<T>>): FetchOptions<T> 
   }
 
   if (!headers.has('Content-Type') && ['post', 'put', 'patch'].includes(method)) {
-    headers.set('Content-Type', 'application/json')
+    headers.set('Content-Type', 'application/json');
   }
 
   return {
@@ -23,8 +23,8 @@ function parseRequestOpts<T>(params: Partial<FetchOptions<T>>): FetchOptions<T> 
     body: JSON.stringify(params.body),
     method: params.method ?? 'get',
     headers: headers,
-    parser: (data: ApiData) => data,
-  }
+    parser: params.parser || ((data: ApiData) => data)
+  };
 }
 
 export async function request<T>(
@@ -51,7 +51,7 @@ export async function dirtyRequest(
   path: string,
   opts: DirtyFetchOptions
 ): Promise<Response> {
-  const queryParams = new URLSearchParams()
+  const queryParams = new URLSearchParams();
 
   path = `/api/media/v1${path}`;
 
@@ -77,9 +77,9 @@ export async function dirtyRequest(
 }
 
 /**
-  * NOTE: This is for OLD api and will be removed once every API will
-  * be developped in Reader.
-  */
+ * NOTE: This is for OLD api and will be removed once every API will
+ * be developped in Reader.
+ */
 
 export async function requestPublisher<T>(
   f: typeof fetch,
@@ -87,10 +87,11 @@ export async function requestPublisher<T>(
   opts: Partial<FetchOptions<T>>
 ): Promise<ApiResponse<T>> {
   const { body, headers, method, queryParams, parser } = parseRequestOpts(opts);
-
-  return dirtyRequestPublisher(f, path, { body, headers, method, queryParams }).then(async (resp) => {
-    return parseApiResponse(resp, parser);
-  });
+  return dirtyRequestPublisher(f, path, { body, headers, method, queryParams }).then(
+    async (resp) => {
+      return parseApiResponse(resp, parser);
+    }
+  );
 }
 
 export async function dirtyRequestPublisher(
@@ -98,7 +99,7 @@ export async function dirtyRequestPublisher(
   path: string,
   opts: DirtyFetchOptions
 ): Promise<Response> {
-  const queryParams = new URLSearchParams()
+  const queryParams = new URLSearchParams();
 
   path = `/api/publisher/${path}`;
 
@@ -112,4 +113,3 @@ export async function dirtyRequestPublisher(
 
   return f(path.toString(), opts);
 }
-

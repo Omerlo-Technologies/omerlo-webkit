@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { initUserSession, type UserSession } from "$omerlo/reader/stores/user_session";
-  import { onDestroy, onMount } from "svelte";
+  import { initUserSession, type UserSession } from '$omerlo/reader/stores/user_session';
+  import { onDestroy, onMount } from 'svelte';
 
   export let userSession: UserSession;
   let selfComponent: HTMLDivElement;
@@ -23,4 +23,3 @@
 <div id="omerlo-webkit" bind:this={selfComponent}>
   <slot></slot>
 </div>
-

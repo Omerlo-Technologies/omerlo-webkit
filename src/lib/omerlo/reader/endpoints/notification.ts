@@ -6,7 +6,7 @@ export const notificationFetchers = (f: typeof fetch) => {
   return {
     listTopics: listTopics(f),
     subscribeToTopic: subscribeToTopic(f),
-    unsubscribeFromTopic: unsubscribeFromTopic(f),
+    unsubscribeFromTopic: unsubscribeFromTopic(f)
   };
 };
 
@@ -29,12 +29,12 @@ export function parseTopicSummary(data: ApiData, _assocs: ApiAssocs): TopicSumma
 }
 
 export interface TopicSummary {
-  id: string,
-  name: string,
+  id: string;
+  name: string;
   meta: {
-    locales: LocalesMetadata
-  },
-  updatedAt: Date
+    locales: LocalesMetadata;
+  };
+  updatedAt: Date;
 }
 
 export interface SubscriptionParams {

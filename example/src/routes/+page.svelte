@@ -26,25 +26,21 @@
 {/if}
 
 {#if $userSession.verified}
-  <button type="button" onclick={userSession.refresh}>
-    Refresh my informations
-  </button>
+  <button type="button" onclick={userSession.refresh}> Refresh my informations </button>
 {/if}
 
 {#if !$userSession.authenticated}
   {#each data.oauthProviders.data as oauthProvider}
-  <div>
-    <a href={getCallbackUrl(oauthProvider)}>
-      Sign in with {oauthProvider.type}
-    </a>
-  </div>
+    <div>
+      <a href={getCallbackUrl(oauthProvider)}>
+        Sign in with {oauthProvider.type}
+      </a>
+    </div>
   {/each}
 {/if}
 
 {#if $userSession.authenticated}
   <div>
-    <button type="button" onclick={logout}>
-      Logout
-    </button>
+    <button type="button" onclick={logout}> Logout </button>
   </div>
 {/if}

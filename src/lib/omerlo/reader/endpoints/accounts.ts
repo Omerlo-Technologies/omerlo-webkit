@@ -46,12 +46,12 @@ export function getUserInfo(f: typeof fetch) {
   return async () => {
     const opts = { parser: parseUserInfo };
     return request(f, '/account/me', opts);
-  }
+  };
 }
 
 export interface UserInfo {
-  name: string,
-  email: string,
+  name: string;
+  email: string;
 }
 
 function parseUserInfo(data: ApiData, _assoc: ApiAssocs): UserInfo {

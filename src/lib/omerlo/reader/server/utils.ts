@@ -1,7 +1,7 @@
-import type { UserSession } from "../stores/user_session";
-import { useReader } from "$omerlo";
+import type { UserSession } from '../stores/user_session';
+import { useReader } from '$omerlo';
 import type { Cookies } from '@sveltejs/kit';
-import { getAnonymousToken, refresh, type OmerloToken } from "./token";
+import { getAnonymousToken, refresh, type OmerloToken } from './token';
 
 export async function loadUserSession(f: typeof fetch, cookies: Cookies) {
   const userSession: UserSession = { verified: false, authenticated: false, user: null };
@@ -10,10 +10,12 @@ export async function loadUserSession(f: typeof fetch, cookies: Cookies) {
     userSession.authenticated = true;
 
     try {
-      const userInfo = await useReader(f).userInfo().then((resp) => resp.data);
+      const userInfo = await useReader(f)
+        .userInfo()
+        .then((resp) => resp.data);
       userSession.verified = true;
       userSession.user = userInfo;
-    } catch(_e) {
+    } catch (_e) {
       userSession.verified = false;
     }
   }
@@ -30,7 +32,11 @@ const refreshTokenCookieName = 'refresh_token';
 
 export function setAuthorizationCookies(cookies: Cookies, token: OmerloToken) {
   cookies.set('logged_in', 'true', { path: '/', httpOnly: false });
-  cookies.set(accessTokenCookieName, token.accessToken, { httpOnly: true, path: '/', maxAge: token.expiresIn - 60 });
+  cookies.set(accessTokenCookieName, token.accessToken, {
+    httpOnly: true,
+    path: '/',
+    maxAge: token.expiresIn - 60
+  });
   cookies.set(refreshTokenCookieName, token.refreshToken, { httpOnly: true, path: '/' });
 }
 
@@ -41,8 +47,14 @@ export function clearAuthorizationCookies(cookies: Cookies) {
 }
 
 export function clearAuthorizationUsingHeader(headers: Headers) {
-  headers.append('Set-Cookie', `${accessTokenCookieName}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`);
-  headers.append('Set-Cookie', `${refreshTokenCookieName}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`);
+  headers.append(
+    'Set-Cookie',
+    `${accessTokenCookieName}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`
+  );
+  headers.append(
+    'Set-Cookie',
+    `${refreshTokenCookieName}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`
+  );
   headers.append('Set-Cookie', `logged_in=; Path=/; Secure; SameSite=Lax; Max-Age=0`);
   headers.append('x-logout', `true`);
 }
@@ -56,22 +68,22 @@ export function getRefreshTokenFromCookie(cookies: Cookies): string | null {
 }
 
 interface ApplicationToken {
-  accessToken: string,
-  refreshToken: string,
-  expiredAt: number,
-  init: boolean,
+  accessToken: string;
+  refreshToken: string;
+  expiredAt: number;
+  init: boolean;
 }
 
 const applicationToken: ApplicationToken = {
   accessToken: '',
   refreshToken: '',
   expiredAt: 0,
-  init: false,
-}
+  init: false
+};
 
 /**
-  * Get the token used by the application.
-  */
+ * Get the token used by the application.
+ */
 export async function getApplicationToken(): Promise<string> {
   if (!applicationToken.init) {
     await newApplicationToken();

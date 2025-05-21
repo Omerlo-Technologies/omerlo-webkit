@@ -4,7 +4,7 @@ import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from '$rea
 export const oauthFetchers = (f: typeof fetch) => {
   return {
     listOauthProviders: listOauthProviders(f),
-    getOauthUser: getOauthUser(f),
+    getOauthUser: getOauthUser(f)
   };
 };
 
@@ -27,12 +27,12 @@ export function parseOauthProviderSummary(data: ApiData, _assocs: ApiAssocs): Oa
 }
 
 export interface OauthProviderSummary {
-    id: string,
-    clientId: string,
-    type: string,
-    authenticateUrl: string,
-    insertedAt: Date,
-    updatedAt: Date
+  id: string;
+  clientId: string;
+  type: string;
+  authenticateUrl: string;
+  insertedAt: Date;
+  updatedAt: Date;
 }
 
 export function getOauthUser(f: typeof fetch) {
@@ -48,12 +48,12 @@ export function parseOauthUser(data: ApiData, _assoc: ApiAssocs): OauthUser {
     name: data.name,
     email: data.email,
     verifiedAt: data.verified_at
-  }
+  };
 }
 
 export interface OauthUser {
-  id: string,
-  name: string,
-  email: string,
-  verifiedAt: Date | null
+  id: string;
+  name: string;
+  email: string;
+  verifiedAt: Date | null;
 }

@@ -10,6 +10,6 @@ export const fetchers = (f: typeof fetch) => {
     ...deviceFetchers(f),
     ...oauthFetchers(f),
     ...categoriesFetchers(f),
-    notifications: notificationFetchers(f),
+    notifications: notificationFetchers(f)
   };
 };

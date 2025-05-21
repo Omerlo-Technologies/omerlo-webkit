@@ -1,9 +1,9 @@
-import { getContext, setContext } from "svelte";
-import type { UserInfo } from "../endpoints/accounts";
-import { writable, type Readable } from "svelte/store";
-import { browser } from "$app/environment";
-import { useReader } from "$omerlo";
-import { invalidate } from "$app/navigation";
+import { getContext, setContext } from 'svelte';
+import type { UserInfo } from '../endpoints/accounts';
+import { writable, type Readable } from 'svelte/store';
+import { browser } from '$app/environment';
+import { useReader } from '$omerlo';
+import { invalidate } from '$app/navigation';
 
 export interface UserSession {
   user: UserInfo | null;
@@ -14,8 +14,8 @@ export interface UserSession {
 const anonymousUserSession: UserSession = {
   user: null,
   verified: false,
-  authenticated: false,
-}
+  authenticated: false
+};
 
 export function initUserSession(session: UserSession): ReadableUserSession {
   const { subscribe, update, set } = writable<UserSession>(session);
@@ -39,7 +39,7 @@ export function initUserSession(session: UserSession): ReadableUserSession {
     subscribe,
     handleLogout: () => {
       if (!browser) {
-        throw new Error("MUST NOT call refresh on user session from server side.");
+        throw new Error('MUST NOT call refresh on user session from server side.');
       }
 
       invalidate('omerlo:user_session');
@@ -48,10 +48,12 @@ export function initUserSession(session: UserSession): ReadableUserSession {
     },
     refresh: async () => {
       if (!browser) {
-        throw new Error("MUST NOT call refresh on user session from server side.");
+        throw new Error('MUST NOT call refresh on user session from server side.');
       }
 
-      const userInfo = await useReader(fetch).userInfo().then((resp) => resp.data);
+      const userInfo = await useReader(fetch)
+        .userInfo()
+        .then((resp) => resp.data);
       update(updateUserInfo(userInfo, true));
     }
   };
@@ -67,8 +69,8 @@ const updateUserInfo = (userInfo: UserInfo | null, authenticated: boolean) => {
     session.authenticated = authenticated;
     localStorage.setItem('user_session', JSON.stringify(session));
     return session;
-  }
-}
+  };
+};
 
 interface ReadableUserSession extends Readable<UserSession> {
   refresh: () => void;

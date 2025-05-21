@@ -1,4 +1,4 @@
-import type { LocalesMetadata } from "$reader/utils/response";
+import type { LocalesMetadata } from '$reader/utils/response';
 
 export interface ContentTemplate {
   id: string;
