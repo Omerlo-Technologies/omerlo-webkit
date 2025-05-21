@@ -55,6 +55,13 @@ export const proxyHook: Handle = async ({ event, resolve }) => {
     return await handleApiProxy({ event, resolve });
   }
 
+  // TODO remove once every API will be done in Reader
+  if (event.url.pathname.startsWith('/api/publisher')) {
+    const mediaId = env.PRIVATE_OMERLO_MEDIA_ID;
+    event.url.pathname = event.url.pathname.replace('/api/publisher/', `/api/public/publisher/v2/medias/${mediaId}/`);
+    return handleApiProxy({ event, resolve });
+  }
+
   return resolve(event);
 }
 

@@ -1,6 +1,6 @@
 import { request } from '$reader/utils/request';
 import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from '$reader/utils/api';
-import { parseLocalesMetadata, type LocalesMetadata } from '../utils/response';
+import { parseLocalesMetadata, type LocalesMetadata } from '$reader/utils/response';
 
 export const notificationFetchers = (f: typeof fetch) => {
   return {
@@ -37,13 +37,13 @@ export interface TopicSummary {
   updatedAt: Date
 }
 
-export interface SubscribtionParams {
+export interface SubscriptionParams {
   topicId: string;
   pushToken: string;
 }
 
 export function subscribeToTopic(f: typeof fetch) {
-  return (params: SubscribtionParams) => {
+  return (params: SubscriptionParams) => {
     const body = { push_token: params.pushToken };
     const headers = new Headers({ 'Content-Type': 'application/json' });
     const opts = { body, headers, method: 'post' as const };
@@ -52,7 +52,7 @@ export function subscribeToTopic(f: typeof fetch) {
 }
 
 export function unsubscribeFromTopic(f: typeof fetch) {
-  return (params: SubscribtionParams) => {
+  return (params: SubscriptionParams) => {
     const body = { push_token: params.pushToken };
     const headers = new Headers({ 'Content-Type': 'application/json' });
     const opts = { body, headers, method: 'post' as const };
