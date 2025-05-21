@@ -2,31 +2,37 @@ import { parseApiResponse } from '$reader/utils/api';
 import type { ApiAssocs, ApiData, ApiResponse } from '$reader/utils/api';
 import { BROWSER } from 'esm-env';
 
-type FetchOptions<T> = {
-  parser?: (data: ApiData, assocs: ApiAssocs) => T;
-  queryParams?: ApiData;
-  method?: 'get' | 'post' | 'put' | 'delete';
-  body?: ApiData;
-  headers?: Headers;
+type FetchOptions<T> = Required<DirtyFetchOptions> & {
+  parser: (data: ApiData, assocs: ApiAssocs) => T;
 };
+
+function parseRequestOpts<T>(params: Partial<FetchOptions<T>>): FetchOptions<T> {
+  const headers: Headers = params.headers ?? new Headers();
+  const method: string = params.method ?? 'get';
+
+  if (!headers.has('Accept')) {
+    headers.set('Accept', 'application/json');
+  }
+
+  if (!headers.has('Content-Type') && ['post', 'put', 'patch'].includes(method)) {
+    headers.set('Content-Type', 'application/json')
+  }
+
+  return {
+    queryParams: params.queryParams,
+    body: JSON.stringify(params.body),
+    method: params.method ?? 'get',
+    headers: headers,
+    parser: (data: ApiData) => data,
+  }
+}
 
 export async function request<T>(
   f: typeof fetch,
   path: string,
-  opts: FetchOptions<T>
+  opts: Partial<FetchOptions<T>>
 ): Promise<ApiResponse<T>> {
-  const parser = opts.parser || ((data) => data);
-
-  const body = JSON.stringify(opts.body);
-  const headers = opts.headers;
-  const method = opts.method ?? 'get';
-  const queryParams = opts.queryParams;
-
-  // Enforce JSON content type for posts
-  if (!opts.headers) {
-    opts.headers = new Headers();
-  } 
-  if (['post', 'put'].includes(method) && !opts.headers.get('Content-Type')) opts.headers.set('Content-Type', 'application/json');
+  const { body, headers, method, queryParams, parser } = parseRequestOpts(opts);
 
   return dirtyRequest(f, path, { body, headers, method, queryParams }).then(async (resp) => {
     return parseApiResponse(resp, parser);
@@ -35,7 +41,7 @@ export async function request<T>(
 
 type DirtyFetchOptions = {
   queryParams?: ApiData;
-  method?: 'get' | 'post' | 'put' | 'delete';
+  method?: 'get' | 'post' | 'patch' | 'put' | 'delete';
   body?: ApiData;
   headers?: Headers;
 };
