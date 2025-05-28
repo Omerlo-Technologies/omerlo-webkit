@@ -35,6 +35,12 @@ export function parseAssocs(apiAssocs: ApiAssocs) {
 
     for (const assocId in assocs) {
       const assoc = assocs[assocId];
+
+      if (!assocsParsers[assocName]) {
+        console.error(`No assoc parser found for ${assocName}`);
+        continue;
+      }
+
       assocs[assocId] = assocsParsers[assocName](assoc, apiAssocs);
     }
   }
