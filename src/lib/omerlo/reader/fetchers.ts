@@ -7,6 +7,7 @@ import { personFetchers } from './endpoints/person';
 import { projectFetchers } from './endpoints/projects';
 import { eventFetchers } from './endpoints/events';
 import { contentsFetchers } from './endpoints/contents';
+import { organizationFetchers } from './endpoints/organizations';
 
 export const fetchers = (f: typeof fetch) => {
   return {
@@ -18,6 +19,7 @@ export const fetchers = (f: typeof fetch) => {
     ...projectFetchers(f),
     ...eventFetchers(f),
     ...contentsFetchers(f),
+    ...organizationFetchers(f),
     notifications: notificationFetchers(f)
   };
 };
