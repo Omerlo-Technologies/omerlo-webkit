@@ -4,6 +4,7 @@ import { deviceFetchers } from './endpoints/device';
 import { notificationFetchers } from './endpoints/notification';
 import { oauthFetchers } from './endpoints/oauth';
 import { projectFetchers } from './endpoints/projects';
+import { eventFetchers } from './endpoints/events';
 
 export const fetchers = (f: typeof fetch) => {
   return {
@@ -12,6 +13,7 @@ export const fetchers = (f: typeof fetch) => {
     ...oauthFetchers(f),
     ...categoriesFetchers(f),
     ...projectFetchers(f),
+    ...eventFetchers(f),
     notifications: notificationFetchers(f)
   };
 };
