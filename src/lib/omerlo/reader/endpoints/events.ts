@@ -2,8 +2,9 @@ import type { Category } from './categories';
 import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from '$reader/utils/api';
 import { requestPublisher } from '$reader/utils/request';
 import type { LocalesMetadata } from '$reader/utils/response';
-import { getAssocs } from '../utils/assocs';
+import { getAssoc, getAssocs } from '../utils/assocs';
 import { parseProfileAddress, type ProfileAddress } from './profiles';
+import type { ProfileType } from './profileType';
 
 export const eventFetchers = (f: typeof fetch) => {
   return {
@@ -14,7 +15,7 @@ export const eventFetchers = (f: typeof fetch) => {
 
 export interface EventSummary {
   id: string;
-  // profileType: string;
+  profileType: ProfileType;
   kind: string;
   type: string;
   isAllDay: boolean;
@@ -39,9 +40,10 @@ export interface Event extends EventSummary {
   description: unknown;
 }
 
-export function parseEventSummary(data: ApiData, _assocs: ApiAssocs): EventSummary {
+export function parseEventSummary(data: ApiData, assocs: ApiAssocs): EventSummary {
   return {
     id: data.id,
+    profileType: getAssoc<ProfileType>(assocs, 'profile_types', data.profile_type_id),
     kind: 'event',
     type: data.type,
     isAllDay: data.is_all_day,
