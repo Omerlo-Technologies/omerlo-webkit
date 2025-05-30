@@ -1,70 +1,56 @@
 import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from "$reader/utils/api";
-import { getAssoc, getAssocs } from "../utils/assocs"
 import { requestPublisher } from "../utils/request";
-// import type { Profiles } from "/profiles";
 
 export const mediaBlockFetchers = (f: typeof fetch) => {
   const getBlock = getMediaBlock(f);
   return {
     getMediaBlock: getBlock,
     listMediaBlocks: listMediaBlocks(f),
-    getPersonBlock: (id: string) => getBlock('people', id),
-    getEventBlock: (id: string) => getBlock('events', id),
-    getProjectBlock: (id: string) => getBlock('projects', id),
-    getOrganizationBlock: (id: string) => getBlock('organizations', id),
   }
 }
 export type MediaType = 'people' | 'events' | 'projects' | 'organizations';
 
-export type RelationKind = 'event' | 'person' | 'project' | 'organization';
-export type BlockKind = 'selected_content' | RelationKind;
-
 export type MediaBlockBase = {
   id: string;
-  kind: BlockKind;
+  kind: string;
   profileTypeId: string;
   blockTypeID: string;
   localized: {
     locale: string;
     name: string;
   }
-  updatedAt: Date;
-  layout: string | null;
+  updatedAt: string;
+  layout: string;
 };
 
-export interface MediaBlockContent extends MediaBlockBase {
-  kind: 'selected_content';
-  contentId: string[];
+export interface MediaBlockContents extends MediaBlockBase {
+  contentIds: [];
+  // contentIds: Content[];
 }
 
 export interface MediaBlockRelations extends MediaBlockBase {
-  kind: RelationKind;
-  // layout?: Profiles[];
-  profileIDs: string[] | null;
-  // profileIDs: Profiles[] | null;
+  profileIDs: [];
+  // profileIDs: Profile[];
 }
 
-export type MediaBlock = MediaBlockContent | MediaBlockRelations;
+export type MediaBlock = MediaBlockContents | MediaBlockRelations;
 
-// Helper function to determine if a kind is a relation type
-const isRelationKind = (kind: string): kind is RelationKind => 
-  ['event', 'person', 'project', 'organization'].includes(kind);
+const relationKinds = ['event', 'person', 'project', 'organization'];
 
 export function parseMediaBlock(data: ApiData, assocs: ApiAssocs): MediaBlock {
   
   if (data.kind === 'selected_content') {
     return {
       ...parseMediaBlockBase(data, assocs),
-      kind: 'selected_content',
-      contentId: data.content_id
+      contentIds: [],
+      // contentIds: getAssocs(assocs, 'contents', data.content_ids),
     };
   }
   
-  if (isRelationKind(data.kind)) {
+  if (relationKinds.includes(data.kind)) {
     return {
       ...parseMediaBlockBase(data, assocs),
-      kind: data.kind,
-      profileIDs: null,
+      profileIDs: [],
       // profileIDs: getAssocs(assocs, 'profiles', data.profile_ids),
     };
   }
@@ -72,18 +58,18 @@ export function parseMediaBlock(data: ApiData, assocs: ApiAssocs): MediaBlock {
   throw new Error(`Unknown media block kind: ${data.kind}`);
 }
 
-function parseMediaBlockBase(data: ApiData, assocs: ApiAssocs): Omit<MediaBlockBase, 'kind'> {
+function parseMediaBlockBase(data: ApiData, assocs: ApiAssocs): MediaBlockBase {
   return {
     id: data.id,
     profileTypeId: data.profile_type_id,
-    layout: null,
-    // layout: getAssoc(data, 'profiles', data.layout),
+    layout: data.layout,
+    kind: data.kind,
     blockTypeID: data.block_type_id,
     localized: {
       locale: data.localized.locale,
       name: data.localized.name,
     },
-    updatedAt: new Date(data.updated_at),
+    updatedAt: data.updated_at,
   };
 }
 
