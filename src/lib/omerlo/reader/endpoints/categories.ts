@@ -14,7 +14,7 @@ export interface Category {
   svg: string;
   name: string;
   meta: {
-    locale: LocalesMetadata;
+    locales: LocalesMetadata;
   };
   updatedAt: Date;
 }
@@ -41,7 +41,7 @@ export function parseCategory(data: ApiData, _assoc: ApiAssocs): Category {
     name: data.localized.name,
     updatedAt: data.updated_at,
     meta: {
-      locale: {
+      locales: {
         available: [data.localized.locale],
         current: data.localized.locale
       }

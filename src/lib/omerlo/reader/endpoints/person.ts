@@ -26,7 +26,7 @@ export interface PersonSummary {
   updatedAt: string;
 }
 
-export function parsePersonSummary(data: ApiData, assocs: ApiAssocs): PersonSummary {
+export function parsePersonSummary(data: ApiData, _assocs: ApiAssocs): PersonSummary {
   return {
     id: data.id,
     profileTypeID: data.profile_type_id,

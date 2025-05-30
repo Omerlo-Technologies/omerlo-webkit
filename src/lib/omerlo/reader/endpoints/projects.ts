@@ -23,7 +23,7 @@ export interface ProjectSummary {
   updatedAt: string;
 }
 
-export function parseProjectSummary(data: ApiData, assocs: ApiAssocs): ProjectSummary {
+export function parseProjectSummary(data: ApiData, _assocs: ApiAssocs): ProjectSummary {
   return {
     id: data.id,
     profileTypeId: data.profile_type_id,

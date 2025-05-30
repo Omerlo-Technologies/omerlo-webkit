@@ -2,7 +2,10 @@ import type { ApiAssocs } from './api';
 
 const assocsParsers: Record<string, (apiData: unknown, assocs: ApiAssocs) => unknown> = {};
 
-export function registerAssocParser(assocName: string, parser: (arg: unknown) => unknown) {
+export function registerAssocParser(
+  assocName: string,
+  parser: (apiData: unknown, assocs: ApiAssocs) => unknown
+) {
   assocsParsers[assocName] = parser;
 }
 
