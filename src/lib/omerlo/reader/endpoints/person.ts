@@ -1,6 +1,9 @@
 import type { Category } from './categories';
 import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from '$reader/utils/api';
 import { requestPublisher } from '../utils/request';
+import type { LocalesMetadata } from '$reader/utils/response';
+import { parseProfileAddress, type ProfileAddress } from './profiles';
+import { getAssocs } from '../utils/assocs';
 
 export const personFetchers = (f: typeof fetch) => {
   return {
@@ -11,53 +14,61 @@ export const personFetchers = (f: typeof fetch) => {
 
 export interface PersonSummary {
   id: string;
-  profileTypeID: string;
+  //profileType: string;
   kind: string;
   firstName: string;
   lastName: string;
   otherName: string | null;
-  pronouns: string | null;
+  pronoun: string | null;
   avatarImageURL: string | null;
-  localized: {
-    locale: string;
-    summaryHtml: string;
-    summaryText: string;
-  };
-  updatedAt: string;
+  meta: {
+      locales: LocalesMetadata;
+    };
+  summaryHtml: string | null;
+  summaryText: string | null;
+  updatedAt: Date;
 }
 
 export function parsePersonSummary(data: ApiData, _assocs: ApiAssocs): PersonSummary {
   return {
     id: data.id,
-    profileTypeID: data.profile_type_id,
+    //profileType: data.profile_type_id,
     kind: 'person',
     firstName: data.first_name,
     lastName: data.last_name,
     otherName: data.other_name,
-    pronouns: data.pronoun,
+    pronoun: data.pronoun,
     avatarImageURL: data.avatar_image_url,
-    localized: data.localized,
-    updatedAt: data.updated_at
+    meta: {
+      locales: {
+        available: [data.localized.locale],
+        current: data.localized.locale
+      }
+    },
+    summaryHtml: data.localized.summary_html,
+    summaryText: data.localized.summary_text,
+    updatedAt: new Date(data.updated_at)
   };
 }
 
 export interface Person extends PersonSummary {
-  coverImageURL: string | null;
-  categories: Category[] | null;
-  localizedAddress: null;
-  localizedContact: null;
-  localizedDescription: null;
+  categories: Category[];
+  address: ProfileAddress | null;
+  contact: unknown;
+  description: unknown;
 }
 
 export function parsePerson(data: ApiData, assocs: ApiAssocs): Person {
+  const address = data.localized_address
+    ? parseProfileAddress(data.localized_address, assocs)
+    : null;
+
   return {
     ...parsePersonSummary(data, assocs),
-    coverImageURL: data.cover_image_url,
-    categories: null,
-    //categories: getAssocs<Category>(assocs, 'categories', data.categories),
-    localizedAddress: data.localized_address,
-    localizedContact: data.localized_contact,
-    localizedDescription: data.localized_description
+    categories: getAssocs<Category>(assocs,'categories', data.categories_ids),
+    address,
+    contact: null,
+    description: null,
   };
 }
 
