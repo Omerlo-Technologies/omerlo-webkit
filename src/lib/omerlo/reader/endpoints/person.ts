@@ -19,7 +19,7 @@ export interface PersonSummary {
   firstName: string;
   lastName: string;
   otherName: string | null;
-  pronouns: string | null;
+  pronoun: string | null;
   avatarImageURL: string | null;
   meta: {
       locales: LocalesMetadata;
@@ -37,7 +37,7 @@ export function parsePersonSummary(data: ApiData, _assocs: ApiAssocs): PersonSum
     firstName: data.first_name,
     lastName: data.last_name,
     otherName: data.other_name,
-    pronouns: data.pronoun,
+    pronoun: data.pronoun,
     avatarImageURL: data.avatar_image_url,
     meta: {
       locales: {
@@ -52,7 +52,6 @@ export function parsePersonSummary(data: ApiData, _assocs: ApiAssocs): PersonSum
 }
 
 export interface Person extends PersonSummary {
-  coverImageURL: string | null;
   categories: Category[];
   address: ProfileAddress | null;
   contact: unknown;
@@ -66,7 +65,6 @@ export function parsePerson(data: ApiData, assocs: ApiAssocs): Person {
 
   return {
     ...parsePersonSummary(data, assocs),
-    coverImageURL: data.cover_image_url,
     categories: getAssocs<Category>(assocs,'categories', data.categories_ids),
     address,
     contact: null,
