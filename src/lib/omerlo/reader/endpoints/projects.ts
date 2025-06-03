@@ -1,6 +1,10 @@
 import type { ApiAssocs } from '../utils/api';
 import { type ApiData, parseMany, type PagingParams } from '../utils/api';
+import { getAssocs } from '../utils/assocs';
 import { requestPublisher } from '../utils/request';
+import type { LocalesMetadata } from '../utils/response';
+import type { Category } from './categories';
+import { parseProfileAddress, type ProfileAddress } from './profiles';
 
 export const projectFetchers = (f: typeof fetch) => {
   return {
@@ -14,13 +18,13 @@ export interface ProjectSummary {
   profileTypeId: string;
   kind: string;
   logoImgUrl: string | null;
-  localized: {
-    locale: string;
-    name: string;
-    summaryHtml: string | null;
-    summaryText: string | null;
+  meta : {
+    locales: LocalesMetadata;
   };
-  updatedAt: string;
+  name: string;
+  summaryHtml: string | null;
+  summaryText: string | null;
+  updatedAt: Date;
 }
 
 export function parseProjectSummary(data: ApiData, _assocs: ApiAssocs): ProjectSummary {
@@ -29,32 +33,39 @@ export function parseProjectSummary(data: ApiData, _assocs: ApiAssocs): ProjectS
     profileTypeId: data.profile_type_id,
     kind: 'Project',
     logoImgUrl: data.logo_image_url,
-    localized: {
-      locale: data.localized.locale,
-      name: data.localized.name,
-      summaryHtml: data.localized.summary_html,
-      summaryText: data.localized.summary_text
+    meta: {
+      locales: {
+        available: [data.localized.locale],
+        current: data.localized.locale
+      }
     },
-    updatedAt: data.updated_at
+    name: data.localized.name,
+    summaryHtml: data.localized.summary_html,
+    summaryText: data.localized.summary_text,
+    updatedAt: new Date(data.updated_at),
   };
 }
 
 export interface Project extends ProjectSummary {
   coverImgUrl: string | null;
-  categories: null;
-  localizedContact: null;
-  localizedAddress: null;
-  localizedDescription: null;
+  categories: Category[];
+  contact: unknown;
+  address: ProfileAddress | null;
+  description: unknown;
 }
 
 export function parseProject(data: ApiData, assocs: ApiAssocs): Project {
+  const address = data.localized_address
+   ? parseProfileAddress(data.localized_address, assocs)
+    : null;
+
   return {
     ...parseProjectSummary(data, assocs),
     coverImgUrl: data.cover_image_url,
-    categories: null,
-    localizedContact: data.localized_contact,
-    localizedAddress: data.localized_address,
-    localizedDescription: data.localized_description
+    categories: getAssocs<Category>(assocs, 'categories', data.category_ids),
+    contact: null,
+    address,
+    description: null,
   };
 }
 
