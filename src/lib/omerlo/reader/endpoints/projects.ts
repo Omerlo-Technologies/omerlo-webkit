@@ -1,10 +1,9 @@
-import type { ApiAssocs } from '../utils/api';
-import { type ApiData, parseMany, type PagingParams } from '../utils/api';
-import { getAssocs } from '../utils/assocs';
-import { requestPublisher } from '../utils/request';
-import type { LocalesMetadata } from '../utils/response';
+import type { LocalesMetadata } from '$reader/utils/response';
 import type { Category } from './categories';
 import { parseProfileAddress, type ProfileAddress } from './profiles';
+import { type ApiData, parseMany, type PagingParams, type ApiAssocs } from '$reader/utils/api';
+import { getAssocs } from '$reader/utils/assocs';
+import { requestPublisher } from '$reader/utils/request';
 
 export const projectFetchers = (f: typeof fetch) => {
   return {
@@ -31,7 +30,7 @@ export function parseProjectSummary(data: ApiData, _assocs: ApiAssocs): ProjectS
   return {
     id: data.id,
     profileTypeId: data.profile_type_id,
-    kind: 'Project',
+    kind: 'project',
     logoImgUrl: data.logo_image_url,
     meta: {
       locales: {
