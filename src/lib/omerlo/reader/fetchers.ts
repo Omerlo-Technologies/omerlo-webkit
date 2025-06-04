@@ -10,6 +10,7 @@ import { contentsFetchers } from './endpoints/contents';
 import { organizationFetchers } from './endpoints/organizations';
 import { profileTypeFetchers } from './endpoints/profileType';
 import { menuFetchers } from './endpoints/menu';
+import { mediaFetchers } from './endpoints/media';
 
 export const fetchers = (f: typeof fetch) => {
   return {
@@ -24,6 +25,7 @@ export const fetchers = (f: typeof fetch) => {
     ...organizationFetchers(f),
     ...profileTypeFetchers(f),
     ...menuFetchers(f),
+    ...mediaFetchers(f),
     notifications: notificationFetchers(f)
   };
 };
