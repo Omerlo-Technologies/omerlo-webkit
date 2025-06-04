@@ -1,7 +1,7 @@
 import { parsePersonSummary, type PersonSummary } from './person';
 import { parseProjectSummary, type ProjectSummary } from './projects';
 import { parseEventSummary, type EventSummary } from './events';
-import { parseOrganizationSummary, type OrganizationSummary} from './organizations';
+import { parseOrganizationSummary, type OrganizationSummary } from './organizations';
 import type { ApiAssocs, ApiData } from '$reader/utils/api';
 import type { LocalesMetadata } from '$reader/utils/response';
 import { getAssocs } from '$reader/utils/assocs';
@@ -17,6 +17,7 @@ import {
 import { buildMeta } from '$reader/utils/parseHelpers';
 
 export type ProfileSummary = PersonSummary | ProjectSummary | EventSummary | OrganizationSummary;
+export type ProfileBlockKind = ProfileBlockContents | ProfileBlockRelations;
 
 type ProfileKind = 'person' | 'project' | 'event' | 'organization';
 
@@ -33,7 +34,6 @@ function getProfileParser(): Record<
 }
 
 export function parseProfileSummary(data: ApiData, assocs: ApiAssocs): ProfileSummary {
-  
   const profileParser = getProfileParser();
   const parser = profileParser[data.kind as ProfileKind];
 
@@ -67,10 +67,10 @@ export interface ProfileDescription {
   meta: {
     locales: LocalesMetadata;
   };
-  blocks: profileDescriptionBlock[];
+  blocks: ProfileDescriptionBlock[];
 }
 
-export type profileDescriptionBlock = {
+export type ProfileDescriptionBlock = {
   kind: string;
   contentHtml: string;
   contentText: string;
@@ -100,7 +100,7 @@ export interface ProfileBlockRelations extends ProfileBlock {
   profiles: ProfileSummary[];
 }
 
-export function parseProfileBlock(data: ApiData, assocs: ApiAssocs): ProfileBlockContents | ProfileBlockRelations {
+export function parseProfileBlock(data: ApiData, assocs: ApiAssocs): ProfileBlockKind {
   if (data.kind === 'selected_content') {
     const contents = data.content_ids
       ? getAssocs<Content>(assocs, 'contents', data.content_ids)
@@ -131,7 +131,7 @@ function profileBlockParser(data: ApiData, _assocs: ApiAssocs): ProfileBlock {
     profileBlockType: data.block_type_id,
     meta,
     name,
-    updatedAt: data.updated_at
+    updatedAt: new Date(data.updated_at)
   };
 }
 
@@ -158,7 +158,10 @@ export function parseProfileContact(data: ApiData, _assocs: ApiAssocs): ProfileC
   };
 }
 
-export function parseProfileDescriptionBlock(data: ApiData, assocs: ApiAssocs): profileDescriptionBlock {
+export function parseProfileDescriptionBlock(
+  data: ApiData,
+  assocs: ApiAssocs
+): ProfileDescriptionBlock {
   const image = data.image ? parseImage(data.image, assocs) : null;
   const slideshow = data.slideshow ? parseSlideshow(data.slideshow, assocs) : null;
   const video = data.video ? parseVideo(data.video, assocs) : null;
@@ -173,9 +176,9 @@ export function parseProfileDescriptionBlock(data: ApiData, assocs: ApiAssocs): 
   };
 }
 
-export function parseProfileDescription(data: ApiData, _assocs: ApiAssocs): ProfileDescription {
+export function parseProfileDescription(data: ApiData, assocs: ApiAssocs): ProfileDescription {
   const blocks = data.blocks
-    ? data.blocks.map((block: ApiData) => parseProfileDescriptionBlock(block, _assocs))
+    ? data.blocks.map((block: ApiData) => parseProfileDescriptionBlock(block, assocs))
     : [];
 
   return {

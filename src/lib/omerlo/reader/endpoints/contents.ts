@@ -14,7 +14,7 @@ import { requestPublisher } from '$reader/utils/request';
 import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from '$reader/utils/api';
 import { getAssoc, getAssocs } from '$reader/utils/assocs';
 import type { LocalesMetadata } from '$reader/utils/response';
-import { buildMeta, parseDate } from '$omerlo/reader/utils/parseHelpers';
+import { buildMeta, parseDate } from '$reader/utils/parseHelpers';
 
 export const contentsFetchers = (f: typeof fetch) => {
   return {
@@ -181,8 +181,7 @@ export function getContent(f: typeof fetch) {
 
 export function listContents(f: typeof fetch) {
   return async (params?: Partial<PagingParams>) => {
-    const queryParams = params;
-    const opts = { parser: parseMany(parseContentSummary), queryParams };
+    const opts = { parser: parseMany(parseContentSummary), queryParams: params };
     return requestPublisher(f, `/contents`, opts);
   };
 }

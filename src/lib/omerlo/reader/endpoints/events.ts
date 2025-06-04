@@ -12,7 +12,7 @@ import {
   parseProfileDescription
 } from './profiles';
 import type { ProfileAddress, ProfileContact, ProfileDescription } from './profiles';
-import { buildMeta } from '../utils/parseHelpers';
+import { buildMeta } from '$reader/utils/parseHelpers';
 
 export const eventFetchers = (f: typeof fetch) => {
   return {
