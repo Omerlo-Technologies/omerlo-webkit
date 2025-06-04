@@ -8,6 +8,7 @@ import { projectFetchers } from './endpoints/projects';
 import { eventFetchers } from './endpoints/events';
 import { contentsFetchers } from './endpoints/contents';
 import { organizationFetchers } from './endpoints/organizations';
+import { profileTypeFetchers } from './endpoints/profileType';
 
 export const fetchers = (f: typeof fetch) => {
   return {
@@ -20,6 +21,7 @@ export const fetchers = (f: typeof fetch) => {
     ...eventFetchers(f),
     ...contentsFetchers(f),
     ...organizationFetchers(f),
+    ...profileTypeFetchers(f),
     notifications: notificationFetchers(f)
   };
 };
