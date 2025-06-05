@@ -1,8 +1,7 @@
 import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from '$reader/utils/api';
 import type { LocalesMetadata } from '$reader/utils/response';
 import { requestPublisher } from '$reader/utils/request';
-import { buildMeta } from '../utils/parseHelpers';
-
+import { buildMeta } from '$reader/utils/parseHelpers';
 
 export const profileTypeFetchers = (f: typeof fetch) => {
   return {

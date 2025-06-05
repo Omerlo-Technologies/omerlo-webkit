@@ -1,6 +1,6 @@
 import type { LocalesMetadata } from '$reader/utils/response';
 import type { ApiAssocs, ApiData } from '$reader/utils/api';
-import { buildMeta } from '$omerlo/reader/utils/parseHelpers';
+import { buildMeta } from '$reader/utils/parseHelpers';
 
 export interface ContentTemplate {
   id: string;
@@ -17,6 +17,21 @@ export interface ContentTemplate {
 export interface ContentBlockTemplate {
   id: string;
   key: string;
+  visual: {
+    allowed_types: string[];
+    is_enabled: boolean;
+  };
+}
+
+export function parseContentBlockTemplate(data: ApiData, _assocs: ApiAssocs): ContentBlockTemplate {
+  return {
+    id: data.id,
+    key: data.key,
+    visual: {
+      allowed_types: data.visual.allowed_types,
+      is_enabled: data.visual.is_enabled
+    }
+  };
 }
 
 export function parseContentTemplate(data: ApiData, _assocs: ApiAssocs): ContentTemplate {

@@ -1,6 +1,6 @@
 import { parseCategory } from './endpoints/categories';
-import { parseProfileSummary } from './endpoints/profiles';
-import { parseContentTemplate } from './endpoints/content-templates';
+import { parseProfileBlock, parseProfileSummary } from './endpoints/profiles';
+import { parseContentBlockTemplate, parseContentTemplate } from './endpoints/content-templates';
 import { parseProfileTypeSummary } from './endpoints/profileType';
 import { registerAssocParser } from './utils/assocs';
 
@@ -12,3 +12,5 @@ registerAssocParser('categories', parseCategory);
 registerAssocParser('profiles', parseProfileSummary);
 registerAssocParser('templates', parseContentTemplate);
 registerAssocParser('profile_types', parseProfileTypeSummary);
+registerAssocParser('profile_block_types', parseProfileBlock);
+registerAssocParser('block_templates', parseContentBlockTemplate);

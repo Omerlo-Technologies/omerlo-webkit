@@ -1,9 +1,18 @@
 import type { Category } from './categories';
 import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from '$reader/utils/api';
-import { requestPublisher } from '../utils/request';
+import { requestPublisher } from '$reader/utils/request';
 import type { LocalesMetadata } from '$reader/utils/response';
-import { parseProfileAddress, type ProfileAddress } from './profiles';
-import { getAssocs } from '../utils/assocs';
+import {
+  parseProfileAddress,
+  type ProfileAddress,
+  parseProfileContact,
+  type ProfileContact,
+  parseProfileDescription,
+  type ProfileDescription
+} from './profiles';
+import { getAssoc, getAssocs } from '$reader/utils/assocs';
+import type { ProfileType } from './profileType';
+import { buildMeta } from '$reader/utils/parseHelpers';
 
 export const personFetchers = (f: typeof fetch) => {
   return {
@@ -14,7 +23,7 @@ export const personFetchers = (f: typeof fetch) => {
 
 export interface PersonSummary {
   id: string;
-  //profileType: string;
+  profileType: ProfileType;
   kind: string;
   firstName: string;
   lastName: string;
@@ -22,8 +31,8 @@ export interface PersonSummary {
   pronoun: string | null;
   avatarImageURL: string | null;
   meta: {
-      locales: LocalesMetadata;
-    };
+    locales: LocalesMetadata;
+  };
   summaryHtml: string | null;
   summaryText: string | null;
   updatedAt: Date;
@@ -32,19 +41,14 @@ export interface PersonSummary {
 export function parsePersonSummary(data: ApiData, _assocs: ApiAssocs): PersonSummary {
   return {
     id: data.id,
-    //profileType: data.profile_type_id,
+    profileType: getAssoc<ProfileType>(_assocs, 'profile_types', data.profile_type_id),
     kind: 'person',
     firstName: data.first_name,
     lastName: data.last_name,
     otherName: data.other_name,
     pronoun: data.pronoun,
     avatarImageURL: data.avatar_image_url,
-    meta: {
-      locales: {
-        available: [data.localized.locale],
-        current: data.localized.locale
-      }
-    },
+    meta: buildMeta(data.localized.locale),
     summaryHtml: data.localized.summary_html,
     summaryText: data.localized.summary_text,
     updatedAt: new Date(data.updated_at)
@@ -54,21 +58,27 @@ export function parsePersonSummary(data: ApiData, _assocs: ApiAssocs): PersonSum
 export interface Person extends PersonSummary {
   categories: Category[];
   address: ProfileAddress | null;
-  contact: unknown;
-  description: unknown;
+  contact: ProfileContact | null;
+  description: ProfileDescription | null;
 }
 
 export function parsePerson(data: ApiData, assocs: ApiAssocs): Person {
   const address = data.localized_address
     ? parseProfileAddress(data.localized_address, assocs)
     : null;
+  const contact = data.localized_contact
+    ? parseProfileContact(data.localized_contact, assocs)
+    : null;
+  const description = data.localized_description
+    ? parseProfileDescription(data.localized_description, assocs)
+    : null;
 
   return {
     ...parsePersonSummary(data, assocs),
-    categories: getAssocs<Category>(assocs,'categories', data.categories_ids),
+    categories: getAssocs<Category>(assocs, 'categories', data.category_ids),
     address,
-    contact: null,
-    description: null,
+    contact,
+    description
   };
 }
 
@@ -81,8 +91,7 @@ export function getPerson(f: typeof fetch) {
 
 export function listPersons(f: typeof fetch) {
   return async (params?: Partial<PagingParams>) => {
-    const queryParams = params;
-    const opts = { parser: parseMany(parsePersonSummary), queryParams };
+    const opts = { parser: parseMany(parsePersonSummary), queryParams: params };
     return requestPublisher(f, `/people`, opts);
   };
 }

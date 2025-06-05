@@ -1,4 +1,4 @@
-import type { ApiAssocs, ApiData } from '../utils/api';
+import type { ApiAssocs, ApiData } from '$reader/utils/api';
 
 export type Visual = Image | Slideshow | Video;
 
