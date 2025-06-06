@@ -5,6 +5,7 @@ import { notificationFetchers } from './endpoints/notification';
 import { oauthFetchers } from './endpoints/oauth';
 import { contentsFetchers } from './endpoints/contents';
 import { mediaFetchers } from './endpoints/media';
+import { issuesFetchers } from './endpoints/issues';
 
 export const fetchers = (f: typeof fetch) => {
   return {
@@ -14,6 +15,7 @@ export const fetchers = (f: typeof fetch) => {
     ...categoriesFetchers(f),
     ...contentsFetchers(f),
     ...mediaFetchers(f),
+    ...issuesFetchers(f),
     notifications: notificationFetchers(f)
   };
 };
