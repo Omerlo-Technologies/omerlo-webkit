@@ -1,5 +1,5 @@
-import type { ApiAssocs } from '$reader/utils/api';
-import { type ApiData } from '$reader/utils/api';
+import type { ApiAssocs, PagingParams } from '$reader/utils/api';
+import { parseMany, type ApiData } from '$reader/utils/api';
 import { getAssoc, getAssocs } from '$reader/utils/assocs';
 import type { LocalesMetadata } from '$reader/utils/response';
 import type { Category } from './categories';
@@ -8,6 +8,17 @@ import { parseProfileContact, type ProfileContact } from './profiles';
 import { parseProfileDescription, type ProfileDescription } from './profiles';
 import type { ProfileType } from './profileType';
 import { buildMeta } from '$reader/utils/parseHelpers';
+import { ParseWebpage, ParseWebpageSummary } from './webpage';
+import { requestPublisher } from '$reader/utils/request';
+
+export const organizationFetchers = (f: typeof fetch) => {
+  return {
+    listOrganizations: listOrganizations(f),
+    getOrganization: getOrganization(f),
+    getOrgWebpage: getOrgWebpage(f),
+    listOrgWebpages: listOrgWebpages(f)
+  };
+};
 
 export interface OrganizationSummary {
   id: string;
@@ -63,5 +74,33 @@ export function parseOrganization(data: ApiData, assocs: ApiAssocs): Organizatio
     contact,
     address,
     description
+  };
+}
+
+export function getOrganization(f: typeof fetch) {
+  return async () => {
+    const opts = { parser: parseOrganization };
+    return requestPublisher(f, `organization`, opts);
+  };
+}
+
+export function listOrganizations(f: typeof fetch) {
+  return async (params?: Partial<PagingParams>) => {
+    const opts = { parser: parseMany(parseOrganizationSummary), queryParams: params };
+    return requestPublisher(f, `organizations`, opts);
+  };
+}
+
+export function getOrgWebpage(f: typeof fetch) {
+  return async (slug: string) => {
+    const opts = { parser: ParseWebpage };
+    return requestPublisher(f, `organization/pages/${slug}`, opts);
+  };
+}
+
+export function listOrgWebpages(f: typeof fetch) {
+  return async (params?: Partial<PagingParams>) => {
+    const opts = { parser: parseMany(ParseWebpageSummary), queryParams: params };
+    return requestPublisher(f, `organization/pages`, opts);
   };
 }

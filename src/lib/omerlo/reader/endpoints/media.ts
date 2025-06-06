@@ -111,7 +111,7 @@ function parseSections(data: ApiData, assocs: ApiAssocs): Section[] {
 export function getMedia(f: typeof fetch) {
   return async () => {
     const opts = { parser: parseMedia };
-    return requestPublisher(f, '/media', opts);
+    return requestPublisher(f, 'media/', opts);
   };
 }
 
