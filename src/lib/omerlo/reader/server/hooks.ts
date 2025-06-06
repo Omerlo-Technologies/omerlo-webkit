@@ -72,7 +72,7 @@ export const proxyHook: Handle = async ({ event, resolve }) => {
         idKey: env['PRIVATE_OMERLO_ORGANIZATION_ID'],
         resourcePath: 'organizations'
       },
-      'issue/': { idKey: env['PRIVATE_OMERLO_ISSUE_ID'], resourcePath: 'issues' }
+      'issue/': { idKey: env['PRIVATE_OMERLO_ISSUE_ID'], resourcePath: 'issues' },
     };
 
     for (const [prefix, config] of Object.entries(resourceConfigs)) {
