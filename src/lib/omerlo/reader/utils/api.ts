@@ -50,6 +50,7 @@ export interface PagingParams extends ApiParams {
   limit?: number | null;
   after?: string | null;
   before?: string | null;
+  content_id?: string | null;
 }
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
