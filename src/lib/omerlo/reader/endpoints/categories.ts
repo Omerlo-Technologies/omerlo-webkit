@@ -23,14 +23,14 @@ export interface Category {
 export function getCategory(f: typeof fetch) {
   return async (id: string) => {
     const opts = { parser: parseCategory };
-    return requestPublisher(f, `/categories/${id}`, opts);
+    return requestPublisher(f, `media/categories/${id}`, opts);
   };
 }
 
 export function listCategories(f: typeof fetch) {
   return async (params?: Partial<PagingParams>) => {
     const opts = { parser: parseMany(parseCategory), queryParams: params };
-    return requestPublisher(f, `/categories`, opts);
+    return requestPublisher(f, `media/categories`, opts);
   };
 }
 

@@ -3,6 +3,7 @@ import { parseProfileBlock, parseProfileSummary } from './endpoints/profiles';
 import { parseContentBlockTemplate, parseContentTemplate } from './endpoints/content-templates';
 import { parseProfileTypeSummary } from './endpoints/profileType';
 import { registerAssocParser } from './utils/assocs';
+import { parseContentSummary } from './endpoints/contents';
 
 export * from './stores/user_session';
 export type * from './endpoints/oauth';
@@ -14,3 +15,4 @@ registerAssocParser('templates', parseContentTemplate);
 registerAssocParser('profile_types', parseProfileTypeSummary);
 registerAssocParser('profile_block_types', parseProfileBlock);
 registerAssocParser('block_templates', parseContentBlockTemplate);
+registerAssocParser('contents', parseContentSummary);

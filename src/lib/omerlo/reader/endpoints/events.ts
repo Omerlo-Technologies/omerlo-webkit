@@ -95,20 +95,20 @@ export function parseEvent(data: ApiData, assocs: ApiAssocs): Event {
 export function getEvent(f: typeof fetch) {
   return async (id: string) => {
     const opts = { parser: parseEvent };
-    return requestPublisher(f, `/events/${id}`, opts);
+    return requestPublisher(f, `media/events/${id}`, opts);
   };
 }
 
 export function listEvents(f: typeof fetch) {
   return async (params?: Partial<PagingParams>) => {
     const opts = { parser: parseMany(parseEventSummary), queryParams: params };
-    return requestPublisher(f, `/events`, opts);
+    return requestPublisher(f, `media/events`, opts);
   };
 }
 
 export function listEventBlocks(f: typeof fetch) {
   return async (id: string, params?: Partial<PagingParams>) => {
     const opts = { parser: parseMany(parseProfileBlock), queryParams: params };
-    return requestPublisher(f, `/events/${id}/blocks`, opts);
+    return requestPublisher(f, `media/events/${id}/blocks`, opts);
   };
 }

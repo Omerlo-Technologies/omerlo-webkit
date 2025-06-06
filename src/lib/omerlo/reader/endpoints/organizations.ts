@@ -77,13 +77,13 @@ export function parseOrganization(data: ApiData, assocs: ApiAssocs): Organizatio
 export function getOrganization(f: typeof fetch) {
   return async (id: string) => {
     const opts = { parser: parseOrganization };
-    return requestPublisher(f, `/organizations/${id}`, opts);
+    return requestPublisher(f, `media/organizations/${id}`, opts);
   };
 }
 
 export function listOrganizations(f: typeof fetch) {
   return async (params?: Partial<PagingParams>) => {
     const opts = { parser: parseMany(parseOrganizationSummary), queryParams: params };
-    return requestPublisher(f, `/organizations`, opts);
+    return requestPublisher(f, `media/organizations`, opts);
   };
 }
