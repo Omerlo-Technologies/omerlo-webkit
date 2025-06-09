@@ -1,14 +1,7 @@
-import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from '$reader/utils/api';
-import { requestPublisher } from '$reader/utils/request';
+import { type ApiAssocs, type ApiData } from '$reader/utils/api';
 import type { LocalesMetadata } from '$reader/utils/response';
 import { buildMeta } from '$reader/utils/parseHelpers';
 
-export const menuFetchers = (f: typeof fetch) => {
-  return {
-    listMenus: listMenus(f),
-    getMenu: getMenu(f)
-  };
-};
 
 export interface MenuSummary {
   id: string;
@@ -63,18 +56,4 @@ export function parseMenuItem(data: ApiData, _assocs: ApiAssocs): MenuItem {
 
 function getItems(data: ApiData, _assocs: ApiAssocs): MenuItem[] {
   return data.items.map((item: ApiData) => parseMenuItem(item, _assocs));
-}
-
-export function listMenus(f: typeof fetch) {
-  return async (params?: Partial<PagingParams>) => {
-    const opts = { parser: parseMany(parseMenuSummary), queryParams: params };
-    return requestPublisher(f, `media/menus`, opts);
-  };
-}
-
-export function getMenu(f: typeof fetch) {
-  return async (key: string) => {
-    const opts = { parser: parseMenu };
-    return requestPublisher(f, `media/menus/${key}`, opts);
-  };
 }

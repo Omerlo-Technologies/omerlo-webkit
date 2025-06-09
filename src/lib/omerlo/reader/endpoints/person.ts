@@ -1,6 +1,5 @@
 import type { Category } from './categories';
-import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from '$reader/utils/api';
-import { requestPublisher } from '$reader/utils/request';
+import { type ApiAssocs, type ApiData } from '$reader/utils/api';
 import type { LocalesMetadata } from '$reader/utils/response';
 import {
   parseProfileAddress,
@@ -13,13 +12,6 @@ import {
 import { getAssoc, getAssocs } from '$reader/utils/assocs';
 import type { ProfileType } from './profileType';
 import { buildMeta } from '$reader/utils/parseHelpers';
-
-export const personFetchers = (f: typeof fetch) => {
-  return {
-    getPerson: getPerson(f),
-    listPersons: listPersons(f)
-  };
-};
 
 export interface PersonSummary {
   id: string;
@@ -79,19 +71,5 @@ export function parsePerson(data: ApiData, assocs: ApiAssocs): Person {
     address,
     contact,
     description
-  };
-}
-
-export function getPerson(f: typeof fetch) {
-  return async (id: string) => {
-    const opts = { parser: parsePerson };
-    return requestPublisher(f, `media/people/${id}`, opts);
-  };
-}
-
-export function listPersons(f: typeof fetch) {
-  return async (params?: Partial<PagingParams>) => {
-    const opts = { parser: parseMany(parsePersonSummary), queryParams: params };
-    return requestPublisher(f, `media/people`, opts);
   };
 }

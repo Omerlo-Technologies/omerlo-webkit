@@ -1,13 +1,33 @@
-import type { ApiAssocs } from '../utils/api';
-import { type ApiData } from '../utils/api';
+import type { ApiAssocs, PagingParams } from '../utils/api';
+import { parseMany, type ApiData } from '../utils/api';
 import { requestPublisher } from '../utils/request';
 import type { LocalesMetadata } from '../utils/response';
 import { parseVisual, type Visual } from './visuals';
 import { buildMeta } from '../utils/parseHelpers';
+import { parseOrganization, parseOrganizationSummary } from './organizations';
+import { parseEvent, parseEventSummary } from './events';
+import { parseProfileBlock } from './profiles';
+import { parsePerson, parsePersonSummary } from './person';
+import { parseProject, parseProjectSummary } from './projects';
+import { parseProfileType, parseProfileTypeSummary } from './profileType';
+import { parseMenu, parseMenuSummary } from './menu';
 
 export const mediaFetchers = (f: typeof fetch) => {
   return {
-    getMedia: getMedia(f)
+    getMedia: getMedia(f),
+    getMediaOrganization: getMediaOrganization(f),
+    listMediaOrganizations: listMediaOrganizations(f),
+    getMediaEvent: getMediaEvent(f),
+    listMediaEvents: listMediaEvents(f),
+    listMediaEventBlocks: listMediaEventBlocks(f),
+    getMediaPerson: getMediaPerson(f),
+    listMediaPersons: listMediaPersons(f),
+    getMediaProject: getMediaProject(f),
+    listMediaProjects: listMediaProjects(f),
+    getMediaProfileType: getMediaProfileType(f),
+    listMediaProfileTypes: listMediaProfileTypes(f),
+    getMediaMenu: getMediaMenu(f),
+    listMediaMenus: listMediaMenus(f)
   };
 };
 
@@ -91,6 +111,97 @@ function parseSections(data: ApiData, assocs: ApiAssocs): Section[] {
 export function getMedia(f: typeof fetch) {
   return async () => {
     const opts = { parser: parseMedia };
-    return requestPublisher(f, '/', opts);
+    return requestPublisher(f, '/media', opts);
+  };
+}
+
+export function getMediaOrganization(f: typeof fetch) {
+  return async (id: string) => {
+    const opts = { parser: parseOrganization };
+    return requestPublisher(f, `media/organizations/${id}`, opts);
+  };
+}
+
+export function listMediaOrganizations(f: typeof fetch) {
+  return async (params?: Partial<PagingParams>) => {
+    const opts = { parser: parseMany(parseOrganizationSummary), queryParams: params };
+    return requestPublisher(f, `media/organizations`, opts);
+  };
+}
+
+export function getMediaEvent(f: typeof fetch) {
+  return async (id: string) => {
+    const opts = { parser: parseEvent };
+    return requestPublisher(f, `media/events/${id}`, opts);
+  };
+}
+
+export function listMediaEvents(f: typeof fetch) {
+  return async (params?: Partial<PagingParams>) => {
+    const opts = { parser: parseMany(parseEventSummary), queryParams: params };
+    return requestPublisher(f, `media/events`, opts);
+  };
+}
+
+export function listMediaEventBlocks(f: typeof fetch) {
+  return async (id: string, params?: Partial<PagingParams>) => {
+    const opts = { parser: parseMany(parseProfileBlock), queryParams: params };
+    return requestPublisher(f, `media/events/${id}/blocks`, opts);
+  };
+}
+
+export function getMediaPerson(f: typeof fetch) {
+  return async (id: string) => {
+    const opts = { parser: parsePerson };
+    return requestPublisher(f, `media/people/${id}`, opts);
+  };
+}
+
+export function listMediaPersons(f: typeof fetch) {
+  return async (params?: Partial<PagingParams>) => {
+    const opts = { parser: parseMany(parsePersonSummary), queryParams: params };
+    return requestPublisher(f, `media/people`, opts);
+  };
+}
+
+export function getMediaProject(f: typeof fetch) {
+  return async (id: string) => {
+    const opts = { parser: parseProject };
+    return requestPublisher(f, `media/projects/${id}`, opts);
+  };
+}
+
+export function listMediaProjects(f: typeof fetch) {
+  return async (params?: Partial<PagingParams>) => {
+    const opts = { parser: parseMany(parseProjectSummary), queryParams: params };
+    return requestPublisher(f, `media/projects`, opts);
+  };
+}
+
+export function getMediaProfileType(f: typeof fetch) {
+  return async (id: string) => {
+    const opts = { parser: parseProfileType };
+    return requestPublisher(f, `media/profile-types/${id}`, opts);
+  };
+}
+
+export function listMediaProfileTypes(f: typeof fetch) {
+  return async (params?: Partial<PagingParams>) => {
+    const opts = { parser: parseMany(parseProfileTypeSummary), queryParams: params };
+    return requestPublisher(f, `media/profile-types`, opts);
+  };
+}
+
+export function listMediaMenus(f: typeof fetch) {
+  return async (params?: Partial<PagingParams>) => {
+    const opts = { parser: parseMany(parseMenuSummary), queryParams: params };
+    return requestPublisher(f, `media/menus`, opts);
+  };
+}
+
+export function getMediaMenu(f: typeof fetch) {
+  return async (key: string) => {
+    const opts = { parser: parseMenu };
+    return requestPublisher(f, `media/menus/${key}`, opts);
   };
 }
