@@ -85,13 +85,13 @@ export function parsePerson(data: ApiData, assocs: ApiAssocs): Person {
 export function getPerson(f: typeof fetch) {
   return async (id: string) => {
     const opts = { parser: parsePerson };
-    return requestPublisher(f, `/people/${id}`, opts);
+    return requestPublisher(f, `media/people/${id}`, opts);
   };
 }
 
 export function listPersons(f: typeof fetch) {
   return async (params?: Partial<PagingParams>) => {
     const opts = { parser: parseMany(parsePersonSummary), queryParams: params };
-    return requestPublisher(f, `/people`, opts);
+    return requestPublisher(f, `media/people`, opts);
   };
 }

@@ -63,13 +63,27 @@ export const proxyHook: Handle = async ({ event, resolve }) => {
   }
 
   // TODO remove once every API will be done in Reader
-  if (event.url.pathname.startsWith('/api/publisher')) {
-    const mediaId = env.PRIVATE_OMERLO_MEDIA_ID;
-    event.url.pathname = event.url.pathname.replace(
-      '/api/publisher/',
-      `/api/public/publisher/v2/medias/${mediaId}/`
-    );
-    return handleApiProxy({ event, resolve });
+  if (event.url.pathname.startsWith('/api/publisher/')) {
+    const pathAfterPublisher = event.url.pathname.slice('/api/publisher/'.length);
+
+    const resourceConfigs = {
+      'media/': { idKey: env['PRIVATE_OMERLO_MEDIA_ID'], resourcePath: 'medias' },
+      'organization/': {
+        idKey: env['PRIVATE_OMERLO_ORGANIZATION_ID'],
+        resourcePath: 'organizations'
+      },
+      'issue/': { idKey: env['PRIVATE_OMERLO_ISSUE_ID'], resourcePath: 'issues' }
+    };
+
+    for (const [prefix, config] of Object.entries(resourceConfigs)) {
+      if (pathAfterPublisher.startsWith(prefix)) {
+        event.url.pathname = event.url.pathname.replace(
+          `/api/publisher/${prefix}`,
+          `/api/public/publisher/v2/${config.resourcePath}/${config.idKey}/`
+        );
+        return handleApiProxy({ event, resolve });
+      }
+    }
   }
 
   return resolve(event);

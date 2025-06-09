@@ -81,13 +81,13 @@ export function parseProject(data: ApiData, assocs: ApiAssocs): Project {
 export function getProject(f: typeof fetch) {
   return async (id: string) => {
     const opts = { parser: parseProject };
-    return requestPublisher(f, `/projects/${id}`, opts);
+    return requestPublisher(f, `media/projects/${id}`, opts);
   };
 }
 
 export function listProjects(f: typeof fetch) {
   return async (params?: Partial<PagingParams>) => {
     const opts = { parser: parseMany(parseProjectSummary), queryParams: params };
-    return requestPublisher(f, `/projects`, opts);
+    return requestPublisher(f, `media/projects`, opts);
   };
 }

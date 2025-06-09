@@ -175,14 +175,14 @@ function baseBlock(data: ApiData, assocs: ApiAssocs) {
 export function getContent(f: typeof fetch) {
   return async (id: string) => {
     const opts = { parser: parseContent };
-    return requestPublisher(f, `/contents/${id}`, opts);
+    return requestPublisher(f, `media/contents/${id}`, opts);
   };
 }
 
 export function listContents(f: typeof fetch) {
   return async (params?: Partial<PagingParams>) => {
     const opts = { parser: parseMany(parseContentSummary), queryParams: params };
-    return requestPublisher(f, `/contents`, opts);
+    return requestPublisher(f, `media/contents`, opts);
   };
 }
 

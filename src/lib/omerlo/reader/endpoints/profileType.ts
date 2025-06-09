@@ -66,13 +66,13 @@ export function parseProfileType(data: ApiData, assocs: ApiAssocs): ProfileType 
 export function getProfileType(f: typeof fetch) {
   return async (id: string) => {
     const opts = { parser: parseProfileType };
-    return requestPublisher(f, `/profile-types/${id}`, opts);
+    return requestPublisher(f, `media/profile-types/${id}`, opts);
   };
 }
 
 export function listProfileTypes(f: typeof fetch) {
   return async (params?: Partial<PagingParams>) => {
     const opts = { parser: parseMany(parseProfileTypeSummary), queryParams: params };
-    return requestPublisher(f, `/profile-types`, opts);
+    return requestPublisher(f, `media/profile-types`, opts);
   };
 }
