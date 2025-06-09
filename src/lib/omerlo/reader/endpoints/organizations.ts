@@ -1,7 +1,6 @@
 import type { ApiAssocs } from '$reader/utils/api';
-import { type ApiData, parseMany, type PagingParams } from '$reader/utils/api';
+import { type ApiData } from '$reader/utils/api';
 import { getAssoc, getAssocs } from '$reader/utils/assocs';
-import { requestPublisher } from '$reader/utils/request';
 import type { LocalesMetadata } from '$reader/utils/response';
 import type { Category } from './categories';
 import { parseProfileAddress, type ProfileAddress } from './profiles';
@@ -9,13 +8,6 @@ import { parseProfileContact, type ProfileContact } from './profiles';
 import { parseProfileDescription, type ProfileDescription } from './profiles';
 import type { ProfileType } from './profileType';
 import { buildMeta } from '$reader/utils/parseHelpers';
-
-export const organizationFetchers = (f: typeof fetch) => {
-  return {
-    listOrganizations: listOrganizations(f),
-    getOrganization: getOrganization(f)
-  };
-};
 
 export interface OrganizationSummary {
   id: string;
@@ -71,19 +63,5 @@ export function parseOrganization(data: ApiData, assocs: ApiAssocs): Organizatio
     contact,
     address,
     description
-  };
-}
-
-export function getOrganization(f: typeof fetch) {
-  return async (id: string) => {
-    const opts = { parser: parseOrganization };
-    return requestPublisher(f, `media/organizations/${id}`, opts);
-  };
-}
-
-export function listOrganizations(f: typeof fetch) {
-  return async (params?: Partial<PagingParams>) => {
-    const opts = { parser: parseMany(parseOrganizationSummary), queryParams: params };
-    return requestPublisher(f, `media/organizations`, opts);
   };
 }

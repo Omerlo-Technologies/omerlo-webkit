@@ -1,26 +1,16 @@
 import type { Category } from './categories';
-import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from '$reader/utils/api';
-import { requestPublisher } from '$reader/utils/request';
+import { type ApiAssocs, type ApiData } from '$reader/utils/api';
 import type { LocalesMetadata } from '$reader/utils/response';
 import type { ProfileType } from './profileType';
 import { getAssoc, getAssocs } from '$reader/utils/assocs';
 import { parseDate } from '$reader/utils/parseHelpers';
 import {
-  parseProfileBlock,
   parseProfileAddress,
   parseProfileContact,
   parseProfileDescription
 } from './profiles';
 import type { ProfileAddress, ProfileContact, ProfileDescription } from './profiles';
 import { buildMeta } from '$reader/utils/parseHelpers';
-
-export const eventFetchers = (f: typeof fetch) => {
-  return {
-    getEvent: getEvent(f),
-    listEvents: listEvents(f),
-    listEventBlocks: listEventBlocks(f)
-  };
-};
 
 export interface EventSummary {
   id: string;
@@ -89,26 +79,5 @@ export function parseEvent(data: ApiData, assocs: ApiAssocs): Event {
     address,
     contact,
     description
-  };
-}
-
-export function getEvent(f: typeof fetch) {
-  return async (id: string) => {
-    const opts = { parser: parseEvent };
-    return requestPublisher(f, `media/events/${id}`, opts);
-  };
-}
-
-export function listEvents(f: typeof fetch) {
-  return async (params?: Partial<PagingParams>) => {
-    const opts = { parser: parseMany(parseEventSummary), queryParams: params };
-    return requestPublisher(f, `media/events`, opts);
-  };
-}
-
-export function listEventBlocks(f: typeof fetch) {
-  return async (id: string, params?: Partial<PagingParams>) => {
-    const opts = { parser: parseMany(parseProfileBlock), queryParams: params };
-    return requestPublisher(f, `media/events/${id}/blocks`, opts);
   };
 }
