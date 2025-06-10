@@ -4,11 +4,7 @@ import type { LocalesMetadata } from '$reader/utils/response';
 import type { ProfileType } from './profileType';
 import { getAssoc, getAssocs } from '$reader/utils/assocs';
 import { parseDate } from '$reader/utils/parseHelpers';
-import {
-  parseProfileAddress,
-  parseProfileContact,
-  parseProfileDescription
-} from './profiles';
+import { parseProfileAddress, parseProfileContact, parseProfileDescription } from './profiles';
 import type { ProfileAddress, ProfileContact, ProfileDescription } from './profiles';
 import { buildMeta } from '$reader/utils/parseHelpers';
 

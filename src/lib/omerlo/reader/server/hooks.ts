@@ -84,6 +84,9 @@ export const proxyHook: Handle = async ({ event, resolve }) => {
         return handleApiProxy({ event, resolve });
       }
     }
+
+    event.url.pathname = event.url.pathname.replace('/api/publisher/', `/api/public/publisher/v2/`);
+    return handleApiProxy({ event, resolve });
   }
 
   return resolve(event);

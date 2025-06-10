@@ -2,7 +2,6 @@ import { type ApiAssocs, type ApiData } from '$reader/utils/api';
 import type { LocalesMetadata } from '$reader/utils/response';
 import { buildMeta } from '$reader/utils/parseHelpers';
 
-
 export interface ProfileTypeSummary {
   id: string;
   kind: 'person' | 'project' | 'organization' | 'event';
