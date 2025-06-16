@@ -1,8 +1,6 @@
 import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from '$reader/utils/api';
 import { requestPublisher } from '$reader/utils/request';
-import { getAssocs } from '$reader/utils/assocs';
 import { parseDate } from '$reader/utils/parseHelpers';
-import { type Content } from './contents';
 
 export const publicationFetchers = (f: typeof fetch) => {
   return {
@@ -12,21 +10,19 @@ export const publicationFetchers = (f: typeof fetch) => {
 
 export interface Publication {
   id: string;
-  content: Content[];
-  //   section: Section[];
+  content: string;
+  section: string;
   feedType: string;
   startsAt: Date;
   endsAt: Date | null;
 }
 
-export function parsePublication(data: ApiData, assocs: ApiAssocs): Publication {
-  const content = data.content_ids
-      ? getAssocs<Content>(assocs, 'contents', data.content_ids)
-      : [];
+export function parsePublication(data: ApiData, _assocs: ApiAssocs): Publication {
+  console.log('parsePublication', data);
   return {
     id: data.id,
-    content,
-    // section:
+    content: data.content_id,
+    section: data.section_id,
     feedType: data.feed_type,
     startsAt: new Date(data.starts_at),
     endsAt: parseDate(data.ends_at)
