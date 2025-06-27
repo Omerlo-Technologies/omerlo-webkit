@@ -1,6 +1,6 @@
-import { parseAssocs, type Assoc } from './assocs';
+import { initAssocs, parseAssocs, type Assoc } from './assocs';
 
-export type ApiAssocs = Record<string, Record<string, Assoc>>;
+export type ApiAssocs = Record<string, Assoc>;
 
 export async function parseApiResponse<T>(
   response: Response,
@@ -11,9 +11,10 @@ export async function parseApiResponse<T>(
     meta = null;
 
   if (response.ok) {
-    parseAssocs(payload.assocs);
+    const assocs = initAssocs(payload.assocs)
+    parseAssocs(assocs);
     meta = payload.meta;
-    data = parser(payload.data, payload.assocs);
+    data = parser(payload.data, assocs);
   }
 
   const errors = payload.errors || [];
