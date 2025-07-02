@@ -1,4 +1,4 @@
-import type { ApiAssocs } from './api';
+import type { ApiAssocs, ApiData } from './api';
 
 const assocsParsers: Record<string, (apiData: unknown, assocs: ApiAssocs) => unknown> = {};
 
@@ -29,10 +29,34 @@ export function getAssocs<T>(assocs: ApiAssocs, name: string, ids: string[]): T[
   return ids.map((id) => getAssoc(assocs, name, id));
 }
 
+export function initAssocs(apiAssocs: ApiAssocs): Record<string, Record<string, Assoc>> {
+  const result: Record<string, Record<string, Assoc>> = {};
+
+  for (const assocName in apiAssocs) {
+    const assocs = apiAssocs[assocName];
+    result[assocName] = {};
+
+    // NOTE this is a workarround because we use publisher's api
+    // Once we remove publisher's api from reader, we should remove this condition.
+    if (!Array.isArray(assocs)) {
+      result[assocName] = assocs
+      continue;
+    }
+
+    for (const assoc of assocs) {
+      // FIXME we should implement a assoc_id handler because event's return
+      // the occurrence id but the assoc's id is the event_id.
+      result[assocName][assoc.id] = assoc;
+    }
+  }
+
+  return result;
+}
+
 /**
  * Parse all assocs using an ordering system to prevent any clone.
  */
-export function parseAssocs(apiAssocs: ApiAssocs) {
+export function parseAssocs(apiAssocs: Record<string, Record<string, Assoc>>) {
   for (const assocName in apiAssocs) {
     const assocs = apiAssocs[assocName];
 
@@ -49,4 +73,4 @@ export function parseAssocs(apiAssocs: ApiAssocs) {
   }
 }
 
-export type Assoc = unknown;
+export type Assoc = ApiData;
