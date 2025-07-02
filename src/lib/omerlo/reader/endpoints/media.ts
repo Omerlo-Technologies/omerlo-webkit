@@ -10,7 +10,6 @@ import { parseProfileBlock } from './profiles';
 import { parsePerson, parsePersonSummary } from './person';
 import { parseProject, parseProjectSummary } from './projects';
 import { parseProfileType, parseProfileTypeSummary } from './profileType';
-import { parseMenu, parseMenuSummary } from './menu';
 
 export const mediaFetchers = (f: typeof fetch) => {
   return {
@@ -26,8 +25,6 @@ export const mediaFetchers = (f: typeof fetch) => {
     listMediaProjects: listMediaProjects(f),
     getMediaProfileType: getMediaProfileType(f),
     listMediaProfileTypes: listMediaProfileTypes(f),
-    getMediaMenu: getMediaMenu(f),
-    listMediaMenus: listMediaMenus(f)
   };
 };
 
@@ -189,19 +186,5 @@ export function listMediaProfileTypes(f: typeof fetch) {
   return async (params?: Partial<PagingParams>) => {
     const opts = { parser: parseMany(parseProfileTypeSummary), queryParams: params };
     return requestPublisher(f, `media/profile-types`, opts);
-  };
-}
-
-export function listMediaMenus(f: typeof fetch) {
-  return async (params?: Partial<PagingParams>) => {
-    const opts = { parser: parseMany(parseMenuSummary), queryParams: params };
-    return requestPublisher(f, `media/menus`, opts);
-  };
-}
-
-export function getMediaMenu(f: typeof fetch) {
-  return async (key: string) => {
-    const opts = { parser: parseMenu };
-    return requestPublisher(f, `media/menus/${key}`, opts);
   };
 }
