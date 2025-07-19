@@ -7,8 +7,6 @@ over all window's tab, no need to refresh other tabs.
 
 ## Using the omerlo webkit
 
-###
-
 Install the package `omerlo-webkit`
 
 ```sh
