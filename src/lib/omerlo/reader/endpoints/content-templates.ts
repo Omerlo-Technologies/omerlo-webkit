@@ -18,8 +18,8 @@ export interface ContentBlockTemplate {
   id: string;
   key: string;
   visual: {
-    allowed_types: string[];
-    is_enabled: boolean;
+    allowedTypes: string[];
+    isEnabled: boolean;
   };
 }
 
@@ -28,8 +28,8 @@ export function parseContentBlockTemplate(data: ApiData, _assocs: ApiAssocs): Co
     id: data.id,
     key: data.key,
     visual: {
-      allowed_types: data.visual.allowed_types,
-      is_enabled: data.visual.is_enabled
+      allowedTypes: data.visual.allowed_types,
+      isEnabled: data.visual.is_enabled
     }
   };
 }

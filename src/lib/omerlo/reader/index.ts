@@ -7,8 +7,25 @@ import { parseContentSummary } from './endpoints/contents';
 import { parseIssueBlockConfiguration, parseIssueType } from './endpoints/magazines';
 
 export * from './stores/user_session';
-export type * from './endpoints/oauth';
 export type * from './endpoints/accounts';
+export type * from './endpoints/categories';
+export type * from './endpoints/content-templates';
+export type * from './endpoints/contents';
+export type * from './endpoints/device';
+export type * from './endpoints/events';
+export type * from './endpoints/magazines';
+export type * from './endpoints/media';
+export type * from './endpoints/menu';
+export type * from './endpoints/notification';
+export type * from './endpoints/oauth';
+export type * from './endpoints/organizations';
+export type * from './endpoints/person';
+export type * from './endpoints/profileType';
+export type * from './endpoints/profiles';
+export type * from './endpoints/projects';
+export type * from './endpoints/visuals';
+export type * from './endpoints/webpage';
+export type * from './utils/response';
 
 registerAssocParser('categories', parseCategory);
 registerAssocParser('profiles', parseProfileSummary);

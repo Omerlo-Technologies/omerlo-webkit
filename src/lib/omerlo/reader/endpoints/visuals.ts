@@ -3,7 +3,7 @@ import type { ApiAssocs, ApiData } from '$reader/utils/api';
 export type Visual = Image | Slideshow | Video;
 
 export interface Video {
-  type: string;
+  type: 'video';
   url: string;
   captionHtml: string | null;
   captionText: string | null;
@@ -18,12 +18,12 @@ export interface Video {
 }
 
 export interface Slideshow {
-  type: string;
+  type: 'slideshow';
   images: Image[];
 }
 
 export interface Image {
-  type: string;
+  type: 'image';
   url: string;
   captionHtml: string | null;
   captionText: string | null;
