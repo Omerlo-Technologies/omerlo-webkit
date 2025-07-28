@@ -1,4 +1,4 @@
-import { type LocalesMetadata } from '$reader/utils/response';
+import { parseLocalesMetadata, type LocalesMetadata } from '$reader/utils/response';
 import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from '$reader/utils/api';
 import { requestPublisher } from '$reader/utils/request';
 import { buildMeta } from '$reader/utils/parseHelpers';
@@ -35,11 +35,20 @@ export function listCategories(f: typeof fetch) {
 }
 
 export function parseCategory(data: ApiData, _assoc: ApiAssocs): Category {
+  let meta: { locales: LocalesMetadata };
+
+  // NOTE: this is to support publisher public api v2 but also reader api v1
+  if (data.meta) {
+    meta = { locales: parseLocalesMetadata(data.meta) };
+  } else {
+    meta = buildMeta(data.localized.locale);
+  }
+
   return {
     id: data.id,
+    name: data.name,
     svg: data.svg_icon,
-    name: data.localized.name,
-    updatedAt: data.updated_at,
-    meta: buildMeta(data.localized.locale)
+    meta,
+    updatedAt: data.updated_at
   };
 }

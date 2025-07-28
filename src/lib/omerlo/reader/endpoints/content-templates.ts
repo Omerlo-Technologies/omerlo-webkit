@@ -1,4 +1,4 @@
-import type { LocalesMetadata } from '$reader/utils/response';
+import { parseLocalesMetadata, type LocalesMetadata } from '$reader/utils/response';
 import type { ApiAssocs, ApiData } from '$reader/utils/api';
 import { buildMeta } from '$reader/utils/parseHelpers';
 
@@ -35,11 +35,23 @@ export function parseContentBlockTemplate(data: ApiData, _assocs: ApiAssocs): Co
 }
 
 export function parseContentTemplate(data: ApiData, _assocs: ApiAssocs): ContentTemplate {
+  let name: string;
+  let meta: { locales: LocalesMetadata };
+
+  if (data.localized) {
+    // NOTE: this is for retrocompatibility with public publisher api v2
+    name = data.localized.name;
+    meta = buildMeta(data.localized.locale);
+  } else {
+    name = data.name;
+    meta = { locales: parseLocalesMetadata(data.meta) };
+  }
+
   return {
     id: data.id,
     key: data.key,
-    name: data.localized.name,
-    meta: buildMeta(data.localized.locale),
+    name,
+    meta,
     metadata: data.metadata,
     enabledFields: data.enabled_fields,
     updatedAt: data.updated_at

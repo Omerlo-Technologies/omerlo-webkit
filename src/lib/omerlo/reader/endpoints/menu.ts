@@ -15,8 +15,8 @@ export const menuFetchers = (f: typeof fetch) => {
   return {
     getMenu: getMenu(f),
     listMenus: listMenus(f)
-  }
-}
+  };
+};
 
 export function listMenus(f: typeof fetch) {
   return async (params?: Partial<PagingParams>) => {

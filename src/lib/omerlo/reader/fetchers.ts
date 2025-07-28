@@ -7,6 +7,7 @@ import { contentsFetchers } from './endpoints/contents';
 import { mediaFetchers } from './endpoints/media';
 import { organizationFetchers } from './endpoints/organizations';
 import { menuFetchers } from './endpoints/menu';
+import { magazineFetchers } from './endpoints/magazines';
 
 export const fetchers = (f: typeof fetch) => {
   return {
@@ -18,6 +19,7 @@ export const fetchers = (f: typeof fetch) => {
     ...mediaFetchers(f),
     ...organizationFetchers(f),
     ...menuFetchers(f),
-    notifications: notificationFetchers(f)
+    notifications: notificationFetchers(f),
+    magazines: magazineFetchers(f)
   };
 };

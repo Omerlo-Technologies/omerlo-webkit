@@ -39,7 +39,7 @@ export function initAssocs(apiAssocs: ApiAssocs): Record<string, Record<string, 
     // NOTE this is a workarround because we use publisher's api
     // Once we remove publisher's api from reader, we should remove this condition.
     if (!Array.isArray(assocs)) {
-      result[assocName] = assocs
+      result[assocName] = assocs;
       continue;
     }
 
