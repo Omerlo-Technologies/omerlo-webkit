@@ -13,7 +13,7 @@ import {
 import { requestPublisher } from '$reader/utils/request';
 import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from '$reader/utils/api';
 import { getAssoc, getAssocs } from '$reader/utils/assocs';
-import type { LocalesMetadata } from '$reader/utils/response';
+import { parseLocalesMetadata, type LocalesMetadata } from '$reader/utils/response';
 import { buildMeta, parseDate } from '$reader/utils/parseHelpers';
 
 export const contentsFetchers = (f: typeof fetch) => {
@@ -45,7 +45,6 @@ export interface ContentSummary {
   subtitleHtml: string | null;
   subtitleText: string | null;
   visual: Visual | null;
-  seo: ContentSeo;
   meta: {
     locales: LocalesMetadata;
   };
@@ -187,35 +186,63 @@ export function listContents(f: typeof fetch) {
 }
 
 export function parseContentSummary(data: ApiData, assocs: ApiAssocs): ContentSummary {
-  return {
-    id: data.id,
-    template: getAssoc<ContentTemplate>(assocs, 'templates', data.template_id),
-    canonicalDomain: data.canonical_domain,
-    canonicalUrl: data.canonical_url,
-    publishedAt: parseDate(data.published_at),
-    visibility: data.visibility,
-    categories: getAssocs<Category>(assocs, 'categories', data.category_ids),
-    showPublishedAt: data.show_published_at,
-    updatedAt: new Date(data.updated_at),
-    titleHtml: data.localized.title_html,
-    titleText: data.localized.title_text,
-    leadHtml: data.localized.lead_html,
-    leadText: data.localized.lead_text,
-    subtitleHtml: data.localized.subtitle_html,
-    subtitleText: data.localized.subtitle_text,
-    seo: {
-      title: data.localized.seo.title,
-      description: data.localized.seo.description
-    },
-    visual: parseVisual(data.visual, assocs),
-    meta: buildMeta(data.localized.locale)
-  };
+  if (data.localized) {
+    // NOTE: This is to support publisher public api v2
+    return {
+      id: data.id,
+      template: getAssoc<ContentTemplate>(assocs, 'templates', data.template_id),
+      canonicalDomain: data.canonical_domain,
+      canonicalUrl: data.canonical_url,
+      publishedAt: parseDate(data.published_at),
+      visibility: data.visibility,
+      categories: getAssocs<Category>(assocs, 'categories', data.category_ids),
+      showPublishedAt: data.show_published_at,
+      updatedAt: new Date(data.updated_at),
+      titleHtml: data.localized.title_html,
+      titleText: data.localized.title_text,
+      leadHtml: data.localized.lead_html,
+      leadText: data.localized.lead_text,
+      subtitleHtml: data.localized.subtitle_html,
+      subtitleText: data.localized.subtitle_text,
+      visual: parseVisual(data.visual, assocs),
+      meta: buildMeta(data.localized.locale)
+    };
+  } else {
+    return {
+      id: data.id,
+      template: getAssoc<ContentTemplate>(assocs, 'content_templates', data.template_id),
+      canonicalDomain: data.canonical_domain,
+      canonicalUrl: data.canonical_url,
+      publishedAt: parseDate(data.published_at),
+      visibility: data.visibility,
+      categories: getAssocs<Category>(assocs, 'categories', data.category_ids),
+      showPublishedAt: data.show_published_at,
+      updatedAt: new Date(data.updated_at),
+      titleHtml: data.title_html,
+      titleText: data.title_text,
+      leadHtml: data.lead_html,
+      leadText: data.lead_text,
+      subtitleHtml: data.subtitle_html,
+      subtitleText: data.subtitle_text,
+      visual: parseVisual(data.visual, assocs),
+      meta: { locales: parseLocalesMetadata(data.meta) }
+    };
+  }
 }
 
 export function parseContent(data: ApiData, assocs: ApiAssocs): Content {
+  let seo: ContentSeo;
+
+  if (data.localized) {
+    seo = { title: data.localized.seo.title, description: data.localized.seo.description };
+  } else {
+    seo = { title: data.seo.title, description: data.seo.description };
+  }
+
   return {
     ...parseContentSummary(data, assocs),
     metadata: data.metadata,
+    seo,
     blocks: data.localized.blocks
       .map((block: ApiData) => parseContentBlock(block, assocs))
       .filter(Boolean) as ContentBlock[]

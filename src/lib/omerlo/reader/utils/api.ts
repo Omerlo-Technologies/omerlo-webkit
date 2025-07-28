@@ -11,7 +11,7 @@ export async function parseApiResponse<T>(
     meta = null;
 
   if (response.ok) {
-    const assocs = initAssocs(payload.assocs)
+    const assocs = initAssocs(payload.assocs);
     parseAssocs(assocs);
     meta = payload.meta;
     data = parser(payload.data, assocs);

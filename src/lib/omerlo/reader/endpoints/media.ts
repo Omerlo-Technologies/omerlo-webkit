@@ -24,7 +24,7 @@ export const mediaFetchers = (f: typeof fetch) => {
     getMediaProject: getMediaProject(f),
     listMediaProjects: listMediaProjects(f),
     getMediaProfileType: getMediaProfileType(f),
-    listMediaProfileTypes: listMediaProfileTypes(f),
+    listMediaProfileTypes: listMediaProfileTypes(f)
   };
 };
 
