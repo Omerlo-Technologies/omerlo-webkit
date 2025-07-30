@@ -30,19 +30,19 @@ export interface PersonSummary {
   updatedAt: Date;
 }
 
-export function parsePersonSummary(data: ApiData, _assocs: ApiAssocs): PersonSummary {
+export function parsePersonSummary(data: ApiData, assocs: ApiAssocs): PersonSummary {
   return {
     id: data.id,
-    profileType: getAssoc<ProfileType>(_assocs, 'profile_types', data.profile_type_id),
+    profileType: getAssoc<ProfileType>(assocs, 'profile_types', data.profile_type_id),
     kind: 'person',
     firstName: data.first_name,
     lastName: data.last_name,
     otherName: data.other_name,
     pronoun: data.pronoun,
     avatarImageURL: data.avatar_image_url,
-    meta: buildMeta(data.localized.locale),
-    summaryHtml: data.localized.summary_html,
-    summaryText: data.localized.summary_text,
+    meta: buildMeta(data.localized?.locale),
+    summaryHtml: data.localized?.summary_html,
+    summaryText: data.localized?.summary_text,
     updatedAt: new Date(data.updated_at)
   };
 }

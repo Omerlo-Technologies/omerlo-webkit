@@ -42,10 +42,10 @@ export interface Organization extends OrganizationSummary {
   description: ProfileDescription | null;
 }
 
-export function parseOrganizationSummary(data: ApiData, _assocs: ApiAssocs): OrganizationSummary {
+export function parseOrganizationSummary(data: ApiData, assocs: ApiAssocs): OrganizationSummary {
   return {
     id: data.id,
-    profileType: getAssoc<ProfileType>(_assocs, 'profile_types', data.profile_type_id),
+    profileType: getAssoc<ProfileType>(assocs, 'profile_types', data.profile_type_id),
     kind: 'organization',
     name: data.name,
     logoImgURL: data.logo_image_url,

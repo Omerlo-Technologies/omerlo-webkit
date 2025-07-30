@@ -15,6 +15,8 @@ import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from '$rea
 import { getAssoc, getAssocs } from '$reader/utils/assocs';
 import { parseLocalesMetadata, type LocalesMetadata } from '$reader/utils/response';
 import { buildMeta, parseDate } from '$reader/utils/parseHelpers';
+import type { PersonSummary } from './person';
+import type { OrganizationSummary } from './organizations';
 
 export const contentsFetchers = (f: typeof fetch) => {
   return {
@@ -48,7 +50,7 @@ export interface ContentSummary {
   meta: {
     locales: LocalesMetadata;
   };
-  // TODO: authors
+  authors: (PersonSummary | OrganizationSummary)[];
 }
 
 export interface Content extends ContentSummary {
@@ -205,7 +207,12 @@ export function parseContentSummary(data: ApiData, assocs: ApiAssocs): ContentSu
       subtitleHtml: data.localized.subtitle_html,
       subtitleText: data.localized.subtitle_text,
       visual: parseVisual(data.visual, assocs),
-      meta: buildMeta(data.localized.locale)
+      meta: buildMeta(data.localized.locale),
+      authors: getAssocs<PersonSummary | OrganizationSummary>(
+        assocs,
+        'profiles',
+        data.localized.author_ids
+      )
     };
   } else {
     return {
@@ -225,7 +232,8 @@ export function parseContentSummary(data: ApiData, assocs: ApiAssocs): ContentSu
       subtitleHtml: data.subtitle_html,
       subtitleText: data.subtitle_text,
       visual: parseVisual(data.visual, assocs),
-      meta: { locales: parseLocalesMetadata(data.meta) }
+      meta: { locales: parseLocalesMetadata(data.meta) },
+      authors: getAssocs<PersonSummary | OrganizationSummary>(assocs, 'profiles', data.author_ids)
     };
   }
 }

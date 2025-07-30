@@ -1,4 +1,13 @@
-export function buildMeta(locale: string) {
+export function buildMeta(locale: string | null) {
+  if (!locale) {
+    return {
+      locales: {
+        available: ['en'],
+        current: 'en'
+      }
+    };
+  }
+
   return {
     locales: {
       available: [locale],
