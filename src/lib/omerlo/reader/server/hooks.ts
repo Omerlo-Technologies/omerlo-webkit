@@ -81,6 +81,7 @@ export const proxyHook: Handle = async ({ event, resolve }) => {
           `/api/publisher/${prefix}`,
           `/api/public/publisher/v2/${config.resourcePath}/${config.idKey}/`
         );
+
         return handleApiProxy({ event, resolve });
       }
     }
