@@ -68,7 +68,7 @@ export type ContentBlockData = {
   id: string;
   kind: 'data';
   contentType: string;
-  data: unknown;
+  data: string;
   visual: Visual | null;
   template: ContentBlockTemplate | null;
 };
