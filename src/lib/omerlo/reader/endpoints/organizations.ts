@@ -25,7 +25,7 @@ export interface OrganizationSummary {
   profileType: ProfileType;
   kind: string;
   name: string;
-  logoImgURL: string | null;
+  profileImageURL: string | null;
   meta: {
     locales: LocalesMetadata;
   };
@@ -35,7 +35,7 @@ export interface OrganizationSummary {
 }
 
 export interface Organization extends OrganizationSummary {
-  coverImgURL: string | null;
+  coverImageUrl: string | null;
   categories: Category[];
   contact: ProfileContact | null;
   address: ProfileAddress | null;
@@ -48,7 +48,7 @@ export function parseOrganizationSummary(data: ApiData, assocs: ApiAssocs): Orga
     profileType: getAssoc<ProfileType>(assocs, 'profile_types', data.profile_type_id),
     kind: 'organization',
     name: data.name,
-    logoImgURL: data.logo_image_url,
+    profileImageURL: data.logo_image_url,
     meta: buildMeta(data.localized.locale),
     summaryHtml: data.localized.summary_html,
     summaryText: data.localized.summary_text,
@@ -69,7 +69,7 @@ export function parseOrganization(data: ApiData, assocs: ApiAssocs): Organizatio
 
   return {
     ...parseOrganizationSummary(data, assocs),
-    coverImgURL: data.cover_image_url,
+    coverImageUrl: data.cover_image_url,
     categories: getAssocs<Category>(assocs, 'categories', data.category_ids),
     contact,
     address,

@@ -17,7 +17,8 @@ export interface ProjectSummary {
   id: string;
   profileType: ProfileType;
   kind: string;
-  logoImgUrl: string | null;
+  profileImageURL: string | null;
+  coverImageURL: string | null;
   meta: {
     locales: LocalesMetadata;
   };
@@ -32,7 +33,8 @@ export function parseProjectSummary(data: ApiData, assocs: ApiAssocs): ProjectSu
     id: data.id,
     profileType: getAssoc<ProfileType>(assocs, 'profile_types', data.profile_type_id),
     kind: 'project',
-    logoImgUrl: data.logo_image_url,
+    profileImageURL: data.logo_image_url,
+    coverImageURL: data.cover_image_url,
     meta: buildMeta(data.localized),
     name: data.localized.name,
     summaryHtml: data.localized.summary_html,
@@ -42,7 +44,7 @@ export function parseProjectSummary(data: ApiData, assocs: ApiAssocs): ProjectSu
 }
 
 export interface Project extends ProjectSummary {
-  coverImgUrl: string | null;
+  coverImageUrl: string | null;
   categories: Category[];
   contact: ProfileContact | null;
   address: ProfileAddress | null;
@@ -62,7 +64,7 @@ export function parseProject(data: ApiData, assocs: ApiAssocs): Project {
 
   return {
     ...parseProjectSummary(data, assocs),
-    coverImgUrl: data.cover_image_url,
+    coverImageUrl: data.cover_image_url,
     categories: getAssocs<Category>(assocs, 'categories', data.category_ids),
     contact,
     address,
