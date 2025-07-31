@@ -1,7 +1,11 @@
-import { parsePersonSummary, type PersonSummary } from './person';
-import { parseProjectSummary, type ProjectSummary } from './projects';
+import { parsePersonSummary, type Person, type PersonSummary } from './person';
+import { parseProjectSummary, type Project, type ProjectSummary } from './projects';
 import { parseEventSummary, type EventSummary } from './events';
-import { parseOrganizationSummary, type OrganizationSummary } from './organizations';
+import {
+  parseOrganizationSummary,
+  type Organization,
+  type OrganizationSummary
+} from './organizations';
 import type { ApiAssocs, ApiData } from '$reader/utils/api';
 import type { LocalesMetadata } from '$reader/utils/response';
 import { getAssocs } from '$reader/utils/assocs';
@@ -16,6 +20,7 @@ import {
 } from './visuals';
 import { buildMeta } from '$reader/utils/parseHelpers';
 
+export type Profile = Person | Project | Event | Organization;
 export type ProfileSummary = PersonSummary | ProjectSummary | EventSummary | OrganizationSummary;
 export type ProfileBlockKind = ProfileBlockContents | ProfileBlockRelations;
 
