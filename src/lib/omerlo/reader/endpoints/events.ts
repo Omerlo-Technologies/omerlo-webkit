@@ -14,7 +14,8 @@ export interface EventSummary {
   kind: string;
   type: string;
   isAllDay: boolean;
-  logoImageURL: string | null;
+  profileImageURL: string | null;
+  coverImageURL: string | null;
   subscriptionURL: string | null;
   meta: {
     locales: LocalesMetadata;
@@ -28,7 +29,6 @@ export interface EventSummary {
 }
 
 export interface Event extends EventSummary {
-  coverImageURL: string | null;
   categories: Category[];
   address: ProfileAddress | null;
   contact: ProfileContact | null;
@@ -45,8 +45,9 @@ export function parseEventSummary(data: ApiData, assocs: ApiAssocs): EventSummar
     kind: 'event',
     type: data.type,
     isAllDay: data.is_all_day,
-    logoImageURL: data.logo_image_url || null,
-    subscriptionURL: data.subscription_url || null,
+    profileImageURL: data.logo_image_url,
+    coverImageURL: data.cover_image_url,
+    subscriptionURL: data.subscription_url,
     name,
     summaryHtml,
     summaryText,
@@ -70,7 +71,6 @@ export function parseEvent(data: ApiData, assocs: ApiAssocs): Event {
 
   return {
     ...parseEventSummary(data, assocs),
-    coverImageURL: data.cover_image_url || null,
     categories: getAssocs<Category>(assocs, 'categories', data.category_ids),
     address,
     contact,
