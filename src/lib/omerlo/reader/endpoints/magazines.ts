@@ -3,7 +3,7 @@ import { parseVisual, type Visual } from './visuals';
 import { parseMany, type ApiAssocs, type ApiData } from '$reader/utils/api';
 import { getAssoc } from '$reader/utils/assocs';
 import { request } from '$reader/utils/request';
-import { parseContent, type Content } from './contents';
+import { parseContent, type Content, type ContentSummary } from './contents';
 
 export const magazineFetchers = (f: typeof fetch) => {
   return {
@@ -239,5 +239,5 @@ export interface IssueBlockConfiguration {
 
 export interface IssueBlockSlot {
   id: string;
-  content: Content;
+  content: ContentSummary;
 }
