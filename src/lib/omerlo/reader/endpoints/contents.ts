@@ -32,6 +32,7 @@ export interface ContentSeo {
 
 export interface ContentSummary {
   id: string;
+  metadata: Record<string, string>;
   template: ContentTemplate;
   canonicalDomain: string | null;
   canonicalUrl: string | null;
@@ -54,7 +55,6 @@ export interface ContentSummary {
 }
 
 export interface Content extends ContentSummary {
-  metadata: Record<string, string>;
   blocks: ContentBlock[];
 }
 
