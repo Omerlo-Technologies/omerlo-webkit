@@ -195,7 +195,7 @@ export interface IssueType {
 
 export interface IssueSectionSummary {
   id: string;
-  name: string;
+  name: string | null;
   advertisingKey: string | null;
   color: string | null;
   visual: Visual | null;
