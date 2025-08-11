@@ -49,22 +49,22 @@ export function parseOrganizationSummary(data: ApiData, assocs: ApiAssocs): Orga
     kind: 'organization',
     name: data.name,
     profileImageURL: data.logo_image_url,
-    meta: buildMeta(data.localized.locale),
-    summaryHtml: data.localized.summary_html,
-    summaryText: data.localized.summary_text,
+    meta: buildMeta(data.localized?.locale),
+    summaryHtml: data.localized?.summary_html,
+    summaryText: data.localized?.summary_text,
     updatedAt: new Date(data.updated_at)
   };
 }
 
 export function parseOrganization(data: ApiData, assocs: ApiAssocs): Organization {
-  const contact = data.localized.contact
-    ? parseProfileContact(data.localized.contact, assocs)
+  const contact = data.localized_contact
+    ? parseProfileContact(data.localized_contact, assocs)
     : null;
   const address = data.localized_address
     ? parseProfileAddress(data.localized_address, assocs)
     : null;
-  const description = data.localized.description
-    ? parseProfileDescription(data.localized.description, assocs)
+  const description = data.localized_description
+    ? parseProfileDescription(data.localized_description, assocs)
     : null;
 
   return {

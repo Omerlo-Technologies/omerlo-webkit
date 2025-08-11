@@ -35,10 +35,10 @@ export function parseProjectSummary(data: ApiData, assocs: ApiAssocs): ProjectSu
     kind: 'project',
     profileImageURL: data.logo_image_url,
     coverImageURL: data.cover_image_url,
-    meta: buildMeta(data.localized),
-    name: data.localized.name,
-    summaryHtml: data.localized.summary_html,
-    summaryText: data.localized.summary_text,
+    meta: buildMeta(data.localized?.locale),
+    name: data.localized?.name,
+    summaryHtml: data.localized?.summary_html,
+    summaryText: data.localized?.summary_text,
     updatedAt: new Date(data.updated_at)
   };
 }
