@@ -1,5 +1,5 @@
 import { type ApiAssocs, type ApiData } from '$reader/utils/api';
-import type { LocalesMetadata } from '$reader/utils/response';
+import { parseLocalesMetadata, type LocalesMetadata } from '$reader/utils/response';
 import { buildMeta } from '$reader/utils/parseHelpers';
 
 export interface ProfileTypeSummary {
@@ -14,12 +14,20 @@ export interface ProfileTypeSummary {
 }
 
 export function parseProfileTypeSummary(data: ApiData, _assocs: ApiAssocs): ProfileTypeSummary {
+  let localizedField: { name: string; meta: { locales: LocalesMetadata } };
+
+  // NOTE: This is to support publisher public api v2
+  if (data.localized) {
+    localizedField = { name: data.localized.name, meta: buildMeta(data.localized.locale) };
+  } else {
+    localizedField = { name: data.name, meta: { locales: parseLocalesMetadata(data.meta) } };
+  }
+
   return {
+    ...localizedField,
     id: data.id,
     kind: data.kind,
     key: data.key,
-    name: data.localized.name,
-    meta: buildMeta(data.localized.locale),
     updatedAt: new Date(data.updated_at)
   };
 }

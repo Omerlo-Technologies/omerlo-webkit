@@ -208,6 +208,7 @@ export function parseContentSummary(data: ApiData, assocs: ApiAssocs): ContentSu
       subtitleText: data.localized.subtitle_text,
       visual: parseVisual(data.visual, assocs),
       meta: buildMeta(data.localized.locale),
+      metadata: {},
       authors: getAssocs<PersonSummary | OrganizationSummary>(
         assocs,
         'profiles',
@@ -233,6 +234,7 @@ export function parseContentSummary(data: ApiData, assocs: ApiAssocs): ContentSu
       subtitleText: data.subtitle_text,
       visual: parseVisual(data.visual, assocs),
       meta: { locales: parseLocalesMetadata(data.meta) },
+      metadata: {},
       authors: getAssocs<PersonSummary | OrganizationSummary>(assocs, 'profiles', data.author_ids)
     };
   }
