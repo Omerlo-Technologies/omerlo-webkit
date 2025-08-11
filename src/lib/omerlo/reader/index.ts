@@ -27,15 +27,17 @@ export type * from './endpoints/visuals';
 export type * from './endpoints/webpage';
 export type * from './utils/response';
 
-registerAssocParser('categories', parseCategory);
-registerAssocParser('profiles', parseProfileSummary);
-registerAssocParser('content_templates', parseContentTemplate);
-registerAssocParser('profile_types', parseProfileTypeSummary);
-registerAssocParser('profile_block_types', parseProfileBlock);
-registerAssocParser('content_block_templates', parseContentBlockTemplate);
-registerAssocParser('contents', parseContentSummary);
-registerAssocParser('issue_types', parseIssueType);
-registerAssocParser('issue_block_configurations', parseIssueBlockConfiguration);
+export function initReader() {
+  registerAssocParser('categories', parseCategory);
+  registerAssocParser('profiles', parseProfileSummary);
+  registerAssocParser('content_templates', parseContentTemplate);
+  registerAssocParser('profile_types', parseProfileTypeSummary);
+  registerAssocParser('profile_block_types', parseProfileBlock);
+  registerAssocParser('content_block_templates', parseContentBlockTemplate);
+  registerAssocParser('contents', parseContentSummary);
+  registerAssocParser('issue_types', parseIssueType);
+  registerAssocParser('issue_block_configurations', parseIssueBlockConfiguration);
 
-// NOTE: This one is for retro compatibility with publisher public api v2
-registerAssocParser('templates', parseContentTemplate);
+  // NOTE: This one is for retro compatibility with publisher public api v2
+  registerAssocParser('templates', parseContentTemplate);
+}
