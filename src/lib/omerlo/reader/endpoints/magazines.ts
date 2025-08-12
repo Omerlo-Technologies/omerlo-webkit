@@ -3,7 +3,7 @@ import { parseVisual, type Visual } from './visuals';
 import { parseMany, type ApiAssocs, type ApiData } from '$reader/utils/api';
 import { getAssoc } from '$reader/utils/assocs';
 import { request } from '$reader/utils/request';
-import { parseContent, parseContentSummary, type ContentSummary } from './contents';
+import { parseContentSummary, type ContentSummary } from './contents';
 
 export const magazineFetchers = (f: typeof fetch) => {
   return {
@@ -37,7 +37,7 @@ export function contentsSearch(f: typeof fetch) {
 
 export function sectionContentsFetcher(f: typeof fetch) {
   return async (sectionId: string) => {
-    const opts = { parser: parseMany(parseContent) };
+    const opts = { parser: parseMany(parseContentSummary) };
     return request(f, `/issues/sections/${sectionId}/contents`, opts);
   };
 }
