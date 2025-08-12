@@ -60,7 +60,7 @@ Then you need to use the component `OmerloWebkit` and give him the `userSession`
 ```ts
 // +layout.svelte
 <script lang="ts">
-  import { OmerloWebkit } from 'omerlo-webkit'
+  import { OmerloWebkit } from '$omerlo'
   let { data, children } = $props();
 </script>
 
@@ -76,7 +76,7 @@ To use reader API, you can use the function `useReader` passing the sveltekit `f
 ```ts
 // +page.ts
 import type { PageLoad } from './$types';
-import { useReader } from 'omerlo-webkit';
+import { useReader } from '$omerlo';
 
 export const load: PageLoad = async ({ fetch }) => {
   const oauthProviders = await useReader(fetch).listOauthProviders();
