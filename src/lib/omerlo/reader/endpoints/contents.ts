@@ -26,8 +26,8 @@ export const contentsFetchers = (f: typeof fetch) => {
 };
 
 export interface ContentSeo {
-  title: string;
-  description: string;
+  title: string | null;
+  description: string | null;
 }
 
 export interface ContentSummary {
@@ -55,6 +55,7 @@ export interface ContentSummary {
 }
 
 export interface Content extends ContentSummary {
+  seo: ContentSeo;
   blocks: ContentBlock[];
 }
 
