@@ -96,7 +96,7 @@ export type ContentBlockQuote = {
 export type ContentBlockRelatedContents = {
   id: string;
   kind: 'related-contents';
-  contents: Content[];
+  contents: ContentSummary[];
   visual: Visual | null;
   template: ContentBlockTemplate | null;
 };
@@ -285,8 +285,8 @@ function getBlockTemplate(data: ApiData, assocs: ApiAssocs): ContentBlockTemplat
     : null;
 }
 
-function getBlockContent(data: ApiData, assocs: ApiAssocs): Content[] | [] {
-  return data.related_contents ? getAssocs<Content>(assocs, 'contents', data.related_contents) : [];
+function getBlockContents(data: ApiData, assocs: ApiAssocs): ContentSummary[] | [] {
+  return data.related_contents ? getAssocs<ContentSummary>(assocs, 'contents', data.related_contents) : [];
 }
 
 function parseContentBlockRichtext(data: ApiData, assocs: ApiAssocs): ContentBlockRichtext {
@@ -324,7 +324,8 @@ function parseContentBlockRelatedContents(
   data: ApiData,
   assocs: ApiAssocs
 ): ContentBlockRelatedContents {
-  const contents = getBlockContent(data, assocs);
+  const contents = getBlockContents(data, assocs);
+
   return {
     ...baseBlock(data, assocs),
     contents

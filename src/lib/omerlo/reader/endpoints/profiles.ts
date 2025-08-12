@@ -9,7 +9,7 @@ import {
 import type { ApiAssocs, ApiData } from '$reader/utils/api';
 import type { LocalesMetadata } from '$reader/utils/response';
 import { getAssocs } from '$reader/utils/assocs';
-import type { Content } from './contents';
+import type { ContentSummary } from './contents';
 import {
   type Image,
   type Slideshow,
@@ -98,7 +98,7 @@ export type ProfileBlock = {
 };
 
 export interface ProfileBlockContents extends ProfileBlock {
-  contents: Content[];
+  contents: ContentSummary[];
 }
 
 export interface ProfileBlockRelations extends ProfileBlock {
@@ -108,7 +108,7 @@ export interface ProfileBlockRelations extends ProfileBlock {
 export function parseProfileBlock(data: ApiData, assocs: ApiAssocs): ProfileBlockKind {
   if (data.kind === 'selected_content') {
     const contents = data.content_ids
-      ? getAssocs<Content>(assocs, 'contents', data.content_ids)
+      ? getAssocs<ContentSummary>(assocs, 'contents', data.content_ids)
       : [];
     return {
       ...profileBlockParser(data, assocs),
