@@ -143,10 +143,7 @@ export function parseIssueType(data: ApiData, _assocs: ApiAssocs): IssueType {
   };
 }
 
-export function parseIssueBlockConfiguration(
-  data: ApiData,
-  assocs: ApiAssocs
-): IssueBlockConfiguration {
+export function parseIssueBlockConfiguration(data: ApiData): IssueBlockConfiguration {
   return {
     id: data.id,
     key: data.key,
