@@ -3,7 +3,7 @@ import { parseVisual, type Visual } from './visuals';
 import { parseMany, type ApiAssocs, type ApiData } from '$reader/utils/api';
 import { getAssoc } from '$reader/utils/assocs';
 import { request } from '$reader/utils/request';
-import { parseContent, type Content, type ContentSummary } from './contents';
+import { parseContent, parseContentSummary, type ContentSummary } from './contents';
 
 export const magazineFetchers = (f: typeof fetch) => {
   return {
@@ -125,7 +125,7 @@ export function parseIssueBlockSlot(data: ApiData, assocs: ApiAssocs): IssueBloc
 
 export function parseIssueSectionContent(data: ApiData, assocs: ApiAssocs): SectionContent {
   return {
-    ...parseContent(data, assocs),
+    ...parseContentSummary(data, assocs),
     section: getAssoc<IssueSectionSummary>(assocs, 'issue_sections', data.section_id)
   };
 }
@@ -225,7 +225,7 @@ export interface IssueBlock {
   updatedAt: Date;
 }
 
-export interface SectionContent extends Content {
+export interface SectionContent extends ContentSummary {
   section: IssueSectionSummary;
 }
 
