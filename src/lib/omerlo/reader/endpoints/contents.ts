@@ -287,7 +287,9 @@ function getBlockTemplate(data: ApiData, assocs: ApiAssocs): ContentBlockTemplat
 }
 
 function getBlockContents(data: ApiData, assocs: ApiAssocs): ContentSummary[] | [] {
-  return data.related_contents ? getAssocs<ContentSummary>(assocs, 'contents', data.related_contents) : [];
+  return data.related_contents
+    ? getAssocs<ContentSummary>(assocs, 'contents', data.related_contents)
+    : [];
 }
 
 function parseContentBlockRichtext(data: ApiData, assocs: ApiAssocs): ContentBlockRichtext {
