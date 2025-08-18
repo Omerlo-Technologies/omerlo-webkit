@@ -96,7 +96,7 @@ export type ContentBlockQuote = {
 
 export type ContentBlockRelatedContents = {
   id: string;
-  kind: 'related-contents';
+  kind: 'related_contents';
   contents: ContentSummary[];
   visual: Visual | null;
   template: ContentBlockTemplate | null;
@@ -159,7 +159,7 @@ export type ContentBlockType =
   | 'data'
   | 'html'
   | 'quote'
-  | 'related-contents'
+  | 'related_contents'
   | 'question'
   | 'image'
   | 'slideshow'
@@ -207,7 +207,7 @@ export function parseContentSummary(data: ApiData, assocs: ApiAssocs): ContentSu
       leadText: data.localized.lead_text,
       subtitleHtml: data.localized.subtitle_html,
       subtitleText: data.localized.subtitle_text,
-      visual: parseVisual(data.visual, assocs),
+      visual: parseVisual(data.localized.visual, assocs),
       meta: buildMeta(data.localized.locale),
       metadata: {},
       authors: getAssocs<PersonSummary | OrganizationSummary>(
@@ -268,7 +268,7 @@ const ContentBlockParser: Record<
   data: parseContentBlockData,
   html: parseContentBlockHTML,
   quote: parseContentBlockQuote,
-  'related-contents': parseContentBlockRelatedContents,
+  related_contents: parseContentBlockRelatedContents,
   question: parseContentBlockQuestion,
   image: parseContentBlockImage,
   slideshow: parseContentBlockSlideshow,
@@ -287,9 +287,7 @@ function getBlockTemplate(data: ApiData, assocs: ApiAssocs): ContentBlockTemplat
 }
 
 function getBlockContents(data: ApiData, assocs: ApiAssocs): ContentSummary[] | [] {
-  return data.related_contents
-    ? getAssocs<ContentSummary>(assocs, 'contents', data.related_contents)
-    : [];
+  return data.content_ids ? getAssocs<ContentSummary>(assocs, 'contents', data.content_ids) : [];
 }
 
 function parseContentBlockRichtext(data: ApiData, assocs: ApiAssocs): ContentBlockRichtext {
