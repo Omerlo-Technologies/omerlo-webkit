@@ -4,41 +4,9 @@ import { request } from '$reader/utils/request';
 export const accountsFetchers = (f: typeof fetch) => {
   return {
     userInfo: getUserInfo(f),
-    userEntitlements: getUserEntitlements(f),
-    verifyAccount: verifyAccount(f),
-    validateAccount: validateAccount(f)
+    userEntitlements: getUserEntitlements(f)
   };
 };
-
-export interface ValidateAccountParams {
-  email: string;
-  callbackUrl: string;
-}
-
-//
-// Validate an account using the bearer token.
-//
-export function validateAccount(f: typeof fetch) {
-  return (params: ValidateAccountParams) => {
-    const queryParams = { email: params.email, callback_url: params.callbackUrl };
-    const opts = { queryParams, method: 'post' as const };
-    request(f, '/account/validate', opts);
-  };
-}
-
-export interface VerifyAccountParams {
-  verification_token: string;
-}
-
-//
-// Verify an account using the signed JWT token generate on account validation.
-//
-export function verifyAccount(f: typeof fetch) {
-  return (params: VerifyAccountParams) => {
-    const opts = { queryParams: params };
-    request(f, '/account/verify', opts);
-  };
-}
 
 //
 // Get user's informations associated to the bearer token.

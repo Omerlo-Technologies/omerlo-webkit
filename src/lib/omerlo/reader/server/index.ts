@@ -5,3 +5,4 @@ export const handleUserToken = Hooks.handleUserToken;
 export * from './token';
 export * from './utils';
 export * from './email';
+export * from './oauth';
