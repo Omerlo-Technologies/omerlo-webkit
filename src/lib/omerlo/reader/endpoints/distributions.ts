@@ -2,7 +2,7 @@ import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from '$rea
 import { getAssoc } from '$reader/utils/assocs';
 import { parseDate } from '$reader/utils/parseHelpers';
 import { request } from '$reader/utils/request';
-import type { Issue } from './magazines';
+import type { IssueSummary } from './magazines';
 
 export const distributionFetchers = (f: typeof fetch) => {
   return {
@@ -19,7 +19,7 @@ export function releasesFetcher(f: typeof fetch) {
 
 export interface Release {
   id: string;
-  issue: Issue;
+  issue: IssueSummary;
   startsAt: Date;
   endsAt: Date | null;
   updatedAt: Date;
@@ -28,7 +28,7 @@ export interface Release {
 export function parseRelease(data: ApiData, assocs: ApiAssocs): Release {
   return {
     id: data.id,
-    issue: getAssoc<Issue>(assocs, 'issues', data.issue_id),
+    issue: getAssoc<IssueSummary>(assocs, 'issues', data.issue_id),
     // isPublished: data.is_published,
     startsAt: new Date(data.starts_at),
     endsAt: parseDate(data.ends_at),
