@@ -178,6 +178,8 @@ export function getContent(f: typeof fetch) {
   return async (id: string) => {
     const opts = { parser: parseContent };
     return requestPublisher(f, `media/contents/${id}`, opts);
+    // TODO: switch to Reader API (this API is already completed and documented)
+    // return request(f, `/contents/${id}`, opts)
   };
 }
 

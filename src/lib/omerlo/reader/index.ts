@@ -38,6 +38,9 @@ export function initReader() {
   registerAssocParser('issue_types', parseIssueType);
   registerAssocParser('issue_block_configurations', parseIssueBlockConfiguration);
 
-  // NOTE: This one is for retro compatibility with publisher public api v2
+  // NOTE: Those ones are for retro compatibility with publisher public api v2
+  // Reason is we renamed some assocs keys in Reader API that are different
+  // from Publisher public API V2
   registerAssocParser('templates', parseContentTemplate);
+  registerAssocParser('block_templates', parseContentBlockTemplate);
 }
