@@ -1,13 +1,13 @@
 # Omerlo WebKit
 
-This webkit is a wapper arround Omerlo's API to create quickly a website using Omerlo.
+This webkit is a wrapper around Omerlo's API to create quickly a website using Omerlo solutions.
 
-The user's session and tokens will be managed by Omerlo Webkit. The connection state is dispatched
+User's session and tokens will be managed by Omerlo Webkit. The connection state is dispatched
 over all window's tab, no need to refresh other tabs.
 
 ## Using the omerlo webkit
 
-Install the package `omerlo-webkit`
+Install `omerlo-webkit` package
 
 ```sh
 npm i @omerlo/omerlo-webkit

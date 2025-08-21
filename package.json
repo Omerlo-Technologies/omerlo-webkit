@@ -64,7 +64,7 @@
     "typescript-eslint": "^8.0.0",
     "vite": "^5.0.11"
   },
-  "description": "This webkit is a wapper arround Omerlo's API to create quickly a website using Omerlo.",
+  "description": "Omerlo's API wrapper to help developing blazing fast website.",
   "main": "eslint.config.js",
   "directories": {},
   "repository": {
