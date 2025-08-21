@@ -45,7 +45,8 @@ export function parseEventSummary(data: ApiData, assocs: ApiAssocs): EventSummar
     kind: 'event',
     type: data.type,
     isAllDay: data.is_all_day,
-    profileImageURL: data.logo_image_url,
+    // NOTE remove logo_image_url once using reader api
+    profileImageURL: data.logo_image_url || data.profile_image_url,
     coverImageURL: data.cover_image_url,
     subscriptionURL: data.subscription_url,
     name,

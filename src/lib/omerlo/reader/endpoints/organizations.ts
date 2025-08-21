@@ -48,7 +48,8 @@ export function parseOrganizationSummary(data: ApiData, assocs: ApiAssocs): Orga
     profileType: getAssoc<ProfileType>(assocs, 'profile_types', data.profile_type_id),
     kind: 'organization',
     name: data.name,
-    profileImageURL: data.logo_image_url,
+    // NOTE remove logo_image_url once using reader api
+    profileImageURL: data.logo_image_url || data.profile_image_url,
     meta: buildMeta(data.localized?.locale),
     summaryHtml: data.localized?.summary_html,
     summaryText: data.localized?.summary_text,

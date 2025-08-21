@@ -33,7 +33,8 @@ export function parseProjectSummary(data: ApiData, assocs: ApiAssocs): ProjectSu
     id: data.id,
     profileType: getAssoc<ProfileType>(assocs, 'profile_types', data.profile_type_id),
     kind: 'project',
-    profileImageURL: data.logo_image_url,
+    // NOTE remove logo_image_url once using reader api
+    profileImageURL: data.logo_image_url || data.profile_image_url,
     coverImageURL: data.cover_image_url,
     meta: buildMeta(data.localized?.locale),
     name: data.localized?.name,
