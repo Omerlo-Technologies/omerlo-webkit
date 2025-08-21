@@ -194,15 +194,16 @@ export function listContents(f: typeof fetch) {
 }
 
 export function parseContentSummary(data: ApiData, assocs: ApiAssocs): ContentSummary {
+  const metadata = (data.metadata ?? []).reduce(
+    (acc: Record<string, string>, { key, value }: { key: string; value: string }) => {
+      acc[key] = value;
+      return acc;
+    },
+    {}
+  );
+
   if (data.localized) {
     // NOTE: This is to support publisher public api v2
-    const metadata = (data.metadata ?? []).reduce(
-      (acc: Record<string, string>, { key, value }: { key: string; value: string }) => {
-        acc[key] = value;
-        return acc;
-      },
-      {}
-    );
 
     return {
       id: data.id,
@@ -244,7 +245,7 @@ export function parseContentSummary(data: ApiData, assocs: ApiAssocs): ContentSu
       subtitleText: data.subtitle_text,
       visual: parseVisual(data.visual, assocs),
       meta: { locales: parseLocalesMetadata(data.meta) },
-      metadata: data.metadata,
+      metadata: metadata,
       authors: getAssocs<AuthorSummary>(assocs, 'profiles', data.author_ids)
     };
   }
