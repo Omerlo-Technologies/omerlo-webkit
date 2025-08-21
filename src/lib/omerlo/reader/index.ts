@@ -4,7 +4,12 @@ import { parseContentBlockTemplate, parseContentTemplate } from './endpoints/con
 import { parseProfileTypeSummary } from './endpoints/profileType';
 import { registerAssocParser } from './utils/assocs';
 import { parseContentSummary } from './endpoints/contents';
-import { parseIssueBlockConfiguration, parseIssueType } from './endpoints/magazines';
+
+import {
+  parseIssueBlockConfiguration,
+  parseIssueSummary,
+  parseIssueType
+} from './endpoints/magazines';
 
 export * from './stores/user_session';
 export type * from './endpoints/accounts';
@@ -35,6 +40,7 @@ export function initReader() {
   registerAssocParser('profile_block_types', parseProfileBlock);
   registerAssocParser('content_block_templates', parseContentBlockTemplate);
   registerAssocParser('contents', parseContentSummary);
+  registerAssocParser('issues', parseIssueSummary);
   registerAssocParser('issue_types', parseIssueType);
   registerAssocParser('issue_block_configurations', parseIssueBlockConfiguration);
 
