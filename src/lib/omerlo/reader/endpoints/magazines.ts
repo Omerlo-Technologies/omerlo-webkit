@@ -55,6 +55,7 @@ export function parseIssueSummary(data: ApiData, assocs: ApiAssocs): IssueSummar
     color: data.color,
     pdfUrl: data.pdf_url,
     visual: parseVisual(data.visual, assocs),
+    metadata: data.metadata,
     meta: {
       locales: parseLocalesMetadata(data.meta)
     },
@@ -68,7 +69,6 @@ export function parseIssue(data: ApiData, assocs: ApiAssocs): Issue {
     advertisingKey: data.advertising_key,
     descriptionText: data.description_text,
     descriptionHtml: data.description_html,
-    metadata: data.metadata,
     sections: data.sections.map((section: ApiData) => parseIssueSectionSummary(section, assocs))
   };
 }
@@ -165,6 +165,7 @@ export interface IssueSummary {
   color: string | null;
   pdfUrl: string | null;
   visual: Visual | null;
+  metadata: { [key: string]: string };
   meta: {
     locales: LocalesMetadata;
   };
@@ -175,7 +176,6 @@ export interface Issue extends IssueSummary {
   advertisingKey: string | null;
   descriptionHtml: string | null;
   descriptionText: string | null;
-  metadata: { [key: string]: string };
   sections: IssueSectionSummary[];
 }
 
