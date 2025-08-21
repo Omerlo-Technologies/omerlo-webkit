@@ -193,6 +193,14 @@ export function listContents(f: typeof fetch) {
 export function parseContentSummary(data: ApiData, assocs: ApiAssocs): ContentSummary {
   if (data.localized) {
     // NOTE: This is to support publisher public api v2
+    const metadata = (data.metadata ?? []).reduce(
+      (acc: Record<string, string>, { key, value }: { key: string; value: string }) => {
+        acc[key] = value;
+        return acc;
+      },
+      {}
+    );
+
     return {
       id: data.id,
       template: getAssoc<ContentTemplate>(assocs, 'templates', data.template_id),
@@ -211,7 +219,7 @@ export function parseContentSummary(data: ApiData, assocs: ApiAssocs): ContentSu
       subtitleText: data.localized.subtitle_text,
       visual: parseVisual(data.localized.visual, assocs),
       meta: buildMeta(data.localized.locale),
-      metadata: {},
+      metadata: metadata,
       authors: getAssocs<PersonSummary | OrganizationSummary>(
         assocs,
         'profiles',
@@ -237,7 +245,7 @@ export function parseContentSummary(data: ApiData, assocs: ApiAssocs): ContentSu
       subtitleText: data.subtitle_text,
       visual: parseVisual(data.visual, assocs),
       meta: { locales: parseLocalesMetadata(data.meta) },
-      metadata: {},
+      metadata: data.metadata,
       authors: getAssocs<PersonSummary | OrganizationSummary>(assocs, 'profiles', data.author_ids)
     };
   }
