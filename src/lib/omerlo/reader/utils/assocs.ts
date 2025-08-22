@@ -57,20 +57,33 @@ export function initAssocs(apiAssocs: ApiAssocs): Record<string, Record<string, 
  * Parse all assocs using an ordering system to prevent any clone.
  */
 export function parseAssocs(apiAssocs: Record<string, Record<string, Assoc>>) {
-  for (const assocName in apiAssocs) {
-    const assocs = apiAssocs[assocName];
+  const assocs: Record<string, Record<string, ApiData>> = {};
 
-    for (const assocId in assocs) {
-      const assoc = assocs[assocId];
+  for (const assocName in apiAssocs) {
+    assocs[assocName] = {};
+
+    for (const assocId in apiAssocs[assocName]) {
+      assocs[assocName][assocId] = {};
+    }
+  }
+
+  for (const assocName in apiAssocs) {
+    const currentApiAssocs = apiAssocs[assocName];
+
+    for (const assocId in currentApiAssocs) {
+      const assoc = currentApiAssocs[assocId];
 
       if (!assocsParsers[assocName]) {
         console.error(`No assoc parser found for ${assocName}`);
         continue;
       }
 
-      assocs[assocId] = assocsParsers[assocName](assoc, apiAssocs);
+      const parsedAssoc = assocsParsers[assocName](assoc, assocs);
+      Object.assign(assocs[assocName][assocId], parsedAssoc);
     }
   }
+
+  return assocs;
 }
 
 export type Assoc = ApiData;
