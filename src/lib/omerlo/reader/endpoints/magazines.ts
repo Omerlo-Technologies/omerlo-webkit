@@ -59,6 +59,7 @@ export function parseIssueSummary(data: ApiData, assocs: ApiAssocs): IssueSummar
     meta: {
       locales: parseLocalesMetadata(data.meta)
     },
+    metadata: data.metadata,
     updatedAt: new Date(data.updated_at)
   };
 }
@@ -169,6 +170,7 @@ export interface IssueSummary {
   meta: {
     locales: LocalesMetadata;
   };
+  metadata: { [key: string]: string };
   updatedAt: Date;
 }
 
