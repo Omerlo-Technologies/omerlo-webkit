@@ -1,6 +1,6 @@
 {
   "name": "@omerlo/omerlo-webkit",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "scripts": {
     "dev": "vite dev",
     "build": "vite build && npm run package",
