@@ -92,7 +92,7 @@ export type ContentBlockQuote = {
   kind: 'quote';
   quoteHtml: string;
   quoteText: string;
-  author: string;
+  author: string | null;
   visual: Visual | null;
   template: ContentBlockTemplate | null;
 };
