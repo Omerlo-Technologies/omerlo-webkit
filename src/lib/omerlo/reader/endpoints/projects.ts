@@ -8,10 +8,34 @@ import {
   parseProfileDescription,
   type ProfileDescription
 } from './profiles';
-import { type ApiData, type ApiAssocs } from '$reader/utils/api';
+import { type ApiData, type ApiAssocs, parseMany, type PagingParams } from '$reader/utils/api';
 import { getAssoc, getAssocs } from '$reader/utils/assocs';
 import { buildMeta } from '$reader/utils/parseHelpers';
 import type { ProfileType } from './profileType';
+import { requestPublisher } from '$reader/utils/request';
+
+export const projectFetchers = (f: typeof fetch) => {
+  return {
+    listProjects: listProjects(f),
+    getProject: getProject(f)
+    // TODO missing allProjectBlocks
+    // allProjectBlocks: allProjectBlocks(f)
+  };
+};
+
+export function listProjects(f: typeof fetch) {
+  return async (params?: Partial<PagingParams>) => {
+    const opts = { parser: parseMany(parseProjectSummary), queryParams: params };
+    return requestPublisher(f, `media/projects`, opts);
+  };
+}
+
+export function getProject(f: typeof fetch) {
+  return async (id: string) => {
+    const opts = { parser: parseProject };
+    return requestPublisher(f, `media/projects/${id}`, opts);
+  };
+}
 
 export interface ProjectSummary {
   id: string;

@@ -1,6 +1,28 @@
-import { type ApiAssocs, type ApiData } from '$reader/utils/api';
+import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from '$reader/utils/api';
 import type { LocalesMetadata } from '$reader/utils/response';
 import { buildMeta } from '$reader/utils/parseHelpers';
+import { requestPublisher } from '$reader/utils/request';
+
+export const webpageFetchers = (f: typeof fetch) => {
+  return {
+    listWebpages: listWebpages(f),
+    getWebpage: getWebpage(f)
+  };
+};
+
+export function listWebpages(f: typeof fetch) {
+  return async (params?: Partial<PagingParams>) => {
+    const opts = { parser: parseMany(parseWebpageSummary), queryParams: params };
+    return requestPublisher(f, `organization/pages`, opts);
+  };
+}
+
+export function getWebpage(f: typeof fetch) {
+  return async (slug: string) => {
+    const opts = { parser: parseWebpage };
+    return requestPublisher(f, `organization/pages/${slug}`, opts);
+  };
+}
 
 export interface WebpageSummary {
   id: string;
@@ -20,7 +42,7 @@ export interface OrgWebpage extends WebpageSummary {
   html: string;
 }
 
-export function ParseWebpageSummary(data: ApiData, _assocs: ApiAssocs): WebpageSummary {
+export function parseWebpageSummary(data: ApiData, _assocs: ApiAssocs): WebpageSummary {
   return {
     id: data.id,
     name: data.name,
@@ -34,9 +56,9 @@ export function ParseWebpageSummary(data: ApiData, _assocs: ApiAssocs): WebpageS
   };
 }
 
-export function ParseWebpage(data: ApiData, assocs: ApiAssocs): OrgWebpage {
+export function parseWebpage(data: ApiData, assocs: ApiAssocs): OrgWebpage {
   return {
-    ...ParseWebpageSummary(data, assocs),
+    ...parseWebpageSummary(data, assocs),
     html: data.localized.html
   };
 }

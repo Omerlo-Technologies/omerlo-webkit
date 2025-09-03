@@ -4,25 +4,11 @@ import { requestPublisher } from '../utils/request';
 import type { LocalesMetadata } from '../utils/response';
 import { parseVisual, type Visual } from './visuals';
 import { buildMeta } from '../utils/parseHelpers';
-import { parseOrganization, parseOrganizationSummary } from './organizations';
-import { parseEvent, parseEventSummary } from './events';
-import { parseProfileBlock } from './profiles';
-import { parsePerson, parsePersonSummary } from './person';
-import { parseProject, parseProjectSummary } from './projects';
 import { parseProfileType, parseProfileTypeSummary } from './profileType';
 
 export const mediaFetchers = (f: typeof fetch) => {
   return {
     getMedia: getMedia(f),
-    getMediaOrganization: getMediaOrganization(f),
-    listMediaOrganizations: listMediaOrganizations(f),
-    getMediaEvent: getMediaEvent(f),
-    listMediaEvents: listMediaEvents(f),
-    listMediaEventBlocks: listMediaEventBlocks(f),
-    getMediaPerson: getMediaPerson(f),
-    listMediaPersons: listMediaPersons(f),
-    getMediaProject: getMediaProject(f),
-    listMediaProjects: listMediaProjects(f),
     getMediaProfileType: getMediaProfileType(f),
     listMediaProfileTypes: listMediaProfileTypes(f)
   };
@@ -30,7 +16,6 @@ export const mediaFetchers = (f: typeof fetch) => {
 
 export interface MediaSummary {
   id: string;
-  organization: string;
   name: string;
   key: string;
   sections: Section[];
@@ -85,7 +70,6 @@ export function parseMedia(data: ApiData, assocs: ApiAssocs): Media {
 
   return {
     id: data.id,
-    organization: data.organization_id,
     name: data.name,
     key: data.key,
     sections: parseSections(data, assocs),
@@ -109,69 +93,6 @@ export function getMedia(f: typeof fetch) {
   return async () => {
     const opts = { parser: parseMedia };
     return requestPublisher(f, 'media/', opts);
-  };
-}
-
-export function getMediaOrganization(f: typeof fetch) {
-  return async (id: string) => {
-    const opts = { parser: parseOrganization };
-    return requestPublisher(f, `media/organizations/${id}`, opts);
-  };
-}
-
-export function listMediaOrganizations(f: typeof fetch) {
-  return async (params?: Partial<PagingParams>) => {
-    const opts = { parser: parseMany(parseOrganizationSummary), queryParams: params };
-    return requestPublisher(f, `media/organizations`, opts);
-  };
-}
-
-export function getMediaEvent(f: typeof fetch) {
-  return async (id: string) => {
-    const opts = { parser: parseEvent };
-    return requestPublisher(f, `media/events/${id}`, opts);
-  };
-}
-
-export function listMediaEvents(f: typeof fetch) {
-  return async (params?: Partial<PagingParams>) => {
-    const opts = { parser: parseMany(parseEventSummary), queryParams: params };
-    return requestPublisher(f, `media/events`, opts);
-  };
-}
-
-export function listMediaEventBlocks(f: typeof fetch) {
-  return async (id: string, params?: Partial<PagingParams>) => {
-    const opts = { parser: parseMany(parseProfileBlock), queryParams: params };
-    return requestPublisher(f, `media/events/${id}/blocks`, opts);
-  };
-}
-
-export function getMediaPerson(f: typeof fetch) {
-  return async (id: string) => {
-    const opts = { parser: parsePerson };
-    return requestPublisher(f, `media/people/${id}`, opts);
-  };
-}
-
-export function listMediaPersons(f: typeof fetch) {
-  return async (params?: Partial<PagingParams>) => {
-    const opts = { parser: parseMany(parsePersonSummary), queryParams: params };
-    return requestPublisher(f, `media/people`, opts);
-  };
-}
-
-export function getMediaProject(f: typeof fetch) {
-  return async (id: string) => {
-    const opts = { parser: parseProject };
-    return requestPublisher(f, `media/projects/${id}`, opts);
-  };
-}
-
-export function listMediaProjects(f: typeof fetch) {
-  return async (params?: Partial<PagingParams>) => {
-    const opts = { parser: parseMany(parseProjectSummary), queryParams: params };
-    return requestPublisher(f, `media/projects`, opts);
   };
 }
 

@@ -1,17 +1,36 @@
 import type { Category } from './categories';
-import { type ApiAssocs, type ApiData } from '$reader/utils/api';
+import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from '$reader/utils/api';
 import type { LocalesMetadata } from '$reader/utils/response';
-import {
-  parseProfileAddress,
-  type ProfileAddress,
-  parseProfileContact,
-  type ProfileContact,
-  parseProfileDescription,
-  type ProfileDescription
-} from './profiles';
+import { parseProfileAddress, type ProfileAddress } from './profiles';
+import { parseProfileContact, type ProfileContact } from './profiles';
+import { parseProfileDescription, type ProfileDescription } from './profiles';
 import { getAssoc, getAssocs } from '$reader/utils/assocs';
 import type { ProfileType } from './profileType';
 import { buildMeta } from '$reader/utils/parseHelpers';
+import { requestPublisher } from '$reader/utils/request';
+
+export const personFetchers = (f: typeof fetch) => {
+  return {
+    listPeople: listPeople(f),
+    getPerson: getPerson(f)
+    // TODO missing allPersonBlocks
+    // allPersonBlocks: allPersonBlocks(f)
+  };
+};
+
+export function listPeople(f: typeof fetch) {
+  return async (params?: Partial<PagingParams>) => {
+    const opts = { parser: parseMany(parsePersonSummary), queryParams: params };
+    return requestPublisher(f, `media/people`, opts);
+  };
+}
+
+export function getPerson(f: typeof fetch) {
+  return async (id: string) => {
+    const opts = { parser: parsePerson };
+    return requestPublisher(f, `media/people/${id}`, opts);
+  };
+}
 
 export interface PersonSummary {
   id: string;
