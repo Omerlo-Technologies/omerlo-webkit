@@ -11,6 +11,8 @@ import {
   parseIssueType
 } from './endpoints/magazines';
 
+import { parseMediaBlockConfiguration } from './endpoints/media';
+
 export * from './stores/user_session';
 export type * from './endpoints/accounts';
 export type * from './endpoints/categories';
@@ -44,6 +46,7 @@ export function initReader() {
   registerAssocParser('issues', parseIssueSummary);
   registerAssocParser('issue_types', parseIssueType);
   registerAssocParser('issue_block_configurations', parseIssueBlockConfiguration);
+  registerAssocParser('media_block_configurations', parseMediaBlockConfiguration);
 
   // NOTE: Those ones are for retro compatibility with publisher public api v2
   // Reason is we renamed some assocs keys in Reader API that are different
