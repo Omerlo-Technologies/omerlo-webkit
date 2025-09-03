@@ -14,27 +14,33 @@ export const mediaFetchers = (f: typeof fetch) => {
   };
 };
 
-export interface MediaSummary {
+export interface Media {
   id: string;
-  name: string;
-  key: string;
-  sections: Section[];
-}
-
-export interface Media extends MediaSummary {
-  contact: MediaContact | null;
-}
-
-export type Section = {
-  id: string;
-  color: string;
-  position: number;
+  displayName: string | null;
   meta: {
     locales: LocalesMetadata;
   };
   name: string;
+  key: string;
+  contact: MediaContact | null;
+  sections: SectionSummary[];
+  metadata: Record<string, string>;
+  updatedAt: Date;
+}
+
+export type SectionSummary = {
+  id: string;
+  name: string;
   slug: string;
-  visual: Visual;
+  visual: Visual | null;
+  meta: {
+    locales: LocalesMetadata;
+  };
+  color: string;
+  // SectionSummary exposes children `sections` on legacy API
+  // See API documentation: https://b41758xgf4.apidog.io/media-by-id-18188200e0
+  // sections: SectionSummary[];
+  updatedAt: Date;
 };
 
 export interface MediaContact {
@@ -70,23 +76,29 @@ export function parseMedia(data: ApiData, assocs: ApiAssocs): Media {
 
   return {
     id: data.id,
+    displayName: data.localized?.display_name,
+    meta: buildMeta(data.localized?.locale),
     name: data.name,
     key: data.key,
-    sections: parseSections(data, assocs),
-    contact
+    contact,
+    metadata: data.metadata,
+    sections: data.sections.map((section: ApiData, assocs: ApiAssocs) =>
+      parseSectionSummary(section, assocs)
+    ),
+    updatedAt: data.updated_at
   };
 }
 
-function parseSections(data: ApiData, assocs: ApiAssocs): Section[] {
-  return data.sections.map((section: ApiData) => ({
+function parseSectionSummary(section: ApiData, assocs: ApiAssocs): SectionSummary {
+  return {
     id: section.id,
     color: section.color,
-    position: section.position,
     meta: buildMeta(section.localized.locale),
     name: section.localized.name,
     slug: section.localized.slug,
-    visual: parseVisual(section.visual, assocs)
-  }));
+    visual: parseVisual(section.visual, assocs),
+    updatedAt: section.updated_at
+  };
 }
 
 export function getMedia(f: typeof fetch) {
