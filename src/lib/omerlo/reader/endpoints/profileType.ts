@@ -1,6 +1,28 @@
-import { type ApiAssocs, type ApiData } from '$reader/utils/api';
+import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from '$reader/utils/api';
 import { parseLocalesMetadata, type LocalesMetadata } from '$reader/utils/response';
 import { buildMeta } from '$reader/utils/parseHelpers';
+import { requestPublisher } from '$reader/utils/request';
+
+export const profileTypeFetchers = (f: typeof fetch) => {
+  return {
+    listProfileTypes: listProfileTypes(f),
+    getProfileType: getProfileType(f)
+  };
+};
+
+export function listProfileTypes(f: typeof fetch) {
+  return async (params?: Partial<PagingParams>) => {
+    const opts = { parser: parseMany(parseProfileTypeSummary), queryParams: params };
+    return requestPublisher(f, `media/profile-types`, opts);
+  };
+}
+
+export function getProfileType(f: typeof fetch) {
+  return async (id: string) => {
+    const opts = { parser: parseProfileType };
+    return requestPublisher(f, `media/profile-types/${id}`, opts);
+  };
+}
 
 export interface ProfileTypeSummary {
   id: string;
