@@ -4,6 +4,8 @@ import { requestPublisher } from '../utils/request';
 import type { LocalesMetadata } from '../utils/response';
 import { parseVisual, type Visual } from './visuals';
 import { buildMeta } from '../utils/parseHelpers';
+import type { ContentSummary } from './contents';
+import { getAssocs } from '$reader/utils/assocs';
 
 export const mediaFetchers = (f: typeof fetch) => {
   return {
@@ -68,9 +70,7 @@ export interface MediaSectionSummary {
   name: string;
   slug: string;
   visual: Visual | null;
-  meta: {
-    locales: LocalesMetadata;
-  };
+  meta: { locales: LocalesMetadata };
   color: string;
   updatedAt: Date;
 }
@@ -87,33 +87,34 @@ export interface MediaSection extends MediaSectionSummary {
 }
 
 export interface MediaBlockConfigurationSummary {
-  id: string;
   type: 'content' | 'distribution' | 'html' | 'media' | 'most_popular' | 'section';
-  name: string;
   key: string;
 }
 
 export interface MediaBlockSummary {
   id: string;
-  // NOTE we can't use those field for the moment because we depends of publisher api
-  // Reader API isn't ready for now
-  //
-  // configuration: MediaBlockConfigurationSummary;
-  // name: string;
-  // description: string | null;
-  // html: string | null;
-  // visual: Visual | null;
-  // meta: {
-  //   locales: LocalesMetadata;
-  // };
-  // textColor: string | null;
-  // backgroundColor: string | null;
-  // backgroundSVG: string | null;
-  // updatedAt: Date;
 }
 
 export interface MediaBlock extends MediaBlockSummary {
-  name: string;
+  name: string | null;
+  description: string | null;
+  visual: Visual | null;
+  html: string | null;
+  metadata: { [key: string]: string };
+  meta: { locales: LocalesMetadata };
+  textColor: string | null;
+  backgroundColor: '#f4f4f4';
+  backgroundSvg: null;
+  configuration: MediaBlockConfigurationSummary;
+  entries: MediaBlockEntry[];
+  updatedAt: Date;
+}
+
+export interface MediaBlockEntry {
+  contents: ContentSummary[];
+  section: MediaSectionSummary | null;
+  // media: ...
+  // release: ...
 }
 
 export function parseMedia(data: ApiData, assocs: ApiAssocs): Media {
@@ -187,9 +188,7 @@ function parseSectionHierarchy(data: ApiData, assocs: ApiAssocs): MediaSectionHi
 
 export function parseMediaBlockConfiguration(data: ApiData): MediaBlockConfigurationSummary {
   return {
-    id: data.id,
     type: data.block_type,
-    name: data.name,
     key: data.key
   };
 }
@@ -203,20 +202,27 @@ function parseBlockSummary(data: ApiData, _assocs: ApiAssocs): MediaBlockSummary
 function parseBlock(data: ApiData, assocs: ApiAssocs): MediaBlock {
   return {
     ...parseBlockSummary(data, assocs),
-    name: data.localized.name
-    // configuration: getAssoc<MediaBlockConfigurationSummary>(
-    //   assocs,
-    //   'media_block_configurations',
-    //   data.configuration_id
-    // ),
-    // name: data.localized.name,
-    // description: data.localized.description,
-    // html: data.localized.html,
-    // visual: data.localized.visual,
-    // meta: buildMeta(data.localized.locale),
-    // textColor: data.textColor,
-    // backgroundColor: data.backgroundColor,
-    // backgroundSVG: data.backgroundSVG,
-    // updatedAt: data.updatedAt
+    name: data.localized?.name,
+    description: data.localized?.description,
+    visual: parseVisual(data.visual, assocs),
+    html: data.localized?.html,
+    metadata: data.metadata,
+    meta: buildMeta(data.localized?.locale),
+    textColor: data.color,
+    backgroundColor: data.background_color,
+    backgroundSvg: data.background_svg,
+    configuration: {
+      type: data.block_type,
+      key: data.configuration_key
+    },
+    entries: data.entries.map((entry: ApiData) => parseBlockEntry(entry, assocs)),
+    updatedAt: data.updatedAt
+  };
+}
+
+function parseBlockEntry(data: ApiData, assocs: ApiAssocs): MediaBlockEntry {
+  return {
+    contents: getAssocs<ContentSummary>(assocs, 'contents', data.content_ids),
+    section: data.section ? parseSectionSummary(data.section, assocs) : null
   };
 }
