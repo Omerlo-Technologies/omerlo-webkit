@@ -103,8 +103,8 @@ export interface MediaBlock extends MediaBlockSummary {
   metadata: { [key: string]: string };
   meta: { locales: LocalesMetadata };
   textColor: string | null;
-  backgroundColor: '#f4f4f4';
-  backgroundSvg: null;
+  backgroundColor: string | null;
+  backgroundSvg: string | null;
   configuration: MediaBlockConfigurationSummary;
   entries: MediaBlockEntry[];
   updatedAt: Date;
