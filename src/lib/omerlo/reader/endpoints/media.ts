@@ -1,21 +1,22 @@
 import type { ApiAssocs } from '../utils/api';
 import type { ApiData } from '../utils/api';
-import { request, requestPublisher } from '../utils/request';
+import { requestPublisher } from '../utils/request';
 import type { LocalesMetadata } from '../utils/response';
 import { parseVisual, type Visual } from './visuals';
 import { buildMeta } from '../utils/parseHelpers';
-import { getAssoc } from '$reader/utils/assocs';
 
 export const mediaFetchers = (f: typeof fetch) => {
   return {
     getMedia: getMedia(f),
-    getMediaSection: getMediaSection(f)
+    getMediaSection: getMediaSection(f),
+    getMediaBlock: getMediaBlock(f)
   };
 };
 
 export function getMedia(f: typeof fetch) {
   return async () => {
     const opts = { parser: parseMedia };
+    // NOTE the `/` is REALLY important
     return requestPublisher(f, 'media/', opts);
   };
 }
@@ -23,7 +24,14 @@ export function getMedia(f: typeof fetch) {
 export function getMediaSection(f: typeof fetch) {
   return async (id: string) => {
     const opts = { parser: parseSection };
-    return request(f, `media/sections/${id}`, opts);
+    return requestPublisher(f, `/sections/${id}`, opts);
+  };
+}
+
+export function getMediaBlock(f: typeof fetch) {
+  return async (id: string) => {
+    const opts = { parser: parseBlock };
+    return requestPublisher(f, `/blocks/${id}`, opts);
   };
 }
 
@@ -36,7 +44,7 @@ export interface Media {
   name: string;
   key: string;
   contact: MediaContact | null;
-  sections: MediaSectionSummary[];
+  sections: MediaSectionHierarchy[];
   metadata: Record<string, string>;
   updatedAt: Date;
 }
@@ -64,40 +72,48 @@ export interface MediaSectionSummary {
     locales: LocalesMetadata;
   };
   color: string;
-  // SectionSummary exposes children `sections` on legacy API
-  // See API documentation: https://b41758xgf4.apidog.io/media-by-id-18188200e0
-  // sections: SectionSummary[];
   updatedAt: Date;
+}
+
+export interface MediaSectionHierarchy extends MediaSectionSummary {
+  sections: MediaSectionSummary[];
 }
 
 export interface MediaSection extends MediaSectionSummary {
   description: string | null;
-  parentId: string | null;
   advertisingKey: string | null;
+  sections: MediaSectionSummary[];
   blocks: MediaBlockSummary[];
 }
 
 export interface MediaBlockConfigurationSummary {
   id: string;
-  blockType: 'content' | 'distribution' | 'html' | 'media' | 'most_popular' | 'section';
+  type: 'content' | 'distribution' | 'html' | 'media' | 'most_popular' | 'section';
   name: string;
   key: string;
 }
 
 export interface MediaBlockSummary {
   id: string;
-  configuration: MediaBlockConfigurationSummary;
+  // NOTE we can't use those field for the moment because we depends of publisher api
+  // Reader API isn't ready for now
+  //
+  // configuration: MediaBlockConfigurationSummary;
+  // name: string;
+  // description: string | null;
+  // html: string | null;
+  // visual: Visual | null;
+  // meta: {
+  //   locales: LocalesMetadata;
+  // };
+  // textColor: string | null;
+  // backgroundColor: string | null;
+  // backgroundSVG: string | null;
+  // updatedAt: Date;
+}
+
+export interface MediaBlock extends MediaBlockSummary {
   name: string;
-  description: string | null;
-  html: string | null;
-  visual: Visual | null;
-  meta: {
-    locales: LocalesMetadata;
-  };
-  textColor: string | null;
-  backgroundColor: string | null;
-  backgroundSVG: string | null;
-  updatedAt: Date;
 }
 
 export function parseMedia(data: ApiData, assocs: ApiAssocs): Media {
@@ -112,7 +128,7 @@ export function parseMedia(data: ApiData, assocs: ApiAssocs): Media {
     contact,
     metadata: data.metadata,
     sections: data.sections.map((section: ApiData, assocs: ApiAssocs) =>
-      parseSectionSummary(section, assocs)
+      parseSectionHierarchy(section, assocs)
     ),
     updatedAt: data.updated_at
   };
@@ -135,7 +151,6 @@ function parseMediaContact(data: ApiData, _assocs: ApiAssocs): MediaContact {
 function parseSection(data: ApiData, assocs: ApiAssocs): MediaSection {
   return {
     id: data.id,
-    parentId: data.parent_id,
     name: data.localized.name,
     description: data.localized.description,
     slug: data.localized.slug,
@@ -143,6 +158,7 @@ function parseSection(data: ApiData, assocs: ApiAssocs): MediaSection {
     meta: buildMeta(data.localized.locale),
     color: data.color,
     advertisingKey: data.advertising_key,
+    sections: data.sections.map((section: ApiData) => parseSectionSummary(section, assocs)),
     blocks: data.blocks.map((block: ApiData, assocs: ApiAssocs) =>
       parseBlockSummary(block, assocs)
     ),
@@ -150,43 +166,57 @@ function parseSection(data: ApiData, assocs: ApiAssocs): MediaSection {
   };
 }
 
-function parseSectionSummary(section: ApiData, assocs: ApiAssocs): MediaSectionSummary {
+function parseSectionSummary(data: ApiData, assocs: ApiAssocs): MediaSectionSummary {
   return {
-    id: section.id,
-    color: section.color,
-    meta: buildMeta(section.localized.locale),
-    name: section.localized.name,
-    slug: section.localized.slug,
-    visual: parseVisual(section.visual, assocs),
-    updatedAt: section.updated_at
+    id: data.id,
+    color: data.color,
+    meta: buildMeta(data.localized.locale),
+    name: data.localized.name,
+    slug: data.localized.slug,
+    visual: parseVisual(data.visual, assocs),
+    updatedAt: data.updated_at
+  };
+}
+
+function parseSectionHierarchy(data: ApiData, assocs: ApiAssocs): MediaSectionHierarchy {
+  return {
+    ...parseSectionSummary(data, assocs),
+    sections: data.sections.map((section: ApiData) => parseSectionHierarchy(section, assocs))
   };
 }
 
 export function parseMediaBlockConfiguration(data: ApiData): MediaBlockConfigurationSummary {
   return {
     id: data.id,
-    blockType: data.block_type,
+    type: data.block_type,
     name: data.name,
     key: data.key
   };
 }
 
-function parseBlockSummary(data: ApiData, assocs: ApiAssocs): MediaBlockSummary {
+function parseBlockSummary(data: ApiData, _assocs: ApiAssocs): MediaBlockSummary {
   return {
-    id: data.localized.id,
-    configuration: getAssoc<MediaBlockConfigurationSummary>(
-      assocs,
-      'media_block_configurations',
-      data.configuration_id
-    ),
-    name: data.localized.name,
-    description: data.localized.description,
-    html: data.localized.html,
-    visual: data.localized.visual,
-    meta: buildMeta(data.localized.locale),
-    textColor: data.textColor,
-    backgroundColor: data.backgroundColor,
-    backgroundSVG: data.backgroundSVG,
-    updatedAt: data.updatedAt
+    id: data.id
+  };
+}
+
+function parseBlock(data: ApiData, assocs: ApiAssocs): MediaBlock {
+  return {
+    ...parseBlockSummary(data, assocs),
+    name: data.localized.name
+    // configuration: getAssoc<MediaBlockConfigurationSummary>(
+    //   assocs,
+    //   'media_block_configurations',
+    //   data.configuration_id
+    // ),
+    // name: data.localized.name,
+    // description: data.localized.description,
+    // html: data.localized.html,
+    // visual: data.localized.visual,
+    // meta: buildMeta(data.localized.locale),
+    // textColor: data.textColor,
+    // backgroundColor: data.backgroundColor,
+    // backgroundSVG: data.backgroundSVG,
+    // updatedAt: data.updatedAt
   };
 }
