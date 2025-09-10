@@ -1,17 +1,18 @@
-import type { ApiAssocs } from '../utils/api';
+import { parseMany, type ApiAssocs, type PagingParams } from '../utils/api';
 import type { ApiData } from '../utils/api';
 import { requestPublisher } from '../utils/request';
 import type { LocalesMetadata } from '../utils/response';
 import { parseVisual, type Visual } from './visuals';
 import { buildMeta } from '../utils/parseHelpers';
-import type { ContentSummary } from './contents';
+import { parseContentSummary, type ContentSummary } from './contents';
 import { getAssocs } from '$reader/utils/assocs';
 
 export const mediaFetchers = (f: typeof fetch) => {
   return {
     getMedia: getMedia(f),
     getMediaSection: getMediaSection(f),
-    getMediaBlock: getMediaBlock(f)
+    getMediaBlock: getMediaBlock(f),
+    listMediaSectionContents: listMediaSectionContents(f)
   };
 };
 
@@ -27,6 +28,13 @@ export function getMediaSection(f: typeof fetch) {
   return async (id: string) => {
     const opts = { parser: parseSection };
     return requestPublisher(f, `/sections/${id}`, opts);
+  };
+}
+
+export function listMediaSectionContents(f: typeof fetch) {
+  return async (sectionId: string, params?: Partial<PagingParams>) => {
+    const opts = { parser: parseMany(parseContentSummary), queryParams: params };
+    return requestPublisher(f, `/sections/${sectionId}/contents`, opts);
   };
 }
 
