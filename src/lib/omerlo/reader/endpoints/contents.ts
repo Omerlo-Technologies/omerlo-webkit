@@ -262,7 +262,6 @@ export function parseContent(data: ApiData, assocs: ApiAssocs): Content {
 
   return {
     ...parseContentSummary(data, assocs),
-    metadata: data.metadata,
     seo,
     blocks: data.localized.blocks
       .map((block: ApiData) => parseContentBlock(block, assocs))
