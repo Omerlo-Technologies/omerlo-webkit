@@ -52,6 +52,8 @@ export function parseIssueSummary(data: ApiData, assocs: ApiAssocs): IssueSummar
     issueType: getAssoc<IssueType>(assocs, 'issue_types', data.issue_type_id),
     kind: data.kind,
     name: data.name,
+    descriptionText: data.description_text,
+    descriptionHtml: data.description_html,
     color: data.color,
     pdfUrl: data.pdf_url,
     visual: parseVisual(data.visual, assocs),
@@ -67,8 +69,6 @@ export function parseIssue(data: ApiData, assocs: ApiAssocs): Issue {
   return {
     ...parseIssueSummary(data, assocs),
     advertisingKey: data.advertising_key,
-    descriptionText: data.description_text,
-    descriptionHtml: data.description_html,
     sections: data.sections.map((section: ApiData) => parseIssueSectionSummary(section, assocs))
   };
 }
@@ -162,6 +162,8 @@ export interface IssueSummary {
   issueType: IssueType;
   kind: 'pdf' | 'regular';
   name: string;
+  descriptionHtml: string | null;
+  descriptionText: string | null;
   color: string | null;
   pdfUrl: string | null;
   visual: Visual | null;
@@ -174,8 +176,6 @@ export interface IssueSummary {
 
 export interface Issue extends IssueSummary {
   advertisingKey: string | null;
-  descriptionHtml: string | null;
-  descriptionText: string | null;
   sections: IssueSectionSummary[];
 }
 
