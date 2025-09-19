@@ -1,6 +1,6 @@
 import type { Category } from './categories';
 import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from '$reader/utils/api';
-import type { LocalesMetadata } from '$reader/utils/response';
+import { parseLocalesMetadata, type LocalesMetadata } from '$reader/utils/response';
 import { parseProfileAddress, type ProfileAddress } from './profiles';
 import { parseProfileContact, type ProfileContact } from './profiles';
 import { parseProfileDescription, type ProfileDescription } from './profiles';
@@ -51,6 +51,27 @@ export interface PersonSummary {
 }
 
 export function parsePersonSummary(data: ApiData, assocs: ApiAssocs): PersonSummary {
+  let localizedField: {
+    summaryHtml: string;
+    summaryText: string;
+    meta: { locales: LocalesMetadata };
+  };
+
+  // NOTE: This is to support publisher public api v2
+  if (data.localized) {
+    localizedField = {
+      summaryHtml: data.localized.summary_html,
+      summaryText: data.localized.summary_text,
+      meta: buildMeta(data.localized.locale)
+    };
+  } else {
+    localizedField = {
+      summaryHtml: data.summary_html,
+      summaryText: data.summary_text,
+      meta: { locales: parseLocalesMetadata(data.meta) }
+    };
+  }
+
   return {
     id: data.id,
     profileType: getAssoc<ProfileType>(assocs, 'profile_types', data.profile_type_id),
@@ -62,9 +83,7 @@ export function parsePersonSummary(data: ApiData, assocs: ApiAssocs): PersonSumm
     // NOTE remove logo_image_url once using reader api
     profileImageURL: data.avatar_image_url || data.profile_image_url,
     coverImageURL: data.cover_image_url,
-    meta: buildMeta(data.localized?.locale),
-    summaryHtml: data.localized?.summary_html,
-    summaryText: data.localized?.summary_text,
+    ...localizedField,
     updatedAt: new Date(data.updated_at)
   };
 }
