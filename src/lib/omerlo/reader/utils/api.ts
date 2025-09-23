@@ -40,7 +40,9 @@ export interface ApiResponse<T> {
 }
 
 export interface ApiResponseMeta {
+  base: string;
   next: string | null;
+  previous: string | null;
 }
 
 export interface ApiParams {
