@@ -113,3 +113,39 @@ export async function dirtyRequestPublisher(
 
   return f(path.toString(), opts);
 }
+
+/**
+ * NOTE: This is for OLD api and will be removed once every API will
+ * be developped in Reader.
+ */
+
+export async function requestOmerlo<T>(
+  f: typeof fetch,
+  path: string,
+  opts: Partial<FetchOptions<T>>
+): Promise<ApiResponse<T>> {
+  const { body, headers, method, queryParams, parser } = parseRequestOpts(opts);
+  return dirtyRequestOmerlo(f, path, { body, headers, method, queryParams }).then(async (resp) => {
+    return parseApiResponse(resp, parser);
+  });
+}
+
+export async function dirtyRequestOmerlo(
+  f: typeof fetch,
+  path: string,
+  opts: DirtyFetchOptions
+): Promise<Response> {
+  const queryParams = new URLSearchParams();
+
+  path = `/api/omerlo/${path}`;
+
+  if (opts?.queryParams) {
+    Object.entries(opts.queryParams).forEach(([key, value]) => {
+      queryParams.append(key, String(value));
+    });
+
+    path = `${path}?${queryParams}`;
+  }
+
+  return f(path.toString(), opts);
+}
