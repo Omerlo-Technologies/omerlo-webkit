@@ -1,6 +1,7 @@
 import { accountsFetchers } from './endpoints/accounts';
 import { categoriesFetchers } from './endpoints/categories';
 import { deviceFetchers } from './endpoints/device';
+import { integrationFetchers } from './endpoints/integration';
 import { notificationFetchers } from './endpoints/notification';
 import { oauthFetchers } from './endpoints/oauth';
 import { contentsFetchers } from './endpoints/contents';
@@ -28,6 +29,7 @@ export const fetchers = (f: typeof fetch) => {
     ...eventFetchers(f),
     ...personFetchers(f),
     ...projectFetchers(f),
+    ...integrationFetchers(f),
     notifications: notificationFetchers(f),
     magazines: {
       ...magazineFetchers(f),
