@@ -90,6 +90,11 @@ export const proxyHook: Handle = async ({ event, resolve }) => {
     return handleApiProxy({ event, resolve });
   }
 
+  if (event.url.pathname.startsWith('/api/omerlo/')) {
+    event.url.pathname = event.url.pathname.replace('/api/omerlo/', '/api/public/');
+    return handleApiProxy({ event, resolve });
+  }
+
   return resolve(event);
 };
 

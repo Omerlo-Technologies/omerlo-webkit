@@ -1,5 +1,5 @@
 import type { ApiAssocs, ApiData } from '$reader/utils/api';
-import { requestPublisher } from '../utils/request';
+import { requestOmerlo } from '../utils/request';
 
 export const integrationFetchers = (f: typeof fetch) => {
   return {
@@ -10,7 +10,7 @@ export const integrationFetchers = (f: typeof fetch) => {
 export function getReference(f: typeof fetch) {
   return async (key: string) => {
     const opts = { parser: parseReference };
-    return requestPublisher(f, `/references/${key}`, opts);
+    return requestOmerlo(f, `/core/v2/references/${key}`, opts);
   };
 }
 
