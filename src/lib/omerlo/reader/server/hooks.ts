@@ -1,9 +1,8 @@
-import { error, type Handle, type ResolveOptions } from '@sveltejs/kit';
+import { error, type Handle, type RequestEvent, type ResolveOptions } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import { ApiError } from '../utils/api';
 import {
   clearAuthorizationCookies,
-  clearAuthorizationUsingHeader,
   getAccessTokenFromCookie,
   getApplicationToken,
   getRefreshTokenFromCookie,
@@ -11,17 +10,28 @@ import {
 } from './utils';
 import { refresh } from './token';
 
+const CACHE_MAX_AGE = env.PRIVATE_CACHE_MAX_AGE || 0;
+
 // NOTE: inspired by https://sami.website/blog/sveltekit-api-reverse-proxy
 
-const handleApiProxy: Handle = async ({ event, ...tail }) => {
-  // NOTE: It's important to reset the port BEFORE settings the host because the host could contains the port
-  // Example: localhost:4000
+const handleSessionApiProxy: Handle = async ({ event }) => {
+  return requestApi(event);
+};
+
+const handleApiProxy: Handle = async ({ event }) => {
+  event.locals.accessToken = await getApplicationToken();
+
+  const resp = await requestApi(event);
+  resp.headers.set('Cache-Control', `public, max-age=${CACHE_MAX_AGE}`);
+  return resp;
+};
+
+async function requestApi(event: RequestEvent) {
   event.url.port = '';
   event.url.host = env.PRIVATE_OMERLO_HOST;
   event.url.protocol = env.PRIVATE_OMERLO_PROTOCOL;
 
-  const accessToken = event.locals.accessToken ?? (await getApplicationToken());
-
+  const accessToken = event.locals.accessToken;
   const body = event.request.body;
   const method = event.request.method;
 
@@ -37,12 +47,6 @@ const handleApiProxy: Handle = async ({ event, ...tail }) => {
     .then(async (resp) => {
       const headers = new Headers();
 
-      if (resp.status === 401 && event.locals.accessToken) {
-        clearAuthorizationUsingHeader(headers);
-        event.locals.accessToken = undefined;
-        resp = await handleApiProxy({ event, ...tail });
-      }
-
       const responseOpts = {
         headers: headers,
         status: resp.status,
@@ -55,11 +59,16 @@ const handleApiProxy: Handle = async ({ event, ...tail }) => {
       console.log('Could not proxy API request: ', err);
       error(500, 'Something went wrong');
     });
-};
+}
 
 export const proxyHook: Handle = async ({ event, resolve }) => {
+  if (event.url.pathname.startsWith('/api/media/v1/session')) {
+    event.url.pathname.replace('/api/media/v1/session', '/api/media/v1/');
+    return handleSessionApiProxy({ event, resolve });
+  }
+
   if (event.url.pathname.startsWith('/api/media/v1')) {
-    return await handleApiProxy({ event, resolve });
+    return handleApiProxy({ event, resolve });
   }
 
   // TODO remove once every API will be done in Reader
@@ -71,8 +80,7 @@ export const proxyHook: Handle = async ({ event, resolve }) => {
       'organization/': {
         idKey: env['PRIVATE_OMERLO_ORGANIZATION_ID'],
         resourcePath: 'organizations'
-      },
-      'issue/': { idKey: env['PRIVATE_OMERLO_ISSUE_ID'], resourcePath: 'issues' }
+      }
     };
 
     for (const [prefix, config] of Object.entries(resourceConfigs)) {

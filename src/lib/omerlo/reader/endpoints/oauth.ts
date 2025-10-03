@@ -38,7 +38,7 @@ export interface OauthProviderSummary {
 export function getOauthUser(f: typeof fetch) {
   return () => {
     const opts = { parser: parseOauthUser };
-    return request(f, '/oauth/user', opts);
+    return request(f, '/session/oauth/user', opts);
   };
 }
 
