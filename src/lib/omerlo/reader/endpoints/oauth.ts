@@ -47,6 +47,7 @@ export function parseOauthUser(data: ApiData, _assoc: ApiAssocs): OauthUser {
     id: data.id,
     name: data.name,
     email: data.email,
+    accessToken: data.access_token,
     verifiedAt: data.verified_at
   };
 }
@@ -55,5 +56,6 @@ export interface OauthUser {
   id: string;
   name: string;
   email: string;
+  accessToken: string;
   verifiedAt: Date | null;
 }
