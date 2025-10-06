@@ -72,13 +72,15 @@ interface ApplicationToken {
   refreshToken: string;
   expiredAt: number;
   init: boolean;
+  refreshErrorCounter: number;
 }
 
 const applicationToken: ApplicationToken = {
   accessToken: '',
   refreshToken: '',
   expiredAt: 0,
-  init: false
+  init: false,
+  refreshErrorCounter: 0
 };
 
 /**
@@ -94,18 +96,41 @@ export async function getApplicationToken(): Promise<string> {
   return applicationToken.accessToken;
 }
 
+let refreshingPromise: Promise<void> | null = null;
+
 async function refreshApplicationToken() {
   if (!applicationToken.refreshToken) {
     throw new Error('Could not refresh the application token because the refresh token is null');
   }
 
-  const token = await refresh(applicationToken.refreshToken);
+  if (refreshingPromise) {
+    return refreshingPromise;
+  }
 
-  applicationToken.accessToken = token.accessToken;
-  applicationToken.refreshToken = token.refreshToken;
-  const date = new Date();
-  const timestamps = date.setSeconds(date.getSeconds() + token.expiresIn - 60);
-  applicationToken.expiredAt = timestamps;
+  refreshingPromise = (async () => {
+    try {
+      const token = await refresh(applicationToken.refreshToken);
+
+      applicationToken.accessToken = token.accessToken;
+      applicationToken.refreshToken = token.refreshToken;
+      const date = new Date();
+      const timestamps = date.setSeconds(date.getSeconds() + token.expiresIn - 60);
+      applicationToken.expiredAt = timestamps;
+      applicationToken.refreshErrorCounter = 0;
+    } catch (e) {
+      applicationToken.refreshErrorCounter += 1;
+
+      if (applicationToken.refreshErrorCounter >= 10) {
+        applicationToken.init = false;
+      }
+
+      throw e;
+    } finally {
+      refreshingPromise = null;
+    }
+  })();
+
+  return refreshingPromise;
 }
 
 async function newApplicationToken() {
