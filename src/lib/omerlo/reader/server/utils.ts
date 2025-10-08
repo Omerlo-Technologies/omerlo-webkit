@@ -10,11 +10,9 @@ export async function loadUserSession(f: typeof fetch, cookies: Cookies) {
     userSession.authenticated = true;
 
     try {
-      const userInfo = await useReader(f)
-        .userInfo()
-        .then((resp) => resp.data);
-      userSession.verified = true;
-      userSession.user = userInfo;
+      const userInfo = await useReader(f).userInfo();
+      userSession.verified = userInfo.ok;
+      userSession.user = userInfo.data;
     } catch (_e) {
       userSession.verified = false;
     }
@@ -30,14 +28,22 @@ export function isAuthenticated(cookies: Cookies) {
 const accessTokenCookieName = 'access_token';
 const refreshTokenCookieName = 'refresh_token';
 
+const THREE_MONTH = 90 * 24 * 60 * 60;
+
 export function setAuthorizationCookies(cookies: Cookies, token: OmerloToken) {
   cookies.set('logged_in', 'true', { path: '/', httpOnly: false });
+
   cookies.set(accessTokenCookieName, token.accessToken, {
     httpOnly: true,
     path: '/',
     maxAge: token.expiresIn - 60
   });
-  cookies.set(refreshTokenCookieName, token.refreshToken, { httpOnly: true, path: '/' });
+
+  cookies.set(refreshTokenCookieName, token.refreshToken, {
+    httpOnly: true,
+    path: '/',
+    maxAge: THREE_MONTH
+  });
 }
 
 export function clearAuthorizationCookies(cookies: Cookies) {
@@ -92,7 +98,6 @@ export async function getApplicationToken(): Promise<string> {
   } else if (applicationToken.expiredAt < new Date().getTime()) {
     await refreshApplicationToken();
   }
-
   return applicationToken.accessToken;
 }
 
@@ -113,8 +118,7 @@ async function refreshApplicationToken() {
 
       applicationToken.accessToken = token.accessToken;
       applicationToken.refreshToken = token.refreshToken;
-      const date = new Date();
-      const timestamps = date.setSeconds(date.getSeconds() + token.expiresIn - 60);
+      const timestamps = new Date().getTime() + (token.expiresIn - 60) * 1000;
       applicationToken.expiredAt = timestamps;
       applicationToken.refreshErrorCounter = 0;
     } catch (e) {
@@ -133,13 +137,21 @@ async function refreshApplicationToken() {
   return refreshingPromise;
 }
 
-async function newApplicationToken() {
-  const token = await getAnonymousToken('application');
+let newTokenPromise: Promise<void> | null = null;
 
-  applicationToken.init = true;
-  applicationToken.accessToken = token.accessToken;
-  applicationToken.refreshToken = token.refreshToken;
-  const date = new Date();
-  const timestamps = date.setSeconds(date.getSeconds() + token.expiresIn - 60);
-  applicationToken.expiredAt = timestamps;
+async function newApplicationToken() {
+  if (newTokenPromise) {
+    return newTokenPromise;
+  }
+
+  newTokenPromise = (async () => {
+    const token = await getAnonymousToken('application');
+    applicationToken.init = true;
+    applicationToken.accessToken = token.accessToken;
+    applicationToken.refreshToken = token.refreshToken;
+    const timestamps = new Date().getTime() + (token.expiresIn - 60) * 1000;
+    applicationToken.expiredAt = timestamps;
+  })();
+
+  return newTokenPromise;
 }
