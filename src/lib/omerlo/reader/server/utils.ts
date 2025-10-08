@@ -31,7 +31,7 @@ const refreshTokenCookieName = 'refresh_token';
 const THREE_MONTH = 90 * 24 * 60 * 60;
 
 export function setAuthorizationCookies(cookies: Cookies, token: OmerloToken) {
-  cookies.set('logged_in', 'true', { path: '/', httpOnly: false });
+  cookies.set('logged_in', 'true', { path: '/', httpOnly: false, maxAge: THREE_MONTH });
 
   cookies.set(accessTokenCookieName, token.accessToken, {
     httpOnly: true,
