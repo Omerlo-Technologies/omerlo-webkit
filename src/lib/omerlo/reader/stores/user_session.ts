@@ -44,17 +44,15 @@ export function initUserSession(session: UserSession): ReadableUserSession {
 
       invalidate('omerlo:user_session');
 
-      update(updateUserInfo(null, false));
+      update(updateUserInfo(null, false, false));
     },
     refresh: async () => {
       if (!browser) {
         throw new Error('MUST NOT call refresh on user session from server side.');
       }
 
-      const userInfo = await useReader(fetch)
-        .userInfo()
-        .then((resp) => resp.data);
-      update(updateUserInfo(userInfo, true));
+      const userInfo = await useReader(fetch).userInfo();
+      update(updateUserInfo(userInfo.data, true, userInfo.ok));
     }
   };
 
@@ -62,10 +60,10 @@ export function initUserSession(session: UserSession): ReadableUserSession {
   return ctx;
 }
 
-const updateUserInfo = (userInfo: UserInfo | null, authenticated: boolean) => {
+const updateUserInfo = (userInfo: UserInfo | null, authenticated: boolean, verified: boolean) => {
   return (session: UserSession) => {
     session.user = userInfo;
-    session.verified = userInfo != null;
+    session.verified = verified;
     session.authenticated = authenticated;
     localStorage.setItem('user_session', JSON.stringify(session));
     return session;
