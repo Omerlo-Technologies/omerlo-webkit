@@ -84,7 +84,7 @@ export interface MediaSectionSummary {
 }
 
 export interface MediaSectionHierarchy extends MediaSectionSummary {
-  sections: MediaSectionSummary[];
+  sections: MediaSectionHierarchy[];
 }
 
 export interface MediaSection extends MediaSectionSummary {
