@@ -4,6 +4,7 @@ import { parseMany, type ApiAssocs, type ApiData } from '$reader/utils/api';
 import { getAssoc } from '$reader/utils/assocs';
 import { request } from '$reader/utils/request';
 import { parseContentSummary, type ContentSummary } from './contents';
+import { buildMeta } from '$reader/utils/parseHelpers';
 
 export const magazineFetchers = (f: typeof fetch) => {
   return {
@@ -47,22 +48,40 @@ export function sectionContentsFetcher(f: typeof fetch) {
  ******************************************************************************/
 
 export function parseIssueSummary(data: ApiData, assocs: ApiAssocs): IssueSummary {
-  return {
-    id: data.id,
-    issueType: getAssoc<IssueType>(assocs, 'issue_types', data.issue_type_id),
-    kind: data.kind,
-    name: data.name,
-    descriptionText: data.description_text,
-    descriptionHtml: data.description_html,
-    color: data.color,
-    pdfUrl: data.pdf_url,
-    visual: parseVisual(data.visual, assocs),
-    metadata: data.metadata,
-    meta: {
-      locales: parseLocalesMetadata(data.meta)
-    },
-    updatedAt: new Date(data.updated_at)
-  };
+  // NOTE retrocompability
+  if (data.localized) {
+    return {
+      id: data.id,
+      issueType: getAssoc<IssueType>(assocs, 'issue_types', data.issue_type_id),
+      kind: data.issue_type,
+      name: data.localized.name,
+      descriptionText: data.localized.description_text,
+      descriptionHtml: data.localized.description_html,
+      color: data.color,
+      pdfUrl: data.pdf_url,
+      visual: parseVisual(data.localized.visual, assocs),
+      metadata: data.metadata,
+      meta: buildMeta(data.localized.locale),
+      updatedAt: new Date(data.updated_at)
+    };
+  } else {
+    return {
+      id: data.id,
+      issueType: getAssoc<IssueType>(assocs, 'issue_types', data.issue_type_id),
+      kind: data.kind,
+      name: data.name,
+      descriptionText: data.description_text,
+      descriptionHtml: data.description_html,
+      color: data.color,
+      pdfUrl: data.pdf_url,
+      visual: parseVisual(data.visual, assocs),
+      metadata: data.metadata,
+      meta: {
+        locales: parseLocalesMetadata(data.meta)
+      },
+      updatedAt: new Date(data.updated_at)
+    };
+  }
 }
 
 export function parseIssue(data: ApiData, assocs: ApiAssocs): Issue {
