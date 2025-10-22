@@ -6,6 +6,7 @@ import { parseVisual, type Visual } from './visuals';
 import { buildMeta } from '../utils/parseHelpers';
 import { parseContentSummary, type ContentSummary } from './contents';
 import { getAssocs } from '$reader/utils/assocs';
+import { parseDistribution, parseRelease, type Distribution, type Release } from './distributions';
 
 export const mediaFetchers = (f: typeof fetch) => {
   return {
@@ -122,7 +123,8 @@ export interface MediaBlockEntry {
   contents: ContentSummary[];
   section: MediaSectionSummary | null;
   // media: ...
-  // release: ...
+  distribution: Distribution | null;
+  releases: Release[] | null;
 }
 
 export function parseMedia(data: ApiData, assocs: ApiAssocs): Media {
@@ -231,6 +233,10 @@ function parseBlock(data: ApiData, assocs: ApiAssocs): MediaBlock {
 function parseBlockEntry(data: ApiData, assocs: ApiAssocs): MediaBlockEntry {
   return {
     contents: getAssocs<ContentSummary>(assocs, 'contents', data.content_ids),
-    section: data.section ? parseSectionSummary(data.section, assocs) : null
+    section: data.section ? parseSectionSummary(data.section, assocs) : null,
+    releases: data.releases
+      ? data.releases.map((release: ApiData) => parseRelease(release, assocs))
+      : [],
+    distribution: data.distribution ? parseDistribution(data.distribution, assocs) : null
   };
 }
