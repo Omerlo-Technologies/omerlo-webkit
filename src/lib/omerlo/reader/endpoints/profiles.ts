@@ -192,7 +192,7 @@ export function parseProfileDescription(data: ApiData, assocs: ApiAssocs): Profi
   };
 }
 
-export function isEvent(profile: ProfileSummary): profile is PersonSummary {
+export function isEvent(profile: ProfileSummary): profile is EventSummary {
   return profile.kind === 'event';
 }
 
