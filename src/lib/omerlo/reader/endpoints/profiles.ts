@@ -191,3 +191,19 @@ export function parseProfileDescription(data: ApiData, assocs: ApiAssocs): Profi
     blocks
   };
 }
+
+export function isEvent(profile: ProfileSummary): profile is PersonSummary {
+  return profile.kind === 'event';
+}
+
+export function isOrganization(profile: ProfileSummary): profile is OrganizationSummary {
+  return profile.kind === 'organization';
+}
+
+export function isPerson(profile: ProfileSummary): profile is PersonSummary {
+  return profile.kind === 'person';
+}
+
+export function isProject(profile: ProfileSummary): profile is ProjectSummary {
+  return profile.kind === 'project';
+}
