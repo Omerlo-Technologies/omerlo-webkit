@@ -35,6 +35,10 @@
     "./reader/server": {
       "types": "./dist/omerlo/reader/server/index.d.ts",
       "svelte": "./dist/omerlo/reader/server/index.js"
+    },
+    "./reader/utils": {
+      "types": "./dist/omerlo/reader/utils/index.d.ts",
+      "svelte": "./dist/omerlo/reader/utils/index.js"
     }
   },
   "peerDependencies": {
