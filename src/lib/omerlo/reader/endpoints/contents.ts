@@ -11,7 +11,13 @@ import {
   parseVisual
 } from './visuals';
 import { requestPublisher } from '$reader/utils/request';
-import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from '$reader/utils/api';
+import {
+  parseMany,
+  type ApiAssocs,
+  type ApiData,
+  type ApiParams,
+  type PagingParams
+} from '$reader/utils/api';
 import { getAssoc, getAssocs } from '$reader/utils/assocs';
 import { parseLocalesMetadata, type LocalesMetadata } from '$reader/utils/response';
 import { buildMeta, parseDate } from '$reader/utils/parseHelpers';
@@ -178,16 +184,21 @@ function baseBlock(data: ApiData, assocs: ApiAssocs) {
 }
 
 export function getContent(f: typeof fetch) {
-  return async (id: string) => {
-    const opts = { parser: parseContent };
+  return async (id: string, params?: Partial<ApiParams>) => {
+    const opts = { parser: parseContent, queryParams: params };
     return requestPublisher(f, `media/contents/${id}`, opts);
     // TODO: switch to Reader API (this API is already completed and documented)
     // return request(f, `/contents/${id}`, opts)
   };
 }
 
+interface ListContentParams extends PagingParams {
+  author_ids?: string | null;
+  category_ids?: string | null;
+}
+
 export function listContents(f: typeof fetch) {
-  return async (params?: Partial<PagingParams>) => {
+  return async (params?: Partial<ListContentParams>) => {
     const opts = { parser: parseMany(parseContentSummary), queryParams: params };
     return requestPublisher(f, `media/contents`, opts);
   };
