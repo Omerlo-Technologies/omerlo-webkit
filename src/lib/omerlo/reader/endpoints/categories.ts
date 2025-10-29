@@ -35,20 +35,22 @@ export function listCategories(f: typeof fetch) {
 }
 
 export function parseCategory(data: ApiData, _assoc: ApiAssocs): Category {
-  let meta: { locales: LocalesMetadata };
-
   // NOTE: this is to support publisher public api v2 but also reader api v1
-  if (data.meta) {
-    meta = { locales: parseLocalesMetadata(data.meta) };
+  if (data.localized) {
+    return {
+      id: data.id,
+      name: data.localized.name,
+      svg: data.svg_icon,
+      meta: buildMeta(data.localized.locale),
+      updatedAt: data.updated_at
+    };
   } else {
-    meta = buildMeta(data.localized.locale);
+    return {
+      id: data.id,
+      name: data.name,
+      svg: data.svg_icon,
+      meta: { locales: parseLocalesMetadata(data.meta) },
+      updatedAt: data.updated_at
+    };
   }
-
-  return {
-    id: data.id,
-    name: data.name,
-    svg: data.svg_icon,
-    meta,
-    updatedAt: data.updated_at
-  };
 }
