@@ -192,7 +192,7 @@ export function getContent(f: typeof fetch) {
   };
 }
 
-interface ListContentParams extends PagingParams {
+export interface ListContentParams extends PagingParams {
   author_ids?: string | null;
   category_ids?: string | null;
 }
