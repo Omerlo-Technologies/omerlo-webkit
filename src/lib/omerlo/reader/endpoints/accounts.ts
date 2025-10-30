@@ -14,7 +14,7 @@ export const accountsFetchers = (f: typeof fetch) => {
 export function getUserInfo(f: typeof fetch) {
   return async () => {
     const opts = { parser: parseUserInfo };
-    return request(f, '/account/me', opts);
+    return request(f, '/session/account/me', opts);
   };
 }
 
@@ -36,7 +36,7 @@ function parseUserInfo(data: ApiData, _assoc: ApiAssocs): UserInfo {
 export function getUserEntitlements(f: typeof fetch) {
   return async () => {
     const opts = { parser: parseMany(parseUserEntitlement) };
-    return request(f, '/account/me/entitlements', opts);
+    return request(f, '/session/account/me/entitlements', opts);
   };
 }
 
