@@ -1,4 +1,10 @@
-import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from '$reader/utils/api';
+import {
+  parseMany,
+  type ApiAssocs,
+  type ApiData,
+  type ApiParams,
+  type PagingParams
+} from '$reader/utils/api';
 import { parseLocalesMetadata, type LocalesMetadata } from '$reader/utils/response';
 import { buildMeta } from '$reader/utils/parseHelpers';
 import { requestPublisher } from '$reader/utils/request';
@@ -18,8 +24,8 @@ export function listProfileTypes(f: typeof fetch) {
 }
 
 export function getProfileType(f: typeof fetch) {
-  return async (id: string) => {
-    const opts = { parser: parseProfileType };
+  return async (id: string, params?: Partial<ApiParams>) => {
+    const opts = { parser: parseProfileType, queryParams: params };
     return requestPublisher(f, `media/profile-types/${id}`, opts);
   };
 }

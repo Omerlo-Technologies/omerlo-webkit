@@ -1,6 +1,6 @@
 import { parseLocalesMetadata, type LocalesMetadata } from '$reader/utils/response';
 import { parseVisual, type Visual } from './visuals';
-import { parseMany, type ApiAssocs, type ApiData } from '$reader/utils/api';
+import { parseMany, type ApiAssocs, type ApiData, type ApiParams } from '$reader/utils/api';
 import { getAssoc } from '$reader/utils/assocs';
 import { request } from '$reader/utils/request';
 import { parseContentSummary, type ContentSummary } from './contents';
@@ -16,29 +16,29 @@ export const magazineFetchers = (f: typeof fetch) => {
 };
 
 export function issueFetcher(f: typeof fetch) {
-  return async (id: string) => {
-    const opts = { parser: parseIssue };
+  return async (id: string, params?: Partial<ApiParams>) => {
+    const opts = { parser: parseIssue, queryParams: params };
     return request(f, `/issues/${id}`, opts);
   };
 }
 
 export function issueBlocksFetcher(f: typeof fetch) {
-  return async (sectionId: string) => {
-    const opts = { parser: parseMany(parseIssueBlock) };
+  return async (sectionId: string, params?: Partial<ApiParams>) => {
+    const opts = { parser: parseMany(parseIssueBlock), queryParams: params };
     return request(f, `/issues/sections/${sectionId}/blocks`, opts);
   };
 }
 
 export function contentsSearch(f: typeof fetch) {
-  return async (issueId: string, q: string) => {
-    const opts = { parser: parseMany(parseIssueSectionContent), queryParams: { q } };
+  return async (issueId: string, q: string, params?: Partial<ApiParams>) => {
+    const opts = { parser: parseMany(parseIssueSectionContent), queryParams: { ...params, q } };
     return request(f, `/issues/${issueId}/contents/search`, opts);
   };
 }
 
 export function sectionContentsFetcher(f: typeof fetch) {
-  return async (sectionId: string) => {
-    const opts = { parser: parseMany(parseContentSummary) };
+  return async (sectionId: string, params?: Partial<ApiParams>) => {
+    const opts = { parser: parseMany(parseContentSummary), queryParams: params };
     return request(f, `/issues/sections/${sectionId}/contents`, opts);
   };
 }

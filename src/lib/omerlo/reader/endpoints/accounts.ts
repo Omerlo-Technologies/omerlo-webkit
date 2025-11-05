@@ -1,4 +1,4 @@
-import { parseMany, type ApiAssocs, type ApiData } from '$reader/utils/api';
+import { parseMany, type ApiAssocs, type ApiData, type ApiParams } from '$reader/utils/api';
 import { request } from '$reader/utils/request';
 
 export const accountsFetchers = (f: typeof fetch) => {
@@ -12,8 +12,8 @@ export const accountsFetchers = (f: typeof fetch) => {
 // Get user's informations associated to the bearer token.
 //
 export function getUserInfo(f: typeof fetch) {
-  return async () => {
-    const opts = { parser: parseUserInfo };
+  return async (params?: Partial<ApiParams>) => {
+    const opts = { parser: parseUserInfo, queryParams: params };
     return request(f, '/account/me', opts);
   };
 }
@@ -34,8 +34,8 @@ function parseUserInfo(data: ApiData, _assoc: ApiAssocs): UserInfo {
 // Get user's entitlements associated to the bearer token (Platform).
 //
 export function getUserEntitlements(f: typeof fetch) {
-  return async () => {
-    const opts = { parser: parseMany(parseUserEntitlement) };
+  return async (params?: Partial<ApiParams>) => {
+    const opts = { parser: parseMany(parseUserEntitlement), queryParams: params };
     return request(f, '/account/me/entitlements', opts);
   };
 }

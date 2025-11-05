@@ -1,4 +1,10 @@
-import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from '$reader/utils/api';
+import {
+  parseMany,
+  type ApiAssocs,
+  type ApiData,
+  type ApiParams,
+  type PagingParams
+} from '$reader/utils/api';
 import type { LocalesMetadata } from '$reader/utils/response';
 import { buildMeta } from '$reader/utils/parseHelpers';
 import { requestPublisher } from '$reader/utils/request';
@@ -18,8 +24,8 @@ export function listWebpages(f: typeof fetch) {
 }
 
 export function getWebpage(f: typeof fetch) {
-  return async (slug: string) => {
-    const opts = { parser: parseWebpage };
+  return async (slug: string, params?: Partial<ApiParams>) => {
+    const opts = { parser: parseWebpage, queryParams: params };
     return requestPublisher(f, `organization/pages/${slug}`, opts);
   };
 }

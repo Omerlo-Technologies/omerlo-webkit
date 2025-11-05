@@ -1,5 +1,11 @@
 import { request } from '$reader/utils/request';
-import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from '$reader/utils/api';
+import {
+  parseMany,
+  type ApiAssocs,
+  type ApiData,
+  type ApiParams,
+  type PagingParams
+} from '$reader/utils/api';
 
 export const oauthFetchers = (f: typeof fetch) => {
   return {
@@ -36,8 +42,8 @@ export interface OauthProviderSummary {
 }
 
 export function getOauthUser(f: typeof fetch) {
-  return () => {
-    const opts = { parser: parseOauthUser };
+  return (params?: Partial<ApiParams>) => {
+    const opts = { parser: parseOauthUser, queryParams: params };
     return request(f, '/oauth/user', opts);
   };
 }

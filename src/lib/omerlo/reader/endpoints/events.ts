@@ -1,5 +1,11 @@
 import type { Category } from './categories';
-import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from '$reader/utils/api';
+import {
+  parseMany,
+  type ApiAssocs,
+  type ApiData,
+  type ApiParams,
+  type PagingParams
+} from '$reader/utils/api';
 import type { LocalesMetadata } from '$reader/utils/response';
 import type { ProfileType } from './profileType';
 import { getAssoc, getAssocs } from '$reader/utils/assocs';
@@ -30,8 +36,8 @@ export function listEvents(f: typeof fetch) {
 }
 
 export function getEvent(f: typeof fetch) {
-  return async (id: string) => {
-    const opts = { parser: parseEvent };
+  return async (id: string, params?: Partial<ApiParams>) => {
+    const opts = { parser: parseEvent, queryParams: params };
     return requestPublisher(f, `media/events/${id}`, opts);
   };
 }

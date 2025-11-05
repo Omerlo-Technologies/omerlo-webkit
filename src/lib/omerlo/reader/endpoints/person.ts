@@ -1,5 +1,11 @@
 import type { Category } from './categories';
-import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from '$reader/utils/api';
+import {
+  parseMany,
+  type ApiAssocs,
+  type ApiData,
+  type ApiParams,
+  type PagingParams
+} from '$reader/utils/api';
 import { parseLocalesMetadata, type LocalesMetadata } from '$reader/utils/response';
 import { parseProfileAddress, type ProfileAddress } from './profiles';
 import { parseProfileContact, type ProfileContact } from './profiles';
@@ -26,8 +32,8 @@ export function listPeople(f: typeof fetch) {
 }
 
 export function getPerson(f: typeof fetch) {
-  return async (id: string) => {
-    const opts = { parser: parsePerson };
+  return async (id: string, params?: Partial<ApiParams>) => {
+    const opts = { parser: parsePerson, queryParams: params };
     return requestPublisher(f, `media/people/${id}`, opts);
   };
 }

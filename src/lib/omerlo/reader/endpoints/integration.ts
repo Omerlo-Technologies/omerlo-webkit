@@ -1,4 +1,4 @@
-import type { ApiAssocs, ApiData } from '$reader/utils/api';
+import type { ApiAssocs, ApiData, ApiParams } from '$reader/utils/api';
 import { requestOmerlo } from '../utils/request';
 
 export const integrationFetchers = (f: typeof fetch) => {
@@ -8,8 +8,8 @@ export const integrationFetchers = (f: typeof fetch) => {
 };
 
 export function getReference(f: typeof fetch) {
-  return async (key: string) => {
-    const opts = { parser: parseReference };
+  return async (key: string, params?: Partial<ApiParams>) => {
+    const opts = { parser: parseReference, queryParams: params };
     return requestOmerlo(f, `/core/v2/references/${key}`, opts);
   };
 }
