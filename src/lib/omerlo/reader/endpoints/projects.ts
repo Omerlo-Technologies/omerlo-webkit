@@ -7,7 +7,8 @@ import {
   type ProfileContact,
   parseProfileDescription,
   type ProfileDescription,
-  type ListProfilesParams
+  type ListProfilesParams,
+  parseProfileBlock
 } from './profiles';
 import { type ApiData, type ApiAssocs, parseMany, type ApiParams } from '$reader/utils/api';
 import { getAssoc, getAssocs } from '$reader/utils/assocs';
@@ -20,9 +21,8 @@ export const projectFetchers = (f: typeof fetch) => {
     // TODO missing searchProjects
     // searchProjects: searchProjects(f)
     listProjects: listProjects(f),
-    getProject: getProject(f)
-    // TODO missing allProjectBlocks
-    // allProjectBlocks: allProjectBlocks(f)
+    getProject: getProject(f),
+    allProjectBlocks: allProjectBlocks(f)
   };
 };
 
@@ -37,6 +37,13 @@ export function getProject(f: typeof fetch) {
   return async (id: string, params?: Partial<ApiParams>) => {
     const opts = { parser: parseProject, queryParams: params };
     return requestPublisher(f, `media/projects/${id}`, opts);
+  };
+}
+
+export function allProjectBlocks(f: typeof fetch) {
+  return async (id: string, params?: Partial<ApiParams>) => {
+    const opts = { parser: parseMany(parseProfileBlock), queryParams: params };
+    return requestPublisher(f, `media/projects/${id}/blocks`, opts);
   };
 }
 
