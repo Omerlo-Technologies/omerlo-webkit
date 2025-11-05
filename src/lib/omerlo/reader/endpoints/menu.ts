@@ -1,4 +1,4 @@
-import { type ApiAssocs, type ApiData } from '$reader/utils/api';
+import { type ApiAssocs, type ApiData, type ApiParams } from '$reader/utils/api';
 import type { LocalesMetadata } from '$reader/utils/response';
 import { buildMeta } from '$reader/utils/parseHelpers';
 import { requestPublisher } from '../utils/request';
@@ -18,8 +18,8 @@ export const menuFetchers = (f: typeof fetch) => {
 };
 
 export function getMenu(f: typeof fetch) {
-  return async (key: string) => {
-    const opts = { parser: parseMenu };
+  return async (key: string, params?: Partial<ApiParams>) => {
+    const opts = { parser: parseMenu, queryParams: params };
     return requestPublisher(f, `media/menus/${key}`, opts);
   };
 }

@@ -8,7 +8,13 @@ import {
   parseProfileDescription,
   type ProfileDescription
 } from './profiles';
-import { type ApiData, type ApiAssocs, parseMany, type PagingParams } from '$reader/utils/api';
+import {
+  type ApiData,
+  type ApiAssocs,
+  parseMany,
+  type PagingParams,
+  type ApiParams
+} from '$reader/utils/api';
 import { getAssoc, getAssocs } from '$reader/utils/assocs';
 import { buildMeta } from '$reader/utils/parseHelpers';
 import type { ProfileType } from './profileType';
@@ -31,8 +37,8 @@ export function listProjects(f: typeof fetch) {
 }
 
 export function getProject(f: typeof fetch) {
-  return async (id: string) => {
-    const opts = { parser: parseProject };
+  return async (id: string, params?: Partial<ApiParams>) => {
+    const opts = { parser: parseProject, queryParams: params };
     return requestPublisher(f, `media/projects/${id}`, opts);
   };
 }

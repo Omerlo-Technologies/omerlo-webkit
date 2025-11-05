@@ -1,4 +1,4 @@
-import type { ApiAssocs, PagingParams } from '$reader/utils/api';
+import type { ApiAssocs, ApiParams, PagingParams } from '$reader/utils/api';
 import { parseMany, type ApiData } from '$reader/utils/api';
 import { getAssoc, getAssocs } from '$reader/utils/assocs';
 import { parseLocalesMetadata, type LocalesMetadata } from '$reader/utils/response';
@@ -27,8 +27,8 @@ export function listOrganizations(f: typeof fetch) {
 }
 
 export function getOrganization(f: typeof fetch) {
-  return async (id: string) => {
-    const opts = { parser: parseOrganization };
+  return async (id: string, params?: Partial<ApiParams>) => {
+    const opts = { parser: parseOrganization, queryParams: params };
     return requestPublisher(f, `media/organizations/${id}`, opts);
   };
 }

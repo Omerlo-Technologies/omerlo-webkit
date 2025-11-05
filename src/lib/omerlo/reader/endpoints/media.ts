@@ -1,5 +1,5 @@
 import { parseMany, type ApiAssocs, type PagingParams } from '../utils/api';
-import type { ApiData } from '../utils/api';
+import type { ApiData, ApiParams } from '../utils/api';
 import { requestPublisher } from '../utils/request';
 import type { LocalesMetadata } from '../utils/response';
 import { parseVisual, type Visual } from './visuals';
@@ -18,16 +18,16 @@ export const mediaFetchers = (f: typeof fetch) => {
 };
 
 export function getMedia(f: typeof fetch) {
-  return async () => {
-    const opts = { parser: parseMedia };
+  return async (params?: Partial<ApiParams>) => {
+    const opts = { parser: parseMedia, queryParams: params };
     // NOTE the `/` is REALLY important
     return requestPublisher(f, 'media/', opts);
   };
 }
 
 export function getMediaSection(f: typeof fetch) {
-  return async (id: string) => {
-    const opts = { parser: parseSection };
+  return async (id: string, params?: Partial<ApiParams>) => {
+    const opts = { parser: parseSection, queryParams: params };
     return requestPublisher(f, `/sections/${id}`, opts);
   };
 }
@@ -40,8 +40,8 @@ export function listMediaSectionContents(f: typeof fetch) {
 }
 
 export function getMediaBlock(f: typeof fetch) {
-  return async (id: string) => {
-    const opts = { parser: parseBlock };
+  return async (id: string, params?: Partial<ApiParams>) => {
+    const opts = { parser: parseBlock, queryParams: params };
     return requestPublisher(f, `/blocks/${id}`, opts);
   };
 }

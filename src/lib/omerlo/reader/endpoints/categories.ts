@@ -1,5 +1,11 @@
 import { parseLocalesMetadata, type LocalesMetadata } from '$reader/utils/response';
-import { parseMany, type ApiAssocs, type ApiData, type PagingParams } from '$reader/utils/api';
+import {
+  parseMany,
+  type ApiAssocs,
+  type ApiData,
+  type ApiParams,
+  type PagingParams
+} from '$reader/utils/api';
 import { requestPublisher } from '$reader/utils/request';
 import { buildMeta } from '$reader/utils/parseHelpers';
 
@@ -21,8 +27,8 @@ export interface Category {
 }
 
 export function getCategory(f: typeof fetch) {
-  return async (id: string) => {
-    const opts = { parser: parseCategory };
+  return async (id: string, params?: Partial<ApiParams>) => {
+    const opts = { parser: parseCategory, queryParams: params };
     return requestPublisher(f, `media/categories/${id}`, opts);
   };
 }
