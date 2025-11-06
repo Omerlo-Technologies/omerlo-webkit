@@ -31,15 +31,26 @@ export const eventFetchers = (f: typeof fetch) => {
   };
 };
 
+export interface ListEventsParams extends ListProfilesParams {
+  from?: string;
+  to?: string;
+  timezone?: string;
+}
+
 export function listEvents(f: typeof fetch) {
-  return async (params?: Partial<ListProfilesParams>) => {
+  return async (params?: Partial<ListEventsParams>) => {
     const opts = { parser: parseMany(parseEventSummary), queryParams: params };
     return requestPublisher(f, `media/events`, opts);
   };
 }
 
+export interface GetEventParams extends ApiParams {
+  date?: string;
+  timezone?: string;
+}
+
 export function getEvent(f: typeof fetch) {
-  return async (id: string, params?: Partial<ApiParams>) => {
+  return async (id: string, params?: Partial<GetEventParams>) => {
     const opts = { parser: parseEvent, queryParams: params };
     return requestPublisher(f, `media/events/${id}`, opts);
   };
