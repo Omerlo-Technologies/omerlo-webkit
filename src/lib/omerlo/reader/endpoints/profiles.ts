@@ -1,12 +1,12 @@
 import { parsePersonSummary, type Person, type PersonSummary } from './person';
 import { parseProjectSummary, type Project, type ProjectSummary } from './projects';
-import { parseEventSummary, type EventSummary } from './events';
+import { parseEventSummary, type Event, type EventSummary } from './events';
 import {
   parseOrganizationSummary,
   type Organization,
   type OrganizationSummary
 } from './organizations';
-import type { ApiAssocs, ApiData } from '$reader/utils/api';
+import type { ApiAssocs, ApiData, PagingParams } from '$reader/utils/api';
 import type { LocalesMetadata } from '$reader/utils/response';
 import { getAssocs } from '$reader/utils/assocs';
 import type { ContentSummary } from './contents';
@@ -190,4 +190,9 @@ export function parseProfileDescription(data: ApiData, assocs: ApiAssocs): Profi
     meta: buildMeta(data.locale),
     blocks
   };
+}
+
+export interface ListProfilesParams extends PagingParams {
+  profile_type_ids?: string | null;
+  category_ids?: string | null;
 }

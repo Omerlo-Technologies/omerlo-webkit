@@ -6,15 +6,10 @@ import {
   parseProfileContact,
   type ProfileContact,
   parseProfileDescription,
-  type ProfileDescription
+  type ProfileDescription,
+  type ListProfilesParams
 } from './profiles';
-import {
-  type ApiData,
-  type ApiAssocs,
-  parseMany,
-  type PagingParams,
-  type ApiParams
-} from '$reader/utils/api';
+import { type ApiData, type ApiAssocs, parseMany, type ApiParams } from '$reader/utils/api';
 import { getAssoc, getAssocs } from '$reader/utils/assocs';
 import { buildMeta } from '$reader/utils/parseHelpers';
 import type { ProfileType } from './profileType';
@@ -22,6 +17,8 @@ import { requestPublisher } from '$reader/utils/request';
 
 export const projectFetchers = (f: typeof fetch) => {
   return {
+    // TODO missing searchProjects
+    // searchProjects: searchProjects(f)
     listProjects: listProjects(f),
     getProject: getProject(f)
     // TODO missing allProjectBlocks
@@ -30,7 +27,7 @@ export const projectFetchers = (f: typeof fetch) => {
 };
 
 export function listProjects(f: typeof fetch) {
-  return async (params?: Partial<PagingParams>) => {
+  return async (params?: Partial<ListProfilesParams>) => {
     const opts = { parser: parseMany(parseProjectSummary), queryParams: params };
     return requestPublisher(f, `media/projects`, opts);
   };

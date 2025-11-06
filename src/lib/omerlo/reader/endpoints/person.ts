@@ -1,13 +1,7 @@
 import type { Category } from './categories';
-import {
-  parseMany,
-  type ApiAssocs,
-  type ApiData,
-  type ApiParams,
-  type PagingParams
-} from '$reader/utils/api';
+import { parseMany, type ApiAssocs, type ApiData, type ApiParams } from '$reader/utils/api';
 import { parseLocalesMetadata, type LocalesMetadata } from '$reader/utils/response';
-import { parseProfileAddress, type ProfileAddress } from './profiles';
+import { parseProfileAddress, type ListProfilesParams, type ProfileAddress } from './profiles';
 import { parseProfileContact, type ProfileContact } from './profiles';
 import { parseProfileDescription, type ProfileDescription } from './profiles';
 import { getAssoc, getAssocs } from '$reader/utils/assocs';
@@ -17,6 +11,8 @@ import { requestPublisher } from '$reader/utils/request';
 
 export const personFetchers = (f: typeof fetch) => {
   return {
+    // TODO missing searchPeople
+    // searchPeople: searchPeople(f)
     listPeople: listPeople(f),
     getPerson: getPerson(f)
     // TODO missing allPersonBlocks
@@ -25,7 +21,7 @@ export const personFetchers = (f: typeof fetch) => {
 };
 
 export function listPeople(f: typeof fetch) {
-  return async (params?: Partial<PagingParams>) => {
+  return async (params?: Partial<ListProfilesParams>) => {
     const opts = { parser: parseMany(parsePersonSummary), queryParams: params };
     return requestPublisher(f, `media/people`, opts);
   };
