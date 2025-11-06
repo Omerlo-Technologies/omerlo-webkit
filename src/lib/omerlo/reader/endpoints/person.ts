@@ -1,7 +1,12 @@
 import type { Category } from './categories';
 import { parseMany, type ApiAssocs, type ApiData, type ApiParams } from '$reader/utils/api';
 import { parseLocalesMetadata, type LocalesMetadata } from '$reader/utils/response';
-import { parseProfileAddress, type ListProfilesParams, type ProfileAddress } from './profiles';
+import {
+  parseProfileAddress,
+  parseProfileBlock,
+  type ListProfilesParams,
+  type ProfileAddress
+} from './profiles';
 import { parseProfileContact, type ProfileContact } from './profiles';
 import { parseProfileDescription, type ProfileDescription } from './profiles';
 import { getAssoc, getAssocs } from '$reader/utils/assocs';
@@ -14,9 +19,8 @@ export const personFetchers = (f: typeof fetch) => {
     // TODO missing searchPeople
     // searchPeople: searchPeople(f)
     listPeople: listPeople(f),
-    getPerson: getPerson(f)
-    // TODO missing allPersonBlocks
-    // allPersonBlocks: allPersonBlocks(f)
+    getPerson: getPerson(f),
+    allPersonBlocks: allPersonBlocks(f)
   };
 };
 
@@ -31,6 +35,13 @@ export function getPerson(f: typeof fetch) {
   return async (id: string, params?: Partial<ApiParams>) => {
     const opts = { parser: parsePerson, queryParams: params };
     return requestPublisher(f, `media/people/${id}`, opts);
+  };
+}
+
+export function allPersonBlocks(f: typeof fetch) {
+  return async (id: string, params?: Partial<ApiParams>) => {
+    const opts = { parser: parseMany(parseProfileBlock), queryParams: params };
+    return requestPublisher(f, `media/people/${id}/blocks`, opts);
   };
 }
 
