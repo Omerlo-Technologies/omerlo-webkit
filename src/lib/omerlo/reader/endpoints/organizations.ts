@@ -76,11 +76,11 @@ export function parseOrganizationSummary(data: ApiData, assocs: ApiAssocs): Orga
   };
 
   // NOTE: This is to support publisher public api v2
-  if (data.localized) {
+  if (data.localized !== undefined) {
     localizedField = {
-      summaryHtml: data.localized.summary_html,
-      summaryText: data.localized.summary_text,
-      meta: buildMeta(data.localized.locale)
+      summaryHtml: data.localized?.summary_html || null,
+      summaryText: data.localized?.summary_text || null,
+      meta: buildMeta(data.localized?.locale || null)
     };
   } else {
     localizedField = {

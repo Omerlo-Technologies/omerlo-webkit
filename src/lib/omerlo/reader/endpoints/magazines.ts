@@ -49,19 +49,19 @@ export function sectionContentsFetcher(f: typeof fetch) {
 
 export function parseIssueSummary(data: ApiData, assocs: ApiAssocs): IssueSummary {
   // NOTE retrocompability
-  if (data.localized) {
+  if (data.localized !== undefined) {
     return {
       id: data.id,
       issueType: getAssoc<IssueType>(assocs, 'issue_types', data.issue_type_id),
       kind: data.issue_type,
-      name: data.localized.name,
-      descriptionText: data.localized.description_text,
-      descriptionHtml: data.localized.description_html,
+      name: data.localized?.name,
+      descriptionText: data.localized?.description_text || null,
+      descriptionHtml: data.localized?.description_html || null,
       color: data.color,
       pdfUrl: data.pdf_url,
-      visual: parseVisual(data.localized.visual, assocs),
+      visual: parseVisual(data.localized?.visual || null, assocs),
       metadata: data.metadata,
-      meta: buildMeta(data.localized.locale),
+      meta: buildMeta(data.localized?.locale || null),
       updatedAt: new Date(data.updated_at)
     };
   } else {

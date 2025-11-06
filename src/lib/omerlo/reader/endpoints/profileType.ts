@@ -45,8 +45,11 @@ export function parseProfileTypeSummary(data: ApiData, _assocs: ApiAssocs): Prof
   let localizedField: { name: string; meta: { locales: LocalesMetadata } };
 
   // NOTE: This is to support publisher public api v2
-  if (data.localized) {
-    localizedField = { name: data.localized.name, meta: buildMeta(data.localized.locale) };
+  if (data.localized !== undefined) {
+    localizedField = {
+      name: data.localized?.name || null,
+      meta: buildMeta(data.localized?.locale || null)
+    };
   } else {
     localizedField = { name: data.name, meta: { locales: parseLocalesMetadata(data.meta) } };
   }

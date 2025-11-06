@@ -55,12 +55,12 @@ export interface Distribution {
 export function parseDistribution(data: ApiData, assocs: ApiAssocs): Distribution {
   // NOTE for retro compatibility
 
-  if (data.localized) {
+  if (data.localized !== undefined) {
     return {
       id: data.id,
-      meta: buildMeta(data.localized.locale),
+      meta: buildMeta(data.localized?.locale || null),
       metadata: data.metadata,
-      name: data.localized.name,
+      name: data.localized?.name || null,
       visual: parseVisual(data.visual, assocs)
     };
   } else {

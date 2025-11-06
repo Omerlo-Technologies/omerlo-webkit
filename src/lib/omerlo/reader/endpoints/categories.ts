@@ -42,12 +42,12 @@ export function listCategories(f: typeof fetch) {
 
 export function parseCategory(data: ApiData, _assoc: ApiAssocs): Category {
   // NOTE: this is to support publisher public api v2 but also reader api v1
-  if (data.localized) {
+  if (data.localized !== undefined) {
     return {
       id: data.id,
-      name: data.localized.name,
+      name: data.localized?.name || null,
       svg: data.svg_icon,
-      meta: buildMeta(data.localized.locale),
+      meta: buildMeta(data.localized?.locale || null),
       updatedAt: data.updated_at
     };
   } else {
