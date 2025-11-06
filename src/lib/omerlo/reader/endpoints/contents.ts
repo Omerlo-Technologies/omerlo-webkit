@@ -213,7 +213,7 @@ export function parseContentSummary(data: ApiData, assocs: ApiAssocs): ContentSu
     {}
   );
 
-  if (data.localized) {
+  if (data.localized !== undefined) {
     // NOTE: This is to support publisher public api v2
 
     return {
@@ -226,16 +226,16 @@ export function parseContentSummary(data: ApiData, assocs: ApiAssocs): ContentSu
       categories: getAssocs<Category>(assocs, 'categories', data.category_ids),
       showPublishedAt: data.show_published_at,
       updatedAt: new Date(data.updated_at),
-      titleHtml: data.localized.title_html,
-      titleText: data.localized.title_text,
-      leadHtml: data.localized.lead_html,
-      leadText: data.localized.lead_text,
-      subtitleHtml: data.localized.subtitle_html,
-      subtitleText: data.localized.subtitle_text,
-      visual: parseVisual(data.localized.visual, assocs),
-      meta: buildMeta(data.localized.locale),
+      titleHtml: data.localized?.title_html || null,
+      titleText: data.localized?.title_text || null,
+      leadHtml: data.localized?.lead_html || null,
+      leadText: data.localized?.lead_text || null,
+      subtitleHtml: data.localized?.subtitle_html || null,
+      subtitleText: data.localized?.subtitle_text || null,
+      visual: parseVisual(data.localized?.visual || null, assocs),
+      meta: buildMeta(data.localized?.locale || null),
       metadata: metadata,
-      authors: getAssocs<AuthorSummary>(assocs, 'profiles', data.localized.author_ids)
+      authors: getAssocs<AuthorSummary>(assocs, 'profiles', data.localized?.author_ids || [])
     };
   } else {
     return {
@@ -265,8 +265,11 @@ export function parseContentSummary(data: ApiData, assocs: ApiAssocs): ContentSu
 export function parseContent(data: ApiData, assocs: ApiAssocs): Content {
   let seo: ContentSeo;
 
-  if (data.localized) {
-    seo = { title: data.localized.seo.title, description: data.localized.seo.description };
+  if (data.localized !== undefined) {
+    seo = {
+      title: data.localized?.seo?.title || null,
+      description: data.localized?.seo?.description || null
+    };
   } else {
     seo = { title: data.seo.title, description: data.seo.description };
   }

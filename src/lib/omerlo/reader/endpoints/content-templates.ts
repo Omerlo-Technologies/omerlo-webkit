@@ -38,10 +38,10 @@ export function parseContentTemplate(data: ApiData, _assocs: ApiAssocs): Content
   let name: string;
   let meta: { locales: LocalesMetadata };
 
-  if (data.localized) {
+  if (data.localized !== undefined) {
     // NOTE: this is for retrocompatibility with public publisher api v2
-    name = data.localized.name;
-    meta = buildMeta(data.localized.locale);
+    name = data.localized?.name || null;
+    meta = buildMeta(data.localized?.locale || null);
   } else {
     name = data.name;
     meta = { locales: parseLocalesMetadata(data.meta) };
