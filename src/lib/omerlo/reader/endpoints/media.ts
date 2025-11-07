@@ -74,11 +74,17 @@ export interface MediaContact {
   };
 }
 
+export interface MediaSectionSEO {
+  title: string | null;
+  description: string | null;
+}
+
 export interface MediaSectionSummary {
   id: string;
   name: string;
   slug: string;
   visual: Visual | null;
+  metadata: Record<string, string>;
   meta: { locales: LocalesMetadata };
   color: string;
   updatedAt: Date;
@@ -93,6 +99,7 @@ export interface MediaSection extends MediaSectionSummary {
   advertisingKey: string | null;
   sections: MediaSectionSummary[];
   blocks: MediaBlockSummary[];
+  seo: MediaSectionSEO;
 }
 
 export interface MediaBlockConfigurationSummary {
@@ -109,7 +116,7 @@ export interface MediaBlock extends MediaBlockSummary {
   description: string | null;
   visual: Visual | null;
   html: string | null;
-  metadata: { [key: string]: string };
+  metadata: Record<string, string>;
   meta: { locales: LocalesMetadata };
   textColor: string | null;
   backgroundColor: string | null;
@@ -160,15 +167,21 @@ function parseMediaContact(data: ApiData, _assocs: ApiAssocs): MediaContact {
 }
 
 function parseSection(data: ApiData, assocs: ApiAssocs): MediaSection {
+  const seo: MediaSectionSEO = {
+    title: data.localised.seo.title ?? null,
+    description: data.localised.seo.description ?? null
+  };
   return {
     id: data.id,
     name: data.localized.name,
     description: data.localized.description,
+    seo,
     slug: data.localized.slug,
     visual: parseVisual(data.visual, assocs),
     meta: buildMeta(data.localized.locale),
     color: data.color,
     advertisingKey: data.advertising_key,
+    metadata: data.metadata,
     sections: data.sections.map((section: ApiData) => parseSectionSummary(section, assocs)),
     blocks: data.blocks.map((block: ApiData, assocs: ApiAssocs) =>
       parseBlockSummary(block, assocs)
@@ -185,6 +198,7 @@ function parseSectionSummary(data: ApiData, assocs: ApiAssocs): MediaSectionSumm
     name: data.localized.name,
     slug: data.localized.slug,
     visual: parseVisual(data.visual, assocs),
+    metadata: data.metadata,
     updatedAt: data.updated_at
   };
 }
