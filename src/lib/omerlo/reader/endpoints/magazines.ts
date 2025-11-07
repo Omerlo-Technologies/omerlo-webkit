@@ -186,7 +186,7 @@ export interface IssueSummary {
   color: string | null;
   pdfUrl: string | null;
   visual: Visual | null;
-  metadata: { [key: string]: string };
+  metadata: Record<string, string>;
   meta: {
     locales: LocalesMetadata;
   };

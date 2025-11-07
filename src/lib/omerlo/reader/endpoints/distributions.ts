@@ -49,7 +49,7 @@ export interface Distribution {
   meta: { locales: LocalesMetadata };
   name: string;
   visual: Visual | null;
-  metadata: { [key: string]: string };
+  metadata: Record<string, string>;
 }
 
 export function parseDistribution(data: ApiData, assocs: ApiAssocs): Distribution {

@@ -79,6 +79,7 @@ export interface MediaSectionSummary {
   name: string;
   slug: string;
   visual: Visual | null;
+  metadata: Record<string, string>;
   meta: { locales: LocalesMetadata };
   color: string;
   updatedAt: Date;
@@ -109,7 +110,7 @@ export interface MediaBlock extends MediaBlockSummary {
   description: string | null;
   visual: Visual | null;
   html: string | null;
-  metadata: { [key: string]: string };
+  metadata: Record<string, string>;
   meta: { locales: LocalesMetadata };
   textColor: string | null;
   backgroundColor: string | null;
@@ -169,6 +170,7 @@ function parseSection(data: ApiData, assocs: ApiAssocs): MediaSection {
     meta: buildMeta(data.localized.locale),
     color: data.color,
     advertisingKey: data.advertising_key,
+    metadata: data.metadata,
     sections: data.sections.map((section: ApiData) => parseSectionSummary(section, assocs)),
     blocks: data.blocks.map((block: ApiData, assocs: ApiAssocs) =>
       parseBlockSummary(block, assocs)
@@ -185,6 +187,7 @@ function parseSectionSummary(data: ApiData, assocs: ApiAssocs): MediaSectionSumm
     name: data.localized.name,
     slug: data.localized.slug,
     visual: parseVisual(data.visual, assocs),
+    metadata: data.metadata,
     updatedAt: data.updated_at
   };
 }
