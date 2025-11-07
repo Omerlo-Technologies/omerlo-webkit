@@ -1,7 +1,7 @@
 import { parseMany, type ApiAssocs, type PagingParams } from '../utils/api';
 import type { ApiData, ApiParams } from '../utils/api';
 import { requestPublisher } from '../utils/request';
-import type { LocalesMetadata } from '../utils/response';
+import { parseLocalesMetadata, type LocalesMetadata } from '../utils/response';
 import { parseVisual, type Visual } from './visuals';
 import { buildMeta } from '../utils/parseHelpers';
 import { parseContentSummary, type ContentSummary } from './contents';
@@ -210,24 +210,46 @@ function parseBlockSummary(data: ApiData, _assocs: ApiAssocs): MediaBlockSummary
 }
 
 function parseBlock(data: ApiData, assocs: ApiAssocs): MediaBlock {
-  return {
-    ...parseBlockSummary(data, assocs),
-    name: data.localized?.name,
-    description: data.localized?.description,
-    visual: parseVisual(data.visual, assocs),
-    html: data.localized?.html,
-    metadata: data.metadata,
-    meta: buildMeta(data.localized?.locale),
-    textColor: data.color,
-    backgroundColor: data.background_color,
-    backgroundSvg: data.background_svg,
-    configuration: {
-      type: data.block_type,
-      key: data.configuration_key
-    },
-    entries: data.entries.map((entry: ApiData) => parseBlockEntry(entry, assocs)),
-    updatedAt: data.updatedAt
-  };
+  // NOTE: This is to support publisher public api v2
+  if (data.localized !== undefined) {
+    return {
+      ...parseBlockSummary(data, assocs),
+      name: data.localized?.name,
+      description: data.localized?.description,
+      visual: parseVisual(data.localized?.visual, assocs),
+      html: data.localized?.html,
+      metadata: data.metadata,
+      meta: buildMeta(data.localized?.locale),
+      textColor: data.text_color,
+      backgroundColor: data.background_color,
+      backgroundSvg: data.background_svg,
+      configuration: {
+        type: data.block_type,
+        key: data.configuration_key
+      },
+      entries: data.entries.map((entry: ApiData) => parseBlockEntry(entry, assocs)),
+      updatedAt: data.updatedAt
+    };
+  } else {
+    return {
+      ...parseBlockSummary(data, assocs),
+      name: data.name,
+      description: data.description,
+      visual: parseVisual(data.visual, assocs),
+      html: data.html,
+      metadata: data.metadata,
+      meta: { locales: parseLocalesMetadata(data.meta) },
+      textColor: data.text_color,
+      backgroundColor: data.background_color,
+      backgroundSvg: data.background_svg,
+      configuration: {
+        type: data.block_type,
+        key: data.configuration_key
+      },
+      entries: data.entries.map((entry: ApiData) => parseBlockEntry(entry, assocs)),
+      updatedAt: data.updatedAt
+    };
+  }
 }
 
 function parseBlockEntry(data: ApiData, assocs: ApiAssocs): MediaBlockEntry {
