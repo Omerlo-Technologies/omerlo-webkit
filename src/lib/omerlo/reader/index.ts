@@ -1,5 +1,5 @@
 import { parseCategory } from './endpoints/categories';
-import { parseProfileBlock, parseProfileSummary } from './endpoints/profiles';
+import { parseProfileBlockTypeSummary, parseProfileSummary } from './endpoints/profiles';
 import { parseContentBlockTemplate, parseContentTemplate } from './endpoints/content-templates';
 import { parseProfileTypeSummary } from './endpoints/profileType';
 import { registerAssocParser } from './utils/assocs';
@@ -35,12 +35,13 @@ export type * from './endpoints/visuals';
 export type * from './endpoints/webpage';
 export type * from './utils/response';
 
+// TODO: This should all be summary parsers!
 export function initReader() {
   registerAssocParser('categories', parseCategory);
   registerAssocParser('profiles', parseProfileSummary);
   registerAssocParser('content_templates', parseContentTemplate);
   registerAssocParser('profile_types', parseProfileTypeSummary);
-  registerAssocParser('profile_block_types', parseProfileBlock);
+  registerAssocParser('profile_block_types', parseProfileBlockTypeSummary);
   registerAssocParser('content_block_templates', parseContentBlockTemplate);
   registerAssocParser('contents', parseContentSummary);
   registerAssocParser('issues', parseIssueSummary);

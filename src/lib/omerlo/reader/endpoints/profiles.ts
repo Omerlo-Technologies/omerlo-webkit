@@ -8,7 +8,7 @@ import {
 } from './organizations';
 import type { ApiAssocs, ApiData, PagingParams } from '$reader/utils/api';
 import type { LocalesMetadata } from '$reader/utils/response';
-import { getAssocs } from '$reader/utils/assocs';
+import { getAssoc, getAssocs } from '$reader/utils/assocs';
 import type { ContentSummary } from './contents';
 import {
   type Image,
@@ -25,6 +25,12 @@ export type ProfileSummary = PersonSummary | ProjectSummary | EventSummary | Org
 export type ProfileBlockKind = ProfileBlockContents | ProfileBlockRelations;
 
 type ProfileKind = 'person' | 'project' | 'event' | 'organization';
+type BlockKind =
+  | 'selected_contents'
+  | 'person_relations'
+  | 'organization_relations'
+  | 'event_relations'
+  | 'project_relations';
 
 function getProfileParser(): Record<
   ProfileKind,
@@ -86,9 +92,7 @@ export type ProfileDescriptionBlock = {
 
 export type ProfileBlock = {
   id: string;
-  profileType: string;
-  profileBlockType: string;
-  kind: string;
+  type: ProfileBlockType;
   layout: string;
   meta: {
     locales: LocalesMetadata | null;
@@ -106,7 +110,7 @@ export interface ProfileBlockRelations extends ProfileBlock {
 }
 
 export function parseProfileBlock(data: ApiData, assocs: ApiAssocs): ProfileBlockKind {
-  if (data.kind === 'selected_content') {
+  if (data.kind === 'selected_contents') {
     const contents = data.content_ids
       ? getAssocs<ContentSummary>(assocs, 'contents', data.content_ids)
       : [];
@@ -125,19 +129,44 @@ export function parseProfileBlock(data: ApiData, assocs: ApiAssocs): ProfileBloc
   }
 }
 
-function profileBlockParser(data: ApiData, _assocs: ApiAssocs): ProfileBlock {
+function profileBlockParser(data: ApiData, assocs: ApiAssocs): ProfileBlock {
   const name = data.localized ? data.localized.name : null;
   const meta = data.localized ? buildMeta(data.localized.locale) : { locales: null };
+
   return {
     id: data.id,
-    profileType: data.profile_type_id,
+    type: getAssoc<ProfileBlockType>(assocs, 'profile_block_types', data.block_type_id),
     layout: data.layout,
-    kind: data.kind,
-    profileBlockType: data.block_type_id,
     meta,
     name,
     updatedAt: new Date(data.updated_at)
   };
+}
+
+export interface ProfileBlockType {
+  id: string;
+  kind: BlockKind;
+  name: string | null;
+  updatedAt: Date;
+}
+
+export function parseProfileBlockTypeSummary(data: ApiData, _assocs: ApiAssocs) {
+  // NOTE: This is to support publisher public api v2
+  if (data.localized !== undefined) {
+    return {
+      id: data.id,
+      kind: data.kind,
+      name: data.localized?.name || null,
+      updatedAt: new Date(data.updated_at)
+    };
+  } else {
+    return {
+      id: data.id,
+      kind: data.kind,
+      name: data.name,
+      updatedAt: new Date(data.updated_at)
+    };
+  }
 }
 
 export function parseProfileAddress(data: ApiData, _assocs: ApiAssocs): ProfileAddress {
