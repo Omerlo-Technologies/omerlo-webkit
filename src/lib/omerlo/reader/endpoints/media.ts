@@ -74,6 +74,11 @@ export interface MediaContact {
   };
 }
 
+export interface MediaSectionSEO {
+  title: string | null;
+  description: string | null;
+}
+
 export interface MediaSectionSummary {
   id: string;
   name: string;
@@ -94,6 +99,7 @@ export interface MediaSection extends MediaSectionSummary {
   advertisingKey: string | null;
   sections: MediaSectionSummary[];
   blocks: MediaBlockSummary[];
+  seo: MediaSectionSEO;
 }
 
 export interface MediaBlockConfigurationSummary {
@@ -161,10 +167,15 @@ function parseMediaContact(data: ApiData, _assocs: ApiAssocs): MediaContact {
 }
 
 function parseSection(data: ApiData, assocs: ApiAssocs): MediaSection {
+  const seo: MediaSectionSEO = {
+    title: data.localised.seo.title ?? null,
+    description: data.localised.seo.description ?? null
+  };
   return {
     id: data.id,
     name: data.localized.name,
     description: data.localized.description,
+    seo,
     slug: data.localized.slug,
     visual: parseVisual(data.visual, assocs),
     meta: buildMeta(data.localized.locale),
