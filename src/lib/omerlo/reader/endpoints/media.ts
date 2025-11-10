@@ -168,8 +168,8 @@ function parseMediaContact(data: ApiData, _assocs: ApiAssocs): MediaContact {
 
 function parseSection(data: ApiData, assocs: ApiAssocs): MediaSection {
   const seo: MediaSectionSEO = {
-    title: data.localised.seo.title ?? null,
-    description: data.localised.seo.description ?? null
+    title: data.localized.seo.title ?? null,
+    description: data.localized.seo.description ?? null
   };
   return {
     id: data.id,
