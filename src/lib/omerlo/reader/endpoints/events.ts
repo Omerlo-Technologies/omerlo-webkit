@@ -1,7 +1,7 @@
 import type { Category } from './categories';
 import { parseMany, type ApiAssocs, type ApiData, type ApiParams } from '$reader/utils/api';
 import type { LocalesMetadata } from '$reader/utils/response';
-import type { ProfileType } from './profileType';
+import type { ProfileType } from './profile-types';
 import { getAssoc, getAssocs } from '$reader/utils/assocs';
 import { parseDate } from '$reader/utils/parseHelpers';
 import {

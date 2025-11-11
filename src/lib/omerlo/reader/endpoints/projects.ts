@@ -13,7 +13,7 @@ import {
 import { type ApiData, type ApiAssocs, parseMany, type ApiParams } from '$reader/utils/api';
 import { getAssoc, getAssocs } from '$reader/utils/assocs';
 import { buildMeta } from '$reader/utils/parseHelpers';
-import type { ProfileType } from './profileType';
+import type { ProfileType } from './profile-types';
 import { requestPublisher } from '$reader/utils/request';
 
 export const projectFetchers = (f: typeof fetch) => {

@@ -1,7 +1,7 @@
 import { parseCategory } from './endpoints/categories';
 import { parseProfileBlockTypeSummary, parseProfileSummary } from './endpoints/profiles';
 import { parseContentBlockTemplate, parseContentTemplate } from './endpoints/content-templates';
-import { parseProfileTypeSummary } from './endpoints/profileType';
+import { parseProfileTypeSummary } from './endpoints/profile-types';
 import { registerAssocParser } from './utils/assocs';
 import { parseContentSummary } from './endpoints/contents';
 
@@ -28,7 +28,7 @@ export type * from './endpoints/notification';
 export type * from './endpoints/oauth';
 export type * from './endpoints/organizations';
 export type * from './endpoints/person';
-export type * from './endpoints/profileType';
+export type * from './endpoints/profile-types';
 export type * from './endpoints/profiles';
 export type * from './endpoints/projects';
 export type * from './endpoints/visuals';
