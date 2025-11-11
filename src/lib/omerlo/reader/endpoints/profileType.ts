@@ -7,7 +7,7 @@ import {
 } from '$reader/utils/api';
 import { parseLocalesMetadata, type LocalesMetadata } from '$reader/utils/response';
 import { buildMeta } from '$reader/utils/parseHelpers';
-import { requestPublisher } from '$reader/utils/request';
+import { requestOmerlo } from '$reader/utils/request';
 
 export const profileTypeFetchers = (f: typeof fetch) => {
   return {
@@ -19,14 +19,14 @@ export const profileTypeFetchers = (f: typeof fetch) => {
 export function listProfileTypes(f: typeof fetch) {
   return async (params?: Partial<PagingParams>) => {
     const opts = { parser: parseMany(parseProfileTypeSummary), queryParams: params };
-    return requestPublisher(f, `media/profile-types`, opts);
+    return requestOmerlo(f, `community/v2/profile-types`, opts);
   };
 }
 
 export function getProfileType(f: typeof fetch) {
   return async (id: string, params?: Partial<ApiParams>) => {
     const opts = { parser: parseProfileType, queryParams: params };
-    return requestPublisher(f, `media/profile-types/${id}`, opts);
+    return requestOmerlo(f, `community/v2/profile-types/${id}`, opts);
   };
 }
 
