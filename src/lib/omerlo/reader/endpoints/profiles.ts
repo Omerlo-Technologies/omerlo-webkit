@@ -222,6 +222,6 @@ export function parseProfileDescription(data: ApiData, assocs: ApiAssocs): Profi
 }
 
 export interface ListProfilesParams extends PagingParams {
-  profile_type_ids?: string | null;
-  category_ids?: string | null;
+  profile_type_ids?: string[] | null;
+  category_ids?: string[] | null;
 }
