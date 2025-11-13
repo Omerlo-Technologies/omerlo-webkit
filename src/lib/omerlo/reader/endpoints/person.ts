@@ -10,7 +10,7 @@ import {
 import { parseProfileContact, type ProfileContact } from './profiles';
 import { parseProfileDescription, type ProfileDescription } from './profiles';
 import { getAssoc, getAssocs } from '$reader/utils/assocs';
-import type { ProfileType } from './profileType';
+import type { ProfileType } from './profile-types';
 import { buildMeta } from '$reader/utils/parseHelpers';
 import { requestPublisher } from '$reader/utils/request';
 

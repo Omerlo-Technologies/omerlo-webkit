@@ -83,8 +83,8 @@ export interface ProfileDescription {
 
 export type ProfileDescriptionBlock = {
   kind: string;
-  contentHtml: string;
-  contentText: string;
+  contentHtml: string | null;
+  contentText: string | null;
   image: Image | null;
   slideshow: Slideshow | null;
   video: Video | null;

@@ -14,7 +14,7 @@ import { eventFetchers } from './endpoints/events';
 import { personFetchers } from './endpoints/person';
 import { projectFetchers } from './endpoints/projects';
 import { webpageFetchers } from './endpoints/webpage';
-import { profileTypeFetchers } from './endpoints/profileType';
+import { profileTypeFetchers } from './endpoints/profile-types';
 
 export const fetchers = (f: typeof fetch) => {
   return {
