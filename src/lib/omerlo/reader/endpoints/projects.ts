@@ -51,8 +51,8 @@ export interface ProjectSummary {
   id: string;
   profileType: ProfileType;
   kind: string;
-  profileImageURL: string | null;
-  coverImageURL: string | null;
+  profileImagrl: string | null;
+  coverImageUrl: string | null;
   meta: {
     locales: LocalesMetadata;
   };
@@ -68,8 +68,8 @@ export function parseProjectSummary(data: ApiData, assocs: ApiAssocs): ProjectSu
     profileType: getAssoc<ProfileType>(assocs, 'profile_types', data.profile_type_id),
     kind: 'project',
     // NOTE remove logo_image_url once using reader api
-    profileImageURL: data.logo_image_url || data.profile_image_url,
-    coverImageURL: data.cover_image_url,
+    profileImageUrl: data.logo_image_url || data.profile_image_url,
+    coverImageUrl: data.cover_image_url,
     meta: buildMeta(data.localized?.locale),
     name: data.localized?.name,
     summaryHtml: data.localized?.summary_html,

@@ -12,8 +12,8 @@ export interface Video {
   monetized: boolean;
   provider: string;
   source?: string;
-  embedURL: string;
-  thumbnailURL: string;
+  embedUrl: string;
+  thumbnailUrl: string;
   isTrackingEnabled: boolean;
 }
 
@@ -80,8 +80,8 @@ export function parseVideo(data: ApiData, _assocs: ApiAssocs): Video {
     videoID: data.video_id,
     monetized: data.monetized,
     provider: data.provider,
-    embedURL: data.embed_url,
-    thumbnailURL: data.thumbnail_url,
+    embedUrl: data.embed_url,
+    thumbnailUrl: data.thumbnail_url,
     url: data.url,
     captionHtml: data.caption_html,
     credit: data.credit,
