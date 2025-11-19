@@ -3,7 +3,6 @@ import { parseMany, type ApiAssocs, type ApiData, type ApiParams } from '$reader
 import type { LocalesMetadata } from '$reader/utils/response';
 import type { ProfileType } from './profile-types';
 import { getAssoc, getAssocs } from '$reader/utils/assocs';
-import { parseDate } from '$reader/utils/parseHelpers';
 import {
   parseProfileAddress,
   parseProfileBlock,
@@ -78,8 +77,8 @@ export interface EventSummary {
   name: string | null;
   summaryHtml: string | null;
   summaryText: string | null;
-  startsAt: Date | null;
-  endsAt: Date | null;
+  startsAt: Date;
+  endsAt: Date;
   updatedAt: Date;
 }
 
@@ -108,8 +107,8 @@ export function parseEventSummary(data: ApiData, assocs: ApiAssocs): EventSummar
     summaryHtml,
     summaryText,
     meta: buildMeta(data.localized?.locale),
-    startsAt: parseDate(data.starts_at),
-    endsAt: parseDate(data.ends_at),
+    startsAt: new Date(data.starts_at),
+    endsAt: new Date(data.ends_at),
     updatedAt: new Date(data.updated_at)
   };
 }
