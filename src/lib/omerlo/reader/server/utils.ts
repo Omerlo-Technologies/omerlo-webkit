@@ -1,6 +1,6 @@
-import type { UserSession } from '../stores/user_session';
 import { useReader } from '$omerlo';
 import type { Cookies } from '@sveltejs/kit';
+import type { UserSession } from '../stores/user_session';
 import { getAnonymousToken, refresh, type OmerloToken } from './token';
 
 export async function loadUserSession(f: typeof fetch, cookies: Cookies) {
@@ -31,16 +31,26 @@ const refreshTokenCookieName = 'refresh_token';
 const THREE_MONTH = 90 * 24 * 60 * 60;
 
 export function setAuthorizationCookies(cookies: Cookies, token: OmerloToken) {
-  cookies.set('logged_in', 'true', { path: '/', httpOnly: false, maxAge: THREE_MONTH });
+  cookies.set('logged_in', 'true', {
+    path: '/',
+    httpOnly: false,
+    sameSite: 'none',
+    secure: true,
+    maxAge: THREE_MONTH
+  });
 
   cookies.set(accessTokenCookieName, token.accessToken, {
-    httpOnly: true,
+    httpOnly: false,
+    sameSite: 'none',
+    secure: true,
     path: '/',
     maxAge: token.expiresIn - 60
   });
 
   cookies.set(refreshTokenCookieName, token.refreshToken, {
-    httpOnly: true,
+    httpOnly: false,
+    sameSite: 'none',
+    secure: true,
     path: '/',
     maxAge: THREE_MONTH
   });
