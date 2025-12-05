@@ -22,12 +22,12 @@ export const announcementsFetchers = (f: typeof fetch) => {
 //
 export function listAnnouncements(f: typeof fetch) {
   return async (params?: Partial<PagingParams>) => {
-    const opts = { parser: parseMany(parseAnnouncement), queryParams: params };
+    const opts = { parser: parseMany(parseAnnouncementSummary), queryParams: params };
     return request(f, '/announcements', opts);
   };
 }
 
-export interface Announcement {
+export interface AnnouncementSummary {
   id: string;
   titleHtml: string;
   titleText: string;
@@ -43,7 +43,7 @@ export interface Announcement {
   updatedAt: Date;
 }
 
-function parseAnnouncement(data: ApiData, assocs: ApiAssocs): Announcement {
+function parseAnnouncementSummary(data: ApiData, assocs: ApiAssocs): AnnouncementSummary {
   return {
     id: data.id,
     titleHtml: data.title_html,
@@ -52,7 +52,7 @@ function parseAnnouncement(data: ApiData, assocs: ApiAssocs): Announcement {
     subtitleText: data.subtitle_text,
     link: data.link,
     visual: parseVisual(data.visual, assocs),
-    startsAt: parseDate(data.starts_at),
+    startsAt: parseDate(data.starts_at)!,
     endsAt: parseDate(data.ends_at),
     meta: { locales: parseLocalesMetadata(data.meta) },
     updatedAt: new Date(data.updated_at)
@@ -64,7 +64,7 @@ function parseAnnouncement(data: ApiData, assocs: ApiAssocs): Announcement {
 //
 export function getAnnouncement(f: typeof fetch) {
   return async (id: string, params?: Partial<ApiParams>) => {
-    const opts = { parser: parseAnnouncement, queryParams: params };
+    const opts = { parser: parseAnnouncementSummary, queryParams: params };
     return request(f, `/announcements/${id}`, opts);
   };
 }
