@@ -34,7 +34,7 @@ export interface Announcement {
   subtitleHtml: string;
   subtitleText: string;
   visual: Visual | null;
-  startsAt: Date | null;
+  startsAt: Date;
   endsAt: Date | null;
   meta: {
     locales: LocalesMetadata;
