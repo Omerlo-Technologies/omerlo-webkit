@@ -31,8 +31,8 @@ export interface Announcement {
   id: string;
   titleHtml: string;
   titleText: string;
-  subtitleHtml: string;
-  subtitleText: string;
+  subtitleHtml: string | null;
+  subtitleText: string | null;
   visual: Visual | null;
   startsAt: Date;
   endsAt: Date | null;
