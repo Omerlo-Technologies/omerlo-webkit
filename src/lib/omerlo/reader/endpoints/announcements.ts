@@ -50,6 +50,7 @@ function parseAnnouncement(data: ApiData, assocs: ApiAssocs): Announcement {
     titleText: data.title_text,
     subtitleHtml: data.subtitle_html,
     subtitleText: data.subtitle_text,
+    link: data.link,
     visual: parseVisual(data.visual, assocs),
     startsAt: parseDate(data.starts_at),
     endsAt: parseDate(data.ends_at),
