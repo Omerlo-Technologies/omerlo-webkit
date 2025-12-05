@@ -33,6 +33,7 @@ export interface Announcement {
   titleText: string;
   subtitleHtml: string | null;
   subtitleText: string | null;
+  link: string | null;
   visual: Visual | null;
   startsAt: Date;
   endsAt: Date | null;
