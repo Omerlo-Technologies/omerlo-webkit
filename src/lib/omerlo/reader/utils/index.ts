@@ -1,2 +1,2 @@
-export type { ApiResponse } from './api';
+export type { ApiResponse, PagingParams } from './api';
 export * from './guards';
