@@ -51,7 +51,7 @@ export interface ProjectSummary {
   id: string;
   profileType: ProfileType;
   kind: string;
-  profileImagrl: string | null;
+  profileImageUrl: string | null;
   coverImageUrl: string | null;
   meta: {
     locales: LocalesMetadata;
