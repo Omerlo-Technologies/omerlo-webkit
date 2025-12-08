@@ -53,8 +53,8 @@ export interface PersonSummary {
   lastName: string;
   otherName: string | null;
   pronoun: string | null;
-  profileImageURL: string | null;
-  coverImageURL: string | null;
+  profileImageUrl: string | null;
+  coverImageUrl: string | null;
   meta: {
     locales: LocalesMetadata;
   };
@@ -94,8 +94,8 @@ export function parsePersonSummary(data: ApiData, assocs: ApiAssocs): PersonSumm
     otherName: data.other_name,
     pronoun: data.pronoun,
     // NOTE remove logo_image_url once using reader api
-    profileImageURL: data.avatar_image_url || data.profile_image_url,
-    coverImageURL: data.cover_image_url,
+    profileImageUrl: data.avatar_image_url || data.profile_image_url,
+    coverImageUrl: data.cover_image_url,
     ...localizedField,
     updatedAt: new Date(data.updated_at)
   };

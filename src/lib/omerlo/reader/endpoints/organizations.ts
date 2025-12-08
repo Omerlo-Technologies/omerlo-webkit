@@ -51,7 +51,7 @@ export interface OrganizationSummary {
   profileType: ProfileType;
   kind: string;
   name: string;
-  profileImageURL: string | null;
+  profileImageUrl: string | null;
   meta: {
     locales: LocalesMetadata;
   };
@@ -96,7 +96,7 @@ export function parseOrganizationSummary(data: ApiData, assocs: ApiAssocs): Orga
     kind: 'organization',
     name: data.name,
     // NOTE remove logo_image_url once using reader api
-    profileImageURL: data.logo_image_url || data.profile_image_url,
+    profileImageUrl: data.logo_image_url || data.profile_image_url,
     ...localizedField,
     updatedAt: new Date(data.updated_at)
   };

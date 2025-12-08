@@ -68,9 +68,9 @@ export interface EventSummary {
   kind: string;
   type: string;
   isAllDay: boolean;
-  profileImageURL: string | null;
-  coverImageURL: string | null;
-  subscriptionURL: string | null;
+  profileImageUrl: string | null;
+  coverImageUrl: string | null;
+  subscriptionUrl: string | null;
   meta: {
     locales: LocalesMetadata;
   };
@@ -100,9 +100,9 @@ export function parseEventSummary(data: ApiData, assocs: ApiAssocs): EventSummar
     type: data.type,
     isAllDay: data.is_all_day,
     // NOTE remove logo_image_url once using reader api
-    profileImageURL: data.logo_image_url || data.profile_image_url,
-    coverImageURL: data.cover_image_url,
-    subscriptionURL: data.subscription_url,
+    profileImageUrl: data.logo_image_url || data.profile_image_url,
+    coverImageUrl: data.cover_image_url,
+    subscriptionUrl: data.subscription_url,
     name,
     summaryHtml,
     summaryText,
