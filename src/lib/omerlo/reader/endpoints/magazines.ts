@@ -1,5 +1,5 @@
 import { parseLocalesMetadata, type LocalesMetadata } from '$reader/utils/response';
-import { parseVisual, type Visual } from '../parsers/common-parser';
+import { parseVisual, type Metadata, type Visual } from '../parsers/common-parser';
 import { parseMany, type ApiAssocs, type ApiData, type ApiParams } from '$reader/utils/api';
 import { getAssoc } from '$reader/utils/assocs';
 import { request } from '$reader/utils/request';
@@ -186,7 +186,7 @@ export interface IssueSummary {
   color: string | null;
   pdfUrl: string | null;
   visual: Visual | null;
-  metadata: Record<string, string>;
+  metadata: Metadata;
   meta: {
     locales: LocalesMetadata;
   };

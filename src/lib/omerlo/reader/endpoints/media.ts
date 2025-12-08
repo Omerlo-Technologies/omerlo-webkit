@@ -2,7 +2,7 @@ import { parseMany, type ApiAssocs, type PagingParams } from '../utils/api';
 import type { ApiData, ApiParams } from '../utils/api';
 import { requestPublisher } from '../utils/request';
 import { parseLocalesMetadata, type LocalesMetadata } from '../utils/response';
-import { parseVisual, type Visual } from '../parsers/common-parser';
+import { parseVisual, type Metadata, type Visual } from '../parsers/common-parser';
 import { buildMeta } from '../utils/parseHelpers';
 import { parseContentSummary, type ContentSummary } from './contents';
 import { getAssocs } from '$reader/utils/assocs';
@@ -56,7 +56,7 @@ export interface Media {
   key: string;
   contact: MediaContact | null;
   sections: MediaSectionHierarchy[];
-  metadata: Record<string, string>;
+  metadata: Metadata;
   updatedAt: Date;
 }
 
@@ -84,7 +84,7 @@ export interface MediaSectionSummary {
   name: string;
   slug: string;
   visual: Visual | null;
-  metadata: Record<string, string>;
+  metadata: Metadata;
   meta: { locales: LocalesMetadata };
   color: string;
   updatedAt: Date;
@@ -116,7 +116,7 @@ export interface MediaBlock extends MediaBlockSummary {
   description: string | null;
   visual: Visual | null;
   html: string | null;
-  metadata: Record<string, string>;
+  metadata: Metadata;
   meta: { locales: LocalesMetadata };
   textColor: string | null;
   backgroundColor: string | null;

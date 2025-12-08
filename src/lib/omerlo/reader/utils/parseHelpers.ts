@@ -1,3 +1,4 @@
+// DEPRECATED: use parseLocalesMetadata instead for ReaderAPI
 export function buildMeta(locale: string | null) {
   if (!locale) {
     return {

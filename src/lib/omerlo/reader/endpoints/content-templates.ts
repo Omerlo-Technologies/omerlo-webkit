@@ -1,6 +1,7 @@
 import { parseLocalesMetadata, type LocalesMetadata } from '$reader/utils/response';
 import type { ApiAssocs, ApiData } from '$reader/utils/api';
 import { buildMeta } from '$reader/utils/parseHelpers';
+import type { Metadata } from '$reader/parsers/common-parser';
 
 export interface ContentTemplate {
   id: string;
@@ -9,7 +10,7 @@ export interface ContentTemplate {
   meta: {
     locales: LocalesMetadata;
   };
-  metadata: Record<string, string>;
+  metadata: Metadata;
   enabledFields: string[];
   updatedAt: Date;
 }

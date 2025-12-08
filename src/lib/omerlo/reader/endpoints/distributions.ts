@@ -4,7 +4,7 @@ import { buildMeta, parseDate } from '$reader/utils/parseHelpers';
 import { request } from '$reader/utils/request';
 import type { LocalesMetadata } from '$reader/utils/response';
 import { parseIssueSummary, type IssueSummary } from './magazines';
-import { parseVisual, type Visual } from '../parsers/common-parser';
+import { parseVisual, type Metadata, type Visual } from '../parsers/common-parser';
 
 export const distributionFetchers = (f: typeof fetch) => {
   return {
@@ -49,7 +49,7 @@ export interface Distribution {
   meta: { locales: LocalesMetadata };
   name: string;
   visual: Visual | null;
-  metadata: Record<string, string>;
+  metadata: Metadata;
 }
 
 export function parseDistribution(data: ApiData, assocs: ApiAssocs): Distribution {

@@ -91,3 +91,5 @@ export function parseVideo(data: ApiData, _assocs: ApiAssocs): Video {
     isTrackingEnabled: data.is_tracking_enabled
   };
 }
+
+export type Metadata = Record<string, string>

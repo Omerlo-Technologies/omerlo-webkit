@@ -8,7 +8,8 @@ import {
   parseVideo,
   parseImage,
   parseSlideshow,
-  parseVisual
+  parseVisual,
+  type Metadata
 } from '../parsers/common-parser';
 import { requestPublisher } from '$reader/utils/request';
 import {
@@ -41,7 +42,7 @@ export interface ContentSeo {
 
 export interface ContentSummary {
   id: string;
-  metadata: Record<string, string>;
+  metadata: Metadata;
   template: ContentTemplate;
   canonicalDomain: string | null;
   canonicalUrl: string | null;
@@ -206,7 +207,7 @@ export function listContents(f: typeof fetch) {
 
 export function parseContentSummary(data: ApiData, assocs: ApiAssocs): ContentSummary {
   const metadata = (data.metadata ?? []).reduce(
-    (acc: Record<string, string>, { key, value }: { key: string; value: string }) => {
+    (acc: Metadata, { key, value }: { key: string; value: string }) => {
       acc[key] = value;
       return acc;
     },
