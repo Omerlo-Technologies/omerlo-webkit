@@ -9,7 +9,7 @@ import {
   parseImage,
   parseSlideshow,
   parseVisual
-} from './visuals';
+} from '../parsers/common-parser';
 import { requestPublisher } from '$reader/utils/request';
 import {
   parseMany,

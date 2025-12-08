@@ -2,7 +2,7 @@ import { parseMany, type ApiAssocs, type PagingParams } from '../utils/api';
 import type { ApiData, ApiParams } from '../utils/api';
 import { requestPublisher } from '../utils/request';
 import { parseLocalesMetadata, type LocalesMetadata } from '../utils/response';
-import { parseVisual, type Visual } from './visuals';
+import { parseVisual, type Visual } from '../parsers/common-parser';
 import { buildMeta } from '../utils/parseHelpers';
 import { parseContentSummary, type ContentSummary } from './contents';
 import { getAssocs } from '$reader/utils/assocs';

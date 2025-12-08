@@ -17,7 +17,7 @@ import {
   parseImage,
   parseSlideshow,
   parseVideo
-} from './visuals';
+} from '../parsers/common-parser';
 import { buildMeta } from '$reader/utils/parseHelpers';
 
 export type Profile = Person | Project | Event | Organization;

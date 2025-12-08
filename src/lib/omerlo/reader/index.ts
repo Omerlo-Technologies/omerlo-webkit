@@ -31,8 +31,8 @@ export type * from './endpoints/person';
 export type * from './endpoints/profile-types';
 export type * from './endpoints/profiles';
 export type * from './endpoints/projects';
-export type * from './endpoints/visuals';
 export type * from './endpoints/webpage';
+export type * from './parsers/common-parser';
 export type * from './utils/response';
 
 // TODO: This should all be summary parsers!

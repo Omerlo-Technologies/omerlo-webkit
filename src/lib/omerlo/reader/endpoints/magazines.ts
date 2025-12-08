@@ -1,5 +1,5 @@
 import { parseLocalesMetadata, type LocalesMetadata } from '$reader/utils/response';
-import { parseVisual, type Visual } from './visuals';
+import { parseVisual, type Visual } from '../parsers/common-parser';
 import { parseMany, type ApiAssocs, type ApiData, type ApiParams } from '$reader/utils/api';
 import { getAssoc } from '$reader/utils/assocs';
 import { request } from '$reader/utils/request';

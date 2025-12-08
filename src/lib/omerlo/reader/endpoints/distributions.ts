@@ -4,7 +4,7 @@ import { buildMeta, parseDate } from '$reader/utils/parseHelpers';
 import { request } from '$reader/utils/request';
 import type { LocalesMetadata } from '$reader/utils/response';
 import { parseIssueSummary, type IssueSummary } from './magazines';
-import { parseVisual, type Visual } from './visuals';
+import { parseVisual, type Visual } from '../parsers/common-parser';
 
 export const distributionFetchers = (f: typeof fetch) => {
   return {

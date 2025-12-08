@@ -66,6 +66,7 @@ export function parseImage(data: ApiData, _assocs: ApiAssocs): Image {
     gravity: data.gravity
   };
 }
+
 export function parseSlideshow(data: ApiData, assocs: ApiAssocs): Slideshow {
   return {
     type: 'slideshow',
@@ -74,6 +75,7 @@ export function parseSlideshow(data: ApiData, assocs: ApiAssocs): Slideshow {
       : []
   };
 }
+
 export function parseVideo(data: ApiData, _assocs: ApiAssocs): Video {
   return {
     type: 'video',
