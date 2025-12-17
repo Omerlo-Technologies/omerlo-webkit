@@ -19,12 +19,14 @@ export function getUserInfo(f: typeof fetch) {
 }
 
 export interface UserInfo {
+  id: string;
   name: string;
   email: string;
 }
 
 function parseUserInfo(data: ApiData, _assoc: ApiAssocs): UserInfo {
   return {
+    id: data.id,
     name: data.name,
     email: data.email
   };
