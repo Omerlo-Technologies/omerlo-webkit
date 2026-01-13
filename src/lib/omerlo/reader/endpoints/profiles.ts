@@ -63,12 +63,14 @@ export interface ProfileAddress {
 }
 
 export interface ProfileContact {
-  phone: string | null;
+  bluesky: string | null;
   email: string | null;
-  linkedin: string | null;
-  website: string | null;
   facebook: string | null;
+  instagram: string | null;
+  linkedin: string | null;
+  phone: string | null;
   twitter: string | null;
+  website: string | null;
   meta: {
     locales: LocalesMetadata;
   };
@@ -182,12 +184,14 @@ export function parseProfileAddress(data: ApiData, _assocs: ApiAssocs): ProfileA
 
 export function parseProfileContact(data: ApiData, _assocs: ApiAssocs): ProfileContact {
   return {
-    phone: data.phone,
+    bluesky: data.bluesky,
     email: data.email,
-    linkedin: data.linkedin,
-    website: data.website,
     facebook: data.facebook,
+    instagram: data.instagram,
+    linkedin: data.linkedin,
+    phone: data.phone,
     twitter: data.twitter,
+    website: data.website,
     meta: buildMeta(data.locale)
   };
 }
