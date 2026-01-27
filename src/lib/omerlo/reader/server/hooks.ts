@@ -7,7 +7,8 @@ import {
   getAccessTokenFromCookie,
   getApplicationToken,
   getRefreshTokenFromCookie,
-  setAuthorizationCookies
+  setAuthorizationCookies,
+  refreshAuthorizationUsingHeader
 } from './utils';
 import { refresh } from './token';
 
@@ -42,6 +43,8 @@ const handleApiProxy: Handle = async ({ event, ...tail }) => {
         event.locals.accessToken = undefined;
         resp = await handleApiProxy({ event, ...tail });
       }
+
+      refreshAuthorizationUsingHeader(headers, event.locals.refreshedToken);
 
       const responseOpts = {
         headers: headers,
@@ -119,6 +122,7 @@ export const handleUserToken: Handle = async ({ event, resolve }) => {
     const token = await refresh(refreshToken);
     setAuthorizationCookies(event.cookies, token);
     event.locals.accessToken = token.accessToken;
+    event.locals.refreshedToken = token;
   } catch (err) {
     if (err instanceof ApiError && err.status == 401) {
       event.setHeaders({ 'x-logout': 'true' });

@@ -65,6 +65,20 @@ export function clearAuthorizationUsingHeader(headers: Headers) {
   headers.append('x-logout', `true`);
 }
 
+export function refreshAuthorizationUsingHeader(headers: Headers, token?: OmerloToken) {
+  if (!token) return;
+
+  headers.append('Set-Cookie', `logged_in=true; Path=/; SameSite=Lax; Max-Age=${THREE_MONTH}`);
+  headers.append(
+    'Set-Cookie',
+    `${accessTokenCookieName}=${token.accessToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${token.expiresIn - 60}`
+  );
+  headers.append(
+    'Set-Cookie',
+    `${refreshTokenCookieName}=${token.refreshToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${THREE_MONTH}`
+  );
+}
+
 export function getAccessTokenFromCookie(cookies: Cookies): string | null {
   return cookies.get(accessTokenCookieName) || null;
 }
