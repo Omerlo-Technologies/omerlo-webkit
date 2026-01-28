@@ -5,6 +5,7 @@ declare global {
     // interface Error {}
     interface Locals {
       accessToken?: string;
+      refreshedToken?: import('./lib/omerlo/reader/server/token').OmerloToken;
     }
     // interface PageData {}
     // interface PageState {}
