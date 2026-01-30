@@ -6,20 +6,35 @@ export async function parseApiResponse<T>(
   response: Response,
   parser: (data: ApiData, assocs: ApiAssocs) => T
 ): Promise<ApiResponse<T>> {
-  const payload = await response.json();
-  let data = null,
-    meta = null;
+  const text = await response.text();
 
   if (response.ok) {
+    const payload = JSON.parse(text);
     let assocs = initAssocs(payload.assocs);
     assocs = parseAssocs(assocs);
-    meta = payload.meta;
-    data = parser(payload.data, assocs);
+    const meta = payload.meta;
+    const data = parser(payload.data, assocs);
+    const errors = payload.errors || [];
+    return { ok: true, status: response.status, parser, meta, data, errors };
   }
 
-  const errors = payload.errors || [];
+  // Response not OK - try to parse JSON for API errors, fallback to generic error
+  let errors: ApiData[] = [];
+  try {
+    const payload = JSON.parse(text);
+    errors = payload.errors || [];
+  } catch {
+    console.error('[OmerloWebkit - parseApiResponse] Non-OK response with non-JSON body', {
+      url: response.url,
+      status: response.status,
+      statusText: response.statusText,
+      contentType: response.headers.get('content-type'),
+      body: text.slice(0, 1000)
+    });
+    errors = [{ message: `${response.status} ${response.statusText}`, body: text.slice(0, 500) }];
+  }
 
-  return { ok: response.ok, status: response.status, parser, meta, data, errors };
+  return { ok: false, status: response.status, parser, meta: null, data: null, errors };
 }
 
 export function parseMany<T>(
