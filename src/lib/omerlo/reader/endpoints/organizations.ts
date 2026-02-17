@@ -52,6 +52,7 @@ export interface OrganizationSummary {
   kind: string;
   name: string;
   profileImageUrl: string | null;
+  canonicalUrl: string | null;
   meta: {
     locales: LocalesMetadata;
   };
@@ -97,6 +98,7 @@ export function parseOrganizationSummary(data: ApiData, assocs: ApiAssocs): Orga
     name: data.name,
     // NOTE remove logo_image_url once using reader api
     profileImageUrl: data.logo_image_url || data.profile_image_url,
+    canonicalUrl: data.canonical_url ?? null,
     ...localizedField,
     updatedAt: new Date(data.updated_at)
   };

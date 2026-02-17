@@ -72,6 +72,7 @@ export type ContentBlockRichtext = {
   id: string;
   kind: 'richtext';
   contentHtml: string;
+  contentText: string;
   visual: Visual | null;
   template: ContentBlockTemplate | null;
 };
@@ -111,10 +112,16 @@ export type ContentBlockRelatedContents = {
   template: ContentBlockTemplate | null;
 };
 
+export type AnswerVotes = {
+  total: number;
+  sources: Record<string, unknown>;
+};
+
 export type Answer = {
   id: string;
   contentHtml: string;
   contentText: string;
+  votes: AnswerVotes | null;
 };
 
 export type ContentBlockQuestion = {
@@ -123,6 +130,7 @@ export type ContentBlockQuestion = {
   questionHtml: string;
   questionText: string;
   acceptVoteUntil: Date;
+  acceptVotesUntilTimezone: string | null;
   answers: Answer[];
   visual: Visual | null;
   template: ContentBlockTemplate | null;
@@ -316,7 +324,8 @@ function getBlockContents(data: ApiData, assocs: ApiAssocs): ContentSummary[] | 
 function parseContentBlockRichtext(data: ApiData, assocs: ApiAssocs): ContentBlockRichtext {
   return {
     ...baseBlock(data, assocs),
-    contentHtml: data.content_html
+    contentHtml: data.content_html,
+    contentText: data.content_text
   };
 }
 
@@ -362,6 +371,7 @@ function parseContentBlockQuestion(data: ApiData, assocs: ApiAssocs): ContentBlo
     questionHtml: data.question_html,
     questionText: data.question_text,
     acceptVoteUntil: new Date(data.accept_vote_until),
+    acceptVotesUntilTimezone: data.accept_votes_until_timezone ?? null,
     answers: data.answers?.map((answer: ApiData) => parseAnswer(answer)) || []
   };
 }
@@ -370,7 +380,8 @@ function parseAnswer(data: ApiData): Answer {
   return {
     id: data.id,
     contentHtml: data.content_html,
-    contentText: data.content_text
+    contentText: data.content_text,
+    votes: data.votes ? { total: data.votes.total ?? 0, sources: data.votes.sources ?? {} } : null
   };
 }
 
