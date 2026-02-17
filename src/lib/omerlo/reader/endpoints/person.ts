@@ -55,6 +55,7 @@ export interface PersonSummary {
   pronoun: string | null;
   profileImageUrl: string | null;
   coverImageUrl: string | null;
+  canonicalUrl: string | null;
   meta: {
     locales: LocalesMetadata;
   };
@@ -96,6 +97,7 @@ export function parsePersonSummary(data: ApiData, assocs: ApiAssocs): PersonSumm
     // NOTE remove logo_image_url once using reader api
     profileImageUrl: data.avatar_image_url || data.profile_image_url,
     coverImageUrl: data.cover_image_url,
+    canonicalUrl: data.canonical_url ?? null,
     ...localizedField,
     updatedAt: new Date(data.updated_at)
   };
