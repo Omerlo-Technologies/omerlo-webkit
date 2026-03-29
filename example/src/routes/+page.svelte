@@ -21,8 +21,12 @@
   }
 </script>
 
+<h1>Hello Webkit!</h1>
+
 {#if $userSession.user}
   Your name: {$userSession.user?.name}
+{:else}
+  User is not connected
 {/if}
 
 {#if $userSession.verified}

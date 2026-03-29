@@ -12,11 +12,7 @@
     "moduleResolution": "bundler",
     "declaration": true,
     "declarationDir": "dist/types",
-    "outDir": "dist",
-    "paths": {
-      "$omerlo": ["./src/lib/omerlo"],
-      "$reader/*": ["./src/lib/omerlo/reader/*"]
-    }
+    "outDir": "dist"
   },
   "include": ["./**/*.svelte", "./**/*.ts", "./**/*.js", ".svelte-kit/ambient.d.ts"]
 }
