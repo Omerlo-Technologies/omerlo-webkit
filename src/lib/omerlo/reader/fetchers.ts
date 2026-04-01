@@ -15,10 +15,12 @@ import { personFetchers } from './endpoints/person';
 import { projectFetchers } from './endpoints/projects';
 import { webpageFetchers } from './endpoints/webpage';
 import { profileTypeFetchers } from './endpoints/profile-types';
+import { announcementsFetchers } from './endpoints/announcements';
 
 export const fetchers = (f: typeof fetch) => {
   return {
     ...accountsFetchers(f),
+    ...announcementsFetchers(f),
     ...deviceFetchers(f),
     ...oauthFetchers(f),
     ...categoriesFetchers(f),
